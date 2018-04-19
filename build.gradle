@@ -17,6 +17,7 @@ plugins {
 // Define the main class for the application
 mainClassName = 'App'
 apply plugin: 'pmd'
+apply plugin: 'checkstyle'
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
@@ -47,4 +48,18 @@ task pmd(type: Pmd) {
         html.enabled = true
         html.destination = "$project.buildDir/outputs/pmd/pmd.html"
     }
+}
+
+checkstyle {
+
+    project.ext.checkstyleVersion = '8.9'
+    project.ext.sevntuChecksVersion = '1.29.0'
+
+    maxWarnings = 0
+    maxErrors = 0
+    dependencies{
+        checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleVersion}"
+        checkstyle "com.github.sevntu-checkstyle:sevntu-checks:${sevntuChecksVersion}"
+    }
+
 }
