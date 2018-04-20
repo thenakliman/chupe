@@ -42,12 +42,6 @@ task pmd(type: Pmd) {
     source = fileTree('src/main/java')
     include '**/*.java'
     exclude '**/gen/**'
-
-    reports {
-        xml.enabled = false
-        html.enabled = true
-        html.destination = "$project.buildDir/outputs/pmd/pmd.html"
-    }
 }
 
 checkstyle {
