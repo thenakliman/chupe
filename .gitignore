@@ -24,7 +24,7 @@ hs_err_pid*
 
 #intellij files
 .idea*
-chupe.iml
+org.thenakliman.chupe.iml
 
 # build files
 build

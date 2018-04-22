@@ -15,7 +15,7 @@ plugins {
 }
 
 // Define the main class for the application
-mainClassName = 'App'
+mainClassName = 'org.thenakliman.chupe.App'
 apply plugin: 'pmd'
 apply plugin: 'checkstyle'
 

@@ -1,4 +1,4 @@
-package chupe;
+package org.thenakliman.chupe;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,10 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
    added, it can be removed
  */
 @SpringBootApplication
-public final class App {
-  /* NOTE(thenakliman): Added private method to support All class final */
-  private App(){}
-
+public class App {
   public static void main(String[] args) {
     SpringApplication.run(App.class, args);
   }
