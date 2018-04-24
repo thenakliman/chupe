@@ -1,5 +1,8 @@
 create table users(
+    first_name varchar(50),
+    last_name varchar(50),
 	username varchar(50) not null primary key,
+	email varchar(50),
 	password varchar(50) not null,
 	enabled boolean not null
 );
@@ -11,12 +14,12 @@ create table authorities (
 );
 create unique index ix_auth_username on authorities (username, authority);
 
-insert into users values('user1', 'password1', True);
-insert into users values('user2', 'password2', True);
-insert into users values('user3', 'password3', True);
-insert into users values('user4', 'password4', True);
+insert into users values('Prasun', 'hazari', 'prasun_hazari', 'phazari@example.com', 'phpassword', True);
+insert into users values('Lal', 'Singh', 'lal_singh', 'lalsingh@example.com', 'lspassword', True);
+insert into users values('Kulamani', 'Sethi', 'kulamani_sethi', 'ksethi@example.com', 'kspassword', True);
+insert into users values('Prince', 'Bhatia', 'prince_bhatia', 'prince_bhatia@example.com', 'pbpassword', True);
 
-insert into authorities values('user1', 'admin');
-insert into authorities values('user3', 'admin');
-insert into authorities values('user2', 'member');
-insert into authorities values('user4', 'member');
+insert into authorities values('prasun_hazari', 'admin');
+insert into authorities values('lal_singh', 'member');
+insert into authorities values('kulamani_sethi', 'member');
+insert into authorities values('prince_bhatia', 'member');
