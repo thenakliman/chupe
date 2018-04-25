@@ -1,4 +1,4 @@
-package org.thenakliman.chupe.Controllers;
+package org.thenakliman.chupe.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.thenakliman.chupe.Models.User;
-import org.thenakliman.chupe.Services.UserService;
+import org.thenakliman.chupe.models.User;
+import org.thenakliman.chupe.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;

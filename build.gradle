@@ -45,7 +45,7 @@ task pmd(type: Pmd) {
     ruleSetFiles = files("$project.rootDir/rules-pmd.xml")
     source = fileTree('src/main/java')
     include '**/*.java'
-    exclude '**/gen/**'
+    exclude '**/App.java'
 }
 
 checkstyle {
@@ -64,8 +64,8 @@ checkstyle {
 
 
 flyway {
-    url = 'jdbc:mysql://MYSQL-host:$MYSQL_PORT/chupe'
-    user = '${user}'
-    password = '${password}'
+    url = 'jdbc:mariadb://localhost:3306/chupe'
+    user = 'root'
+    password = 'password'
     schemas = ['chupe']
 }

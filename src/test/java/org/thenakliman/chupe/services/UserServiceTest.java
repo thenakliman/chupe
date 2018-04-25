@@ -1,4 +1,4 @@
-package org.thenakliman.chupe.Services;
+package org.thenakliman.chupe.services;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -6,8 +6,8 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.thenakliman.chupe.Models.User;
-import org.thenakliman.chupe.Repositories.UserRepository;
+import org.thenakliman.chupe.models.User;
+import org.thenakliman.chupe.repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
