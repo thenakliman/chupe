@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.services.UserService;
 
@@ -45,30 +46,37 @@ public class UserControllerTest {
 
   @Test
   public void shouldReturnEmptyUser() throws Exception {
-    List<User> expUsers = new ArrayList<User>();
-    List<User> modelUsers = new ArrayList<User>();
-    BDDMockito.given(userService.getAllUsers()).willReturn(modelUsers);
+    List<UserDTO> users = new ArrayList<UserDTO>();
+    BDDMockito.given(userService.getAllUsers()).willReturn(users);
     MvcResult mvcResult = null;
     mvcResult = mockMvc.perform(MockMvcRequestBuilders
       .get("/api/v1/users")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-    List<User> result = objectMapper.readValue(
+    List<UserDTO> result = objectMapper.readValue(
             mvcResult.getResponse().getContentAsString(),
             List.class);
 
-    assertEquals(result, expUsers);
+    assertEquals(result, users);
   }
 
   @Test
   public void shouldReturnUser() throws Exception {
-    User modelUser1 = new User("user1_fistname", "user1_lastname", "user1_username",
-                         "user1_email", "user1_password", true);
-    User modelUser2 = new User("user2_fistname", "user2_lastname", "user2_username",
-                         "user2_email", "user2_password", false);
-    List<User> modelUsers = new ArrayList<User>();
-    modelUsers.add(modelUser1);
-    modelUsers.add(modelUser2);
-    BDDMockito.given(userService.getAllUsers()).willReturn(modelUsers);
+    UserDTO userDTO1 = new UserDTO(
+            "user1_name",
+            "user1_fistname",
+            "user1_lastname",
+            "user1_email");
+    UserDTO userDTO2 = new UserDTO(
+            "user2_username",
+            "user2_fistname",
+            "user2_lastname",
+            "user2_email");
+
+    List<UserDTO> userDTOs = new ArrayList<UserDTO>();
+
+    userDTOs.add(userDTO1);
+    userDTOs.add(userDTO2);
+    BDDMockito.given(userService.getAllUsers()).willReturn(userDTOs);
     MvcResult mvcResult = null;
 
     mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -78,9 +86,9 @@ public class UserControllerTest {
      */
     List<User> result = objectMapper.readValue(
             mvcResult.getResponse().getContentAsString(),
-            new ArrayList<User>().getClass());
+            new ArrayList<UserDTO>().getClass());
 
-    assertEquals(result.size(), modelUsers.size());
+    assertEquals(result.size(), userDTOs.size());
   }
 
   @Test
