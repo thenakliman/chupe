@@ -42,7 +42,7 @@ repositories {
 task pmd(type: Pmd) {
     description 'Identifying potential problems mainly dead code, duplicated code, cyclomatic complexity and overcomplicated expressions'
     group 'verification'
-    ruleSetFiles = files("$project.rootDir/rules-pmd.xml")
+    ruleSetFiles = files("$project.rootDir/config/rules-pmd.xml")
     source = fileTree('src/main/java')
     include '**/*.java'
     exclude '**/App.java'
