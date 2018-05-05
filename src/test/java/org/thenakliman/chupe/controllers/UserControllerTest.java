@@ -1,6 +1,8 @@
 package org.thenakliman.chupe.controllers;
 
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -88,7 +90,7 @@ public class UserControllerTest {
             mvcResult.getResponse().getContentAsString(),
             new ArrayList<UserDTO>().getClass());
 
-    assertEquals(result.size(), userDTOs.size());
+    assertThat(result, samePropertyValuesAs(userDTOs));
   }
 
   @Test

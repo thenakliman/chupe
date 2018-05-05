@@ -2,10 +2,14 @@ package org.thenakliman.chupe.models;
 
 import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity(name = "questions")
+@Table
 public class Question {
   @Id
   @Column(name = "id", nullable = false, unique = true)
@@ -24,7 +28,7 @@ public class Question {
   @Column(name = "assignedTo")
   private String assignedTo;
 
-  @Column(name = "createdAt")
+  @Column(name = "created_at")
   private Date createdAt;
 
   @Column(name = "updated_at")
@@ -76,5 +80,13 @@ public class Question {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
   }
 }
