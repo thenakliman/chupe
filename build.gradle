@@ -68,4 +68,5 @@ flyway {
     user = 'root'
     password = 'password'
     schemas = ['chupe']
+    baselineOnMigrate = true
 }
