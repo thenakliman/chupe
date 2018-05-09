@@ -16,16 +16,16 @@ public class Question {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
 
-  @Column(name = "question", nullable=false, unique = true)
+  @Column(name = "question", nullable = false, unique = true)
   private String question;
 
-  @Column(name = "description", nullable=false)
+  @Column(name = "description", nullable = false)
   private String description;
 
-  @Column(name = "owner", nullable=false)
+  @Column(name = "owner", nullable = false)
   private String owner;
 
-  @Column(name = "assignedTo", nullable=false)
+  @Column(name = "assignedTo", nullable = false)
   private String assignedTo;
 
   @Column(name = "created_at")
