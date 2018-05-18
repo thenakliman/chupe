@@ -32,8 +32,10 @@ public class UserServiceTest {
   @Test
   public void shouldReturnEmptyUser() {
     BDDMockito.given(userRepository.findAll()).willReturn(null);
+    BDDMockito.given(userTransformer.transformToUserDTOs(null))
+            .willReturn(new ArrayList<UserDTO>());
     List<UserDTO> users = userService.getAllUsers();
-    assertEquals(null, users);
+    assertEquals(new ArrayList(), users);
   }
 
   @Test

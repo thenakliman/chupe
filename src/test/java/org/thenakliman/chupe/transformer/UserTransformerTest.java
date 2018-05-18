@@ -42,4 +42,9 @@ public class UserTransformerTest {
 
     assertThat(userDTOs, samePropertyValuesAs(userTransformer.transformToUserDTOs(user1)));
   }
+
+  @Test
+  public void shouldReturnEmptyListIfNullIsGivenForTransformation() {
+    assertThat(new ArrayList<>(), samePropertyValuesAs(userTransformer.transformToUserDTOs(null)));
+  }
 }

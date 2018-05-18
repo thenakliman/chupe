@@ -13,6 +13,10 @@ public class UserTransformer {
   /** Transforms Users Model into UserDTO for the response. */
   public List<UserDTO> transformToUserDTOs(List<User> users) {
     List<UserDTO> usersDTOs = new ArrayList<UserDTO>();
+    if (users == null) {
+      return usersDTOs;
+    }
+
     users.forEach(user -> {
       usersDTOs.add(new UserDTO(
               user.getUserName(),
