@@ -40,6 +40,6 @@ public class UserTransformerTest {
     List<UserDTO> userDTOs = new ArrayList<>();
     userDTOs.add(userDTO1);
 
-    assertThat(userDTOs, samePropertyValuesAs(userTransformer.transformToUserDTO(user1)));
+    assertThat(userDTOs, samePropertyValuesAs(userTransformer.transformToUserDTOs(user1)));
   }
 }

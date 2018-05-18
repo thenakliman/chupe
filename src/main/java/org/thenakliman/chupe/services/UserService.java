@@ -26,6 +26,6 @@ public class UserService {
       return null;
     }
 
-    return userTransformer.transformToUserDTO(users);
+    return userTransformer.transformToUserDTOs(users);
   }
 }

@@ -72,7 +72,7 @@ public class UserServiceTest {
             "user1_email"));
 
     BDDMockito.given(userRepository.findAll()).willReturn(repoUser);
-    BDDMockito.given(userTransformer.transformToUserDTO(repoUser)).willReturn(expUsers);
+    BDDMockito.given(userTransformer.transformToUserDTOs(repoUser)).willReturn(expUsers);
 
     List<UserDTO> users = userService.getAllUsers();
 

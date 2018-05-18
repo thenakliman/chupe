@@ -11,7 +11,7 @@ import org.thenakliman.chupe.models.User;
 public class UserTransformer {
 
   /** Transforms Users Model into UserDTO for the response. */
-  public List<UserDTO> transformToUserDTO(List<User> users) {
+  public List<UserDTO> transformToUserDTOs(List<User> users) {
     List<UserDTO> usersDTOs = new ArrayList<UserDTO>();
     users.forEach(user -> {
       usersDTOs.add(new UserDTO(
