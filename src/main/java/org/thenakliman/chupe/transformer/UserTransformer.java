@@ -17,14 +17,16 @@ public class UserTransformer {
       return usersDTOs;
     }
 
-    users.forEach(user -> {
-      usersDTOs.add(new UserDTO(
-              user.getUserName(),
-              user.getFirstName(),
-              user.getLastname(),
-              user.getEmail()));
-    });
-
+    users.forEach(user -> usersDTOs.add(transformToUserDTO(user)));
     return usersDTOs;
+  }
+
+  /** Transforms User to UserDTO. */
+  public UserDTO transformToUserDTO(User user) {
+    return new UserDTO(
+            user.getUserName(),
+            user.getFirstName(),
+            user.getLastname(),
+            user.getEmail());
   }
 }

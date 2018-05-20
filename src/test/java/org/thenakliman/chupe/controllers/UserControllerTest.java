@@ -21,12 +21,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.services.UserService;
 
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(controllers = UserController.class)
 @RunWith(SpringRunner.class)
 public class UserControllerTest {
   @Autowired
@@ -41,9 +43,13 @@ public class UserControllerTest {
   @Autowired
   private ObjectMapper objectMapper;
 
+  @Autowired
+  private WebApplicationContext webApplicationContext;
+
   @Before
   public void setUp() {
     objectMapper = jasonBuilder.build();
+    this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
   }
 
   @Test

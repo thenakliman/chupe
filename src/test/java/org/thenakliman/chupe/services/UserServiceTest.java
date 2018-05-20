@@ -80,4 +80,18 @@ public class UserServiceTest {
 
     assertEquals(expUsers, users);
   }
+
+  @Test
+  public void shouldReturnUserByUsername() {
+    User testUser = new User(
+            "user1_fist_name",
+            "user1_last_name",
+            "user1_username",
+            "user1_email",
+            "user1_password",
+            true);
+    BDDMockito.given(userRepository.findByUserName("user1_username")).willReturn(testUser);
+    UserDetail user = userService.loadUserByUsername("user1_username");
+    assertEquals(testUser.getUserName(), user.getUsername());
+  }
 }

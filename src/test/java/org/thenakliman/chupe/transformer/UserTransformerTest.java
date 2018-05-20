@@ -21,7 +21,7 @@ public class UserTransformerTest {
   private UserTransformer userTransformer;
 
   @Test
-  public void shouldTranformUserModelToUserDTO() {
+  public void shouldTranformUserListOfModelsToUserDTO() {
     List<User> user1 = new ArrayList<>();
     User u1 = new User("username1",
                "user1_firstname",
@@ -47,4 +47,22 @@ public class UserTransformerTest {
   public void shouldReturnEmptyListIfNullIsGivenForTransformation() {
     assertThat(new ArrayList<>(), samePropertyValuesAs(userTransformer.transformToUserDTOs(null)));
   }
+
+    @Test
+    public void shouldTranformUserModelToUserDTO() {
+        User u1 = new User("user1_firstname",
+                "user1_lastname",
+                "user1_username",
+                "user1_email",
+                "user1_password",
+                true);
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserName("user1_username");
+        userDTO.setFirstName("user1_firstname");
+        userDTO.setLastName("user1_lastname");
+        userDTO.setEmail("user1_email");
+
+        assertThat(userDTO, samePropertyValuesAs(userTransformer.transformToUserDTO(u1)));
+    }
 }
