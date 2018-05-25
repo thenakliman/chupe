@@ -20,7 +20,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web:2.0.1.RELEASE'
     compile 'org.flywaydb:flyway-core:5.0.7'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa:2.0.1.RELEASE'
-    compile 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
+    compile 'org.postgresql:postgresql:42.2.2'
     compile 'javax.xml.bind:jaxb-api:2.3.0'
     compile 'org.springframework.security:spring-security-web:5.0.5.RELEASE'
     compile 'org.springframework.security:spring-security-core:5.0.5.RELEASE'
@@ -67,9 +67,8 @@ checkstyle {
 
 
 flyway {
-    url = 'jdbc:mariadb://localhost:3306/chupe'
-    user = 'root'
+    url = 'jdbc:postgresql://172.17.0.2:5432/chupe'
+    user = 'chupe'
     password = 'password'
-    schemas = ['chupe']
     baselineOnMigrate = true
 }
