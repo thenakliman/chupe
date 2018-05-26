@@ -16,7 +16,7 @@ public class Question {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
 
-  @Column(name = "question", nullable = false, unique = true)
+  @Column(name = "question", nullable = false)
   private String question;
 
   @Column(name = "description", nullable = false)

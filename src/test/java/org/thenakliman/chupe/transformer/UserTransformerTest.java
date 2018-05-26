@@ -48,21 +48,20 @@ public class UserTransformerTest {
     assertThat(new ArrayList<>(), samePropertyValuesAs(userTransformer.transformToUserDTOs(null)));
   }
 
-    @Test
-    public void shouldTranformUserModelToUserDTO() {
-        User u1 = new User("user1_firstname",
-                "user1_lastname",
-                "user1_username",
-                "user1_email",
-                "user1_password",
-                true);
-
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUserName("user1_username");
-        userDTO.setFirstName("user1_firstname");
-        userDTO.setLastName("user1_lastname");
-        userDTO.setEmail("user1_email");
-
-        assertThat(userDTO, samePropertyValuesAs(userTransformer.transformToUserDTO(u1)));
-    }
+  @Test
+  public void shouldTranformUserModelToUserDTO() {
+    UserDTO userDTO = new UserDTO();
+    userDTO.setUserName("user1_username");
+    userDTO.setFirstName("user1_firstname");
+    userDTO.setLastName("user1_lastname");
+    userDTO.setEmail("user1_email");
+    User u1 = new User(
+            "user1_firstname",
+             "user1_lastname",
+             "user1_username",
+                 "user1_email",
+             "user1_password",
+            true);
+    assertThat(userDTO, samePropertyValuesAs(userTransformer.transformToUserDTO(u1)));
+  }
 }
