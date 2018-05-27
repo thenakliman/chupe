@@ -4,8 +4,8 @@ create table questions (
     description varchar(1000),
     created_at TIMESTAMP default CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
-    owner varchar(50) not null,
-    assignedTO varchar(50) not null,
+    owner varchar(256) not null,
+    assigned_to varchar(256) not null,
     foreign key(owner) references users(username),
-    foreign key(assignedTO) references users(username)
+    foreign key(assigned_to) references users(username)
 );

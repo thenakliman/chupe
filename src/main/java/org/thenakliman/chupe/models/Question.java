@@ -25,7 +25,7 @@ public class Question {
   @Column(name = "owner", nullable = false)
   private String owner;
 
-  @Column(name = "assignedTo", nullable = false)
+  @Column(name = "assigned_to", nullable = false)
   private String assignedTo;
 
   @Column(name = "created_at")
