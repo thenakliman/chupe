@@ -40,9 +40,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   protected void configure(HttpSecurity http) {
     try {
-      http
+      http.csrf().disable()
           .authorizeRequests()
-          .antMatchers("/api/v1/**").permitAll();
+          .antMatchers("/**").permitAll();
     } catch (Exception e) {
       // todo(thenakliman) Currently security is disabled
     }
