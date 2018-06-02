@@ -1,7 +1,7 @@
 package org.thenakliman.chupe.dto;
 
 public class QuestionDTO {
-  private int id;
+  private long id;
 
   private String question;
 
@@ -24,7 +24,12 @@ public class QuestionDTO {
    * @param owner user asked the question
    * @param assignedTo user responsible to answer question
    */
-  public QuestionDTO(int id, String question, String description, String owner, String assignedTo) {
+  public QuestionDTO(long id,
+                     String question,
+                     String description,
+                     String owner,
+                     String assignedTo) {
+
     this.id = id;
     this.question = question;
     this.description = description;
@@ -32,11 +37,11 @@ public class QuestionDTO {
     this.assignedTo = assignedTo;
   }
 
-  public int getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(long id) {
     this.id = id;
   }
 
