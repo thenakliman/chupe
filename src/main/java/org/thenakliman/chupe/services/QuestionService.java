@@ -1,5 +1,7 @@
 package org.thenakliman.chupe.services;
 
+import java.util.List;
+import java.util.Optional;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,9 +10,6 @@ import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.repositories.QuestionRepository;
 import org.thenakliman.chupe.transformer.QuestionTransformer;
-
-import java.util.List;
-import java.util.Optional;
 
 
 @Service

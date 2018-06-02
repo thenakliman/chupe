@@ -4,10 +4,13 @@ import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -128,4 +131,28 @@ public class QuestionControllerTest {
     assertThat(result, samePropertyValuesAs(questionDTOs));
   }
 
+  @Test
+  public void shouldUpdateQuestions() throws Exception {
+    long id = 10;
+    QuestionDTO questionDTO = new QuestionDTO(id, "why?", "desc1", "user1", "user2");
+    mockMvc.perform(MockMvcRequestBuilders
+            .put("/api/v1/question/" + id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(questionDTO))
+      ).andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnNotFoundStatusIfQuestionDoesNotExist() throws Exception {
+    long id = 10;
+    QuestionDTO questionDTO = new QuestionDTO(id, "why?", "desc1", "user1", "user2");
+    doThrow(new NotFoundException("Question not found"))
+        .when(questionService).updateQuestions(anyLong(), any());
+
+    mockMvc.perform(MockMvcRequestBuilders
+            .put("/api/v1/question/" + id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(questionDTO))
+      ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+  }
 }
