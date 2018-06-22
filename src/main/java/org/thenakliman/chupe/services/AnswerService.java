@@ -27,4 +27,13 @@ public class AnswerService {
 
     return answers;
   }
+
+  /** Create answer for a question.
+   *
+   * @param answer of the question
+   * @return answer after saving with enriched data like id, create at time
+   */
+  public Answer addAnswer(Answer answer) {
+    return answerRepository.save(answer);
+  }
 }

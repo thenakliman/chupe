@@ -3,9 +3,11 @@ package org.thenakliman.chupe.services;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javassist.NotFoundException;
+import org.assertj.core.util.DateUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -51,4 +53,26 @@ public class AnswerServiceTest {
     answerService.getAnswersOfGivenQuestion(questionId);
   }
 
+  @Test
+  public void shouldReturnAnswerAfterUpdate() {
+    Answer answer = new Answer();
+    String testAnswer = "testAnswer";
+    answer.setAnswer(testAnswer);
+    String user = "user";
+    answer.setAnsweredBy(user);
+    int questionId = 10;
+    answer.setQuestionId(questionId);
+
+    Answer answerFromRespository = new Answer();
+    answerFromRespository.setAnswer(testAnswer);
+    answerFromRespository.setAnsweredBy(user);
+    answerFromRespository.setQuestionId(questionId);
+    answerFromRespository.setId(1011);
+    answerFromRespository.setCreatedAt(DateUtil.now());
+
+    BDDMockito.given(answerRepository.save(answer)).willReturn(answerFromRespository);
+
+    assertEquals(answerFromRespository,
+                 answerService.addAnswer(answer));
+  }
 }
