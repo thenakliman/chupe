@@ -2,6 +2,8 @@ package org.thenakliman.chupe.controllers;
 
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -89,5 +91,35 @@ public class AnswerControllerTest {
         .get("/api/v1/answers?questionId=" + questionId)
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+  }
+
+  @Test
+  public void shouldCreateAnswer() throws  Exception {
+    Answer answer = new Answer();
+    int questionId = 100;
+    answer.setQuestionId(questionId);
+    String user = "user";
+    answer.setAnsweredBy(user);
+    String answer1 = "answer";
+    answer.setAnswer(answer1);
+
+    Answer expectedAnswer = new Answer();
+    expectedAnswer.setQuestionId(questionId);
+    expectedAnswer.setAnsweredBy(user);
+    expectedAnswer.setId(10);
+    expectedAnswer.setAnswer(answer1);
+
+    BDDMockito.given(answerService.addAnswer(any())).willReturn(expectedAnswer);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/answers")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(answer)))
+        .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+    Answer result = objectMapper.readValue(
+        mvcResult.getResponse().getContentAsString(), Answer.class);
+
+    assertThat(expectedAnswer, samePropertyValuesAs(result));
   }
 }
