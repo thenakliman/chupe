@@ -3,11 +3,15 @@ package org.thenakliman.chupe.services;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.jsonwebtoken.impl.TextCodec;
+import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.DateUtil;
@@ -20,13 +24,13 @@ import org.thenakliman.chupe.repositories.UserRepository;
 @Service
 public class TokenService {
   @Autowired
-  RoleRepository roleRepository;
+  private RoleRepository roleRepository;
 
   @Autowired
-  UserRepository userRepository;
+  private UserRepository userRepository;
 
   @Autowired
-  TokenProperty tokenProperties;
+  private TokenProperty tokenProperties;
 
   private Map<String, Object> getClaims(String username) {
 
@@ -46,6 +50,7 @@ public class TokenService {
 
   /** Creates a token based on username. */
   public String createToken(String username) {
+    byte[] key = TextCodec.BASE64.decode(tokenProperties.getTokenSigningKey());
     DateUtil dateUtil = new DateUtil();
     return Jwts.builder()
         .setClaims(getClaims(username))
@@ -56,7 +61,7 @@ public class TokenService {
                 dateUtil.addMinutes(dateUtil.getTime(),
                 tokenProperties.getTokenExpiryTime()))
         .setSubject(username)
-        .signWith(SignatureAlgorithm.HS512, tokenProperties.getTokenSigningKey())
+        .signWith(SignatureAlgorithm.HS512, key)
         .compact();
   }
 
