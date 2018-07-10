@@ -4,10 +4,9 @@ import java.util.Collection;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.dto.User;
 
-@Component
+
 public final class AuthenticatedUser implements Authentication {
 
   private final User user;
@@ -37,12 +36,12 @@ public final class AuthenticatedUser implements Authentication {
 
   @Override
   public Object getPrincipal() {
-    return null;
+    return user;
   }
 
   @Override
   public boolean isAuthenticated() {
-    return false;
+    return true;
   }
 
   @Override

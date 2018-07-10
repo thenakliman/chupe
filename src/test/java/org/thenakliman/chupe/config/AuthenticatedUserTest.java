@@ -1,7 +1,9 @@
 package org.thenakliman.chupe.config;
 
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +42,24 @@ public class AuthenticatedUserTest {
   @Test
   public void shouldReturnNullForWhenCalledGetPrincipal() {
     AuthenticatedUser authenticatedUser = AuthenticatedUser.getAuthentication(getUser());
-    assertNull(authenticatedUser.getPrincipal());
+    assertEquals(getUser().getName(), authenticatedUser.getName());
   }
 
   @Test
   public void shouldReturnNullForWhenCalledGetAuthorities() {
     AuthenticatedUser authenticatedUser = AuthenticatedUser.getAuthentication(getUser());
     assertNull(authenticatedUser.getAuthorities());
+  }
+
+  @Test
+  public void shouldReturnTrueByIsAuthenticated() {
+    AuthenticatedUser authenticatedUser = AuthenticatedUser.getAuthentication(getUser());
+    assertTrue(authenticatedUser.isAuthenticated());
+  }
+
+  @Test
+  public void shouldReturnNullByGetDetails() {
+    AuthenticatedUser authenticatedUser = AuthenticatedUser.getAuthentication(getUser());
+    assertNull(authenticatedUser.getDetails());
   }
 }
