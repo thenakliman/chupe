@@ -5,12 +5,11 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.impl.TextCodec;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.properties.TokenProperty;
-
-import java.util.List;
 
 @Component
 public class UserToken {

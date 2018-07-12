@@ -52,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
           .authenticated()
           .and()
           .httpBasic();
-      } catch (Exception e) {
+    } catch (Exception e) {
       // todo(thenakliman) Currently security is disabled
     }
   }
