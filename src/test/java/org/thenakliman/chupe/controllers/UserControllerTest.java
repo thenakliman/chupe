@@ -14,7 +14,9 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -23,13 +25,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.thenakliman.chupe.config.SecurityConfiguration;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.services.UserService;
 
-
-@WebMvcTest(controllers = UserController.class)
 @RunWith(SpringRunner.class)
+@WebMvcTest(controllers = UserController.class)
+@Import({SecurityConfiguration.class})
+@ActiveProfiles(value = "test")
 public class UserControllerTest {
   @Autowired
   private MockMvc mockMvc;

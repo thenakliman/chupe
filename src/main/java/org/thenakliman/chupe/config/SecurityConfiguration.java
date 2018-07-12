@@ -7,8 +7,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.thenakliman.chupe.services.TokenService;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.thenakliman.chupe.services.UserService;
 
 
@@ -17,13 +18,16 @@ import org.thenakliman.chupe.services.UserService;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
-  UserService userService;
+  private UserService userService;
 
   @Autowired
-  TokenService tokenService;
+  private TokenAuthenticationFilter tokenAuthenticationFilter;
 
   private DaoAuthenticationProvider getDaoAuthenticationProvider() {
-    return new DaoAuthenticationProvider();
+    DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+    daoAuthenticationProvider.setPasswordEncoder(getPasswordEncoder());
+    daoAuthenticationProvider.setUserDetailsService(userService);
+    return daoAuthenticationProvider;
   }
 
   private BCryptPasswordEncoder getPasswordEncoder() {
@@ -33,17 +37,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(AuthenticationManagerBuilder auth) {
     DaoAuthenticationProvider daoAuthenticationProvider = getDaoAuthenticationProvider();
-    daoAuthenticationProvider.setPasswordEncoder(getPasswordEncoder());
-    daoAuthenticationProvider.setUserDetailsService(userService);
     auth.authenticationProvider(daoAuthenticationProvider);
   }
 
   protected void configure(HttpSecurity http) {
     try {
       http.csrf().disable()
+          .addFilterAt(tokenAuthenticationFilter, BasicAuthenticationFilter.class)
+          .sessionManagement()
+          .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+          .and()
           .authorizeRequests()
-          .antMatchers("/**").permitAll();
-    } catch (Exception e) {
+          .anyRequest()
+          .authenticated()
+          .and()
+          .httpBasic();
+      } catch (Exception e) {
       // todo(thenakliman) Currently security is disabled
     }
   }
