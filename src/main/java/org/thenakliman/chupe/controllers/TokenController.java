@@ -25,6 +25,6 @@ public class TokenController {
     String token = tokenService.createToken(username);
     HttpHeaders responseHeaders = new HttpHeaders();
     responseHeaders.set("Authorization", token);
-    return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
+    return new ResponseEntity<>(responseHeaders, HttpStatus.NO_CONTENT);
   }
 }
