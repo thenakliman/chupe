@@ -6,6 +6,8 @@ create table questions (
     updated_at TIMESTAMP,
     owner varchar(256) not null,
     assigned_to varchar(256) not null,
+    status varchar(20) not null,
+    priority varchar(20) not null,
     foreign key(owner) references users(username),
     foreign key(assigned_to) references users(username)
 );
