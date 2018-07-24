@@ -3,10 +3,13 @@ package org.thenakliman.chupe.models;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 
 @Entity(name = "questions")
 @Table
@@ -33,6 +36,14 @@ public class Question {
 
   @Column(name = "updated_at")
   private Date updatedAt;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
+  private QuestionStatus status = QuestionStatus.OPEN;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "priority", nullable = false)
+  private QuestionPriority priority;
 
   public long getId() {
     return id;
@@ -88,5 +99,21 @@ public class Question {
 
   public void setCreatedAt(Date createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public QuestionStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(QuestionStatus status) {
+    this.status = status;
+  }
+
+  public QuestionPriority getPriority() {
+    return priority;
+  }
+
+  public void setPriority(QuestionPriority priority) {
+    this.priority = priority;
   }
 }

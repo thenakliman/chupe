@@ -29,6 +29,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.UserDTO;
+import org.thenakliman.chupe.models.QuestionPriority;
+import org.thenakliman.chupe.models.QuestionStatus;
 import org.thenakliman.chupe.services.QuestionService;
 
 
@@ -68,6 +70,8 @@ public class QuestionControllerTest {
     questionDTO.setDescription("Need your name for auth service");
     questionDTO.setOwner("testUser2");
     questionDTO.setId(19);
+    questionDTO.setPriority(QuestionPriority.LOW);
+    questionDTO.setStatus(QuestionStatus.OPEN);
 
     BDDMockito.given(questionService.addQuestion(any())).willReturn(questionDTO);
 
@@ -111,8 +115,17 @@ public class QuestionControllerTest {
 
   @Test
   public void shouldReturnQuestions() throws Exception {
-    QuestionDTO questionDTO1 = new QuestionDTO(10, "why?", "desc1", "user1", "user2");
-    QuestionDTO questionDTO2 = new QuestionDTO(11, "when?", "desc2", "user4", "user3");
+    QuestionDTO questionDTO1 = new QuestionDTO(
+        10, "why?",
+        "desc1", "user1",
+        "user2", QuestionStatus.OPEN,
+        QuestionPriority.LOW);
+
+    QuestionDTO questionDTO2 = new QuestionDTO(
+        11, "when?",
+        "desc2", "user4",
+        "user3", QuestionStatus.OPEN,
+        QuestionPriority.LOW);
 
     List<QuestionDTO> questionDTOs = new ArrayList<>();
 
@@ -134,7 +147,12 @@ public class QuestionControllerTest {
   @Test
   public void shouldUpdateQuestions() throws Exception {
     long id = 10;
-    QuestionDTO questionDTO = new QuestionDTO(id, "why?", "desc1", "user1", "user2");
+    QuestionDTO questionDTO = new QuestionDTO(
+        id, "why?",
+        "desc1", "user1",
+        "user2", QuestionStatus.OPEN,
+        QuestionPriority.LOW);
+
     mockMvc.perform(MockMvcRequestBuilders
             .put("/api/v1/question/" + id)
             .contentType(MediaType.APPLICATION_JSON)
@@ -145,7 +163,12 @@ public class QuestionControllerTest {
   @Test
   public void shouldReturnNotFoundStatusIfQuestionDoesNotExist() throws Exception {
     long id = 10;
-    QuestionDTO questionDTO = new QuestionDTO(id, "why?", "desc1", "user1", "user2");
+    QuestionDTO questionDTO = new QuestionDTO(
+        id, "why?",
+        "desc1", "user1",
+        "user2", QuestionStatus.OPEN,
+        QuestionPriority.LOW);
+
     doThrow(new NotFoundException("Question not found"))
         .when(questionService).updateQuestions(anyLong(), any());
 

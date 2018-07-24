@@ -27,7 +27,9 @@ public class QuestionTransformer {
           question.getQuestion(),
           question.getDescription(),
           question.getOwner(),
-          question.getAssignedTo()));
+          question.getAssignedTo(),
+          question.getStatus(),
+          question.getPriority()));
     });
 
     return questionDTOs;
@@ -45,6 +47,8 @@ public class QuestionTransformer {
     questionDTO.setDescription(question.getDescription());
     questionDTO.setOwner(question.getOwner());
     questionDTO.setAssignedTo(question.getAssignedTo());
+    questionDTO.setStatus(question.getStatus());
+    questionDTO.setPriority(question.getPriority());
 
     return questionDTO;
   }

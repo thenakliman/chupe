@@ -1,5 +1,8 @@
 package org.thenakliman.chupe.dto;
 
+import org.thenakliman.chupe.models.QuestionPriority;
+import org.thenakliman.chupe.models.QuestionStatus;
+
 public class QuestionDTO {
   private long id;
 
@@ -10,6 +13,10 @@ public class QuestionDTO {
   private String owner;
 
   private String assignedTo;
+
+  private QuestionStatus status;
+
+  private QuestionPriority priority;
 
   /** Empty constructor for spring to create bean. */
   public QuestionDTO() {
@@ -28,13 +35,17 @@ public class QuestionDTO {
                      String question,
                      String description,
                      String owner,
-                     String assignedTo) {
+                     String assignedTo,
+                     QuestionStatus status,
+                     QuestionPriority priority) {
 
     this.id = id;
     this.question = question;
     this.description = description;
     this.owner = owner;
     this.assignedTo = assignedTo;
+    this.status = status;
+    this.priority = priority;
   }
 
   public long getId() {
@@ -75,5 +86,21 @@ public class QuestionDTO {
 
   public void setAssignedTo(String assignedTo) {
     this.assignedTo = assignedTo;
+  }
+
+  public QuestionPriority getPriority() {
+    return priority;
+  }
+
+  public void setPriority(QuestionPriority priority) {
+    this.priority = priority;
+  }
+
+  public QuestionStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(QuestionStatus status) {
+    this.status = status;
   }
 }
