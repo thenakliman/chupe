@@ -21,6 +21,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.models.Question;
+import org.thenakliman.chupe.models.QuestionPriority;
+import org.thenakliman.chupe.models.QuestionStatus;
 import org.thenakliman.chupe.repositories.QuestionRepository;
 import org.thenakliman.chupe.transformer.QuestionTransformer;
 
@@ -48,6 +50,8 @@ public class QuestionServiceTest {
     question.setDescription("Need your name for auth service");
     question.setOwner("testUser2");
     question.setId(id);
+    question.setPriority(QuestionPriority.LOW);
+    question.setStatus(QuestionStatus.OPEN);
     return question;
   }
 
@@ -58,6 +62,8 @@ public class QuestionServiceTest {
     questionDTO.setDescription("description dto");
     questionDTO.setOwner("testUser2");
     questionDTO.setId(id);
+    questionDTO.setStatus(QuestionStatus.OPEN);
+    questionDTO.setPriority(QuestionPriority.LOW);
     return questionDTO;
   }
 

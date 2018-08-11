@@ -48,6 +48,8 @@ public class QuestionService {
     updatedQuestion.setDescription(question.getDescription());
     updatedQuestion.setOwner(question.getOwner());
     updatedQuestion.setQuestion(question.getQuestion());
+    updatedQuestion.setStatus(question.getStatus());
+    updatedQuestion.setPriority(question.getPriority());
     if (existingQuestion.isPresent()) {
       updatedQuestion.setCreatedAt(existingQuestion.get().getCreatedAt());
     } else {
