@@ -1,7 +1,8 @@
-create table fundType (
+create table fund_type (
     id serial primary key,
     type varchar(20),
     default_amount int,
+    description varchar(256),
     created_by varchar(256),
     created_at TIMESTAMP,
     updated_at TIMESTAMP default CURRENT_TIMESTAMP,
@@ -17,8 +18,8 @@ create table fund (
     transaction_type varchar(10),
     created_at TIMESTAMP,
     updated_at TIMESTAMP default CURRENT_TIMESTAMP,
-    isApproved boolean default false,
+    is_approved boolean default false,
     foreign key(added_by) references users(username),
     foreign key(owner) references users(username),
-    foreign key(type) references fundType(id)
+    foreign key(type) references fund_type(id)
 );
