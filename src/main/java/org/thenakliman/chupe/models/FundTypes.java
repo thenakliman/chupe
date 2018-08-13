@@ -5,5 +5,6 @@ public enum FundTypes {
   MARRIAGE,
   MARRIAGE_ANNIVERSARY,
   PROMOTION,
-  CHILD_BIRTH
+  CHILD_BIRTH,
+  MISC
 }

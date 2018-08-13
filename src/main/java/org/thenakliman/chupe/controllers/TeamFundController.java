@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.thenakliman.chupe.dto.QuestionDTO;
+import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.services.TeamFundService;
 
@@ -25,13 +26,28 @@ public class TeamFundController  extends BaseController {
    */
   @GetMapping("/team-funds/type")
   public ResponseEntity<QuestionDTO> teamFundTypes(@RequestHeader HttpHeaders header) {
-    List<FundType> teamFundFundTypes;
+    List<FundType> teamFundTypes;
     try {
-      teamFundFundTypes = teamFundService.getAllFundTypes();
+      teamFundTypes = teamFundService.getAllFundTypes();
     } catch (NotFoundException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    return new ResponseEntity(teamFundFundTypes, HttpStatus.OK);
+    return new ResponseEntity(teamFundTypes, HttpStatus.OK);
+  }
+
+  /** API for fetching a team fund.
+   * @return list of teamFund
+   */
+  @GetMapping("/team-funds")
+  public ResponseEntity<TeamFund> teamFund(@RequestHeader HttpHeaders header) {
+    TeamFund teamFund;
+    try {
+      teamFund = teamFundService.getTeamFund();
+    } catch (NotFoundException ex) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity(teamFund, HttpStatus.OK);
   }
 }

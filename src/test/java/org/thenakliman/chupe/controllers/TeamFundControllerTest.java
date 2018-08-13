@@ -1,5 +1,6 @@
 package org.thenakliman.chupe.controllers;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,13 +16,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.thenakliman.chupe.dto.TeamFund;
+import org.thenakliman.chupe.dto.TeamMemberFund;
+import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.models.FundTypes;
+import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.services.TeamFundService;
+
 
 
 
@@ -66,11 +73,18 @@ public class TeamFundControllerTest extends BaseControllerTest {
 
     when(teamFundService.getAllFundTypes()).thenReturn(fundTypes);
 
-    mockMvc.perform(MockMvcRequestBuilders
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .get("/api/v1/team-funds/types")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(fundType))
     ).andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
+
+
+    List<Fund> actualFundTypes = objectMapper.readValue(
+        mvcResult.getResponse().getContentAsString(),
+        List.class);
+
+    assertEquals(actualFundTypes, fundTypes);
   }
 
   @Test
@@ -80,5 +94,32 @@ public class TeamFundControllerTest extends BaseControllerTest {
         .get("/api/v1/team-funds/types")
         .contentType(MediaType.APPLICATION_JSON)
     ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnAllFundController() throws Exception {
+    TeamFund teamFund = new TeamFund();
+    List<TeamMemberFund> teamMemberFunds = new ArrayList<>();
+    TeamMemberFund teamMemberFund = new TeamMemberFund(
+        10,
+        "fund-owner",
+        TransactionType.DEBIT,
+        false);
+
+    teamFund.setTeamMemberFunds(teamMemberFunds);
+
+    when(teamFundService.getTeamFund()).thenReturn(teamFund);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .get("/api/v1/team-funds")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(teamFund))
+    ).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+    TeamFund actualTeamFund = objectMapper.readValue(
+        mvcResult.getResponse().getContentAsString(),
+        TeamFund.class);
+
+    assertEquals(teamFund, actualTeamFund);
   }
 }

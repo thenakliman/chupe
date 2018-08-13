@@ -24,11 +24,11 @@ public class Fund {
   private long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "type", referencedColumnName = "type")
+  @JoinColumn(name = "type", referencedColumnName = "id")
   private FundType type;
 
   @Column(name = "amount", nullable = false)
-  private int amount;
+  private long amount;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "owner", referencedColumnName = "username")
@@ -43,7 +43,7 @@ public class Fund {
   private TransactionType transactionType;
 
   @Column(name = "is_approved")
-  private String isApproved;
+  private boolean isApproved;
 
   @Column(name = "created_at", nullable = false)
   private Date createdAt;
@@ -57,22 +57,6 @@ public class Fund {
 
   public void setId(long id) {
     this.id = id;
-  }
-
-  public int getAmount() {
-    return amount;
-  }
-
-  public void setAmount(int amount) {
-    this.amount = amount;
-  }
-
-  public String getIsApproved() {
-    return isApproved;
-  }
-
-  public void setIsApproved(String isApproved) {
-    this.isApproved = isApproved;
   }
 
   public Date getCreatedAt() {
@@ -121,5 +105,21 @@ public class Fund {
 
   public void setType(FundType type) {
     this.type = type;
+  }
+
+  public long getAmount() {
+    return amount;
+  }
+
+  public void setAmount(long amount) {
+    this.amount = amount;
+  }
+
+  public boolean isApproved() {
+    return isApproved;
+  }
+
+  public void setApproved(boolean approved) {
+    isApproved = approved;
   }
 }
