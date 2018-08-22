@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
 import org.thenakliman.chupe.models.Fund;
@@ -45,6 +46,33 @@ public class FundTransformerTest {
     fund.setId(id);
     fund.setAmount(amount);
     fund.setApproved(false);
+    return fund;
+  }
+
+  private FundDTO getFundDTO() {
+    String owner = "test-owner";
+    String addedBy = "test-added-by-user";
+    return new FundDTO(10, 11, 1000, owner, addedBy, TransactionType.CREDIT, false);
+  }
+
+  private Fund getFundWithDetailedData() {
+    Fund fund = new Fund();
+    fund.setId(10);
+    fund.setAmount(1000);
+    fund.setTransactionType(TransactionType.CREDIT);
+    fund.setApproved(false);
+
+    FundType fundType = new FundType();
+    fundType.setId(11);
+    fund.setType(fundType);
+
+    User owner = new User();
+    owner.setUserName("test-owner");
+    fund.setOwner(owner);
+
+    User addedBy = new User();
+    addedBy.setUserName("test-added-by-user");
+    fund.setAddedBy(addedBy);
     return fund;
   }
 
@@ -300,5 +328,29 @@ public class FundTransformerTest {
                 teamFund.getTeamMemberFunds().stream().filter(actualTeamMemberFund ->
                     expectedTeamMemberFund.getOwner().equals(actualTeamMemberFund.getOwner()))
                         .findFirst().get())));
+  }
+
+  @Test
+  public void shouldTransformFunddtoToFundModel() {
+    Fund fund = new Fund();
+    fund.setId(10);
+    fund.setAmount(1000);
+    fund.setTransactionType(TransactionType.CREDIT);
+    fund.setApproved(false);
+    String owner = "test-owner";
+    String addedBy = "test-added-by-user";
+    FundDTO fundDTO = new FundDTO(10, 11, 1000, owner, addedBy, TransactionType.CREDIT, false);;
+
+    Fund actualFund = fundTransformer.transformToFund(fundDTO);
+
+    assertThat(fund, samePropertyValuesAs(actualFund));
+  }
+
+  @Test
+  public void shouldTransformFundModeltoFundDTO() {
+    FundDTO fundDTO = getFundDTO();
+    Fund fund = getFundWithDetailedData();
+    FundDTO actualFund = fundTransformer.transformToFundDTO(fund);
+    assertThat(fundDTO, samePropertyValuesAs(actualFund));
   }
 }

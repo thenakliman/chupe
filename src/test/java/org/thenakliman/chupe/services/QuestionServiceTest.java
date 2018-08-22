@@ -3,6 +3,7 @@ package org.thenakliman.chupe.services;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,7 +15,6 @@ import javassist.NotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.BDDMockito;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -71,8 +71,8 @@ public class QuestionServiceTest {
   public void shouldCreateQuestion() {
     Question question = getTestQuestion();
     QuestionDTO questionDTO = getTestQuestionDTO();
-    BDDMockito.given(questionsRepository.save(question)).willReturn(question);
-    BDDMockito.given(questionTransformer.transformToQuestionDTO(question))
+    given(questionsRepository.save(question)).willReturn(question);
+    given(questionTransformer.transformToQuestionDTO(question))
             .willReturn(questionDTO);
 
     QuestionDTO receivedQuestion = questionService.addQuestion(question);
@@ -82,8 +82,8 @@ public class QuestionServiceTest {
   @Test
   public void shouldReturnNullIfNoQuestion() {
     List<Question> question = new ArrayList<>();
-    BDDMockito.given(questionsRepository.findAll()).willReturn(question);
-    BDDMockito.given(questionTransformer.transformToQuestionDTO(question))
+    given(questionsRepository.findAll()).willReturn(question);
+    given(questionTransformer.transformToQuestionDTO(question))
             .willReturn(new ArrayList<>());
     List<QuestionDTO> receivedQuestion = questionService.getQuestions();
     assertEquals(new ArrayList<>(), receivedQuestion);
@@ -98,12 +98,12 @@ public class QuestionServiceTest {
     Question question1 = getTestQuestion();
     List<Question> questions = new ArrayList<>();
     questions.add(question1);
-    BDDMockito.given(questionsRepository.findAll()).willReturn(questions);
+    given(questionsRepository.findAll()).willReturn(questions);
 
     QuestionDTO questionDTO = getTestQuestionDTO();
     List<QuestionDTO> questionDTOs = new ArrayList<>();
     questionDTOs.add(questionDTO);
-    BDDMockito.given(questionTransformer.transformToQuestionDTO(questions))
+    given(questionTransformer.transformToQuestionDTO(questions))
             .willReturn(questionDTOs);
     List<QuestionDTO> receivedQuestion = questionService.getQuestions();
 

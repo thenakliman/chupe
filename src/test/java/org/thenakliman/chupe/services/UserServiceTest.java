@@ -1,6 +1,8 @@
 package org.thenakliman.chupe.services;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.UserRepository;
@@ -40,13 +43,7 @@ public class UserServiceTest {
 
   @Test
   public void shouldReturnUser() {
-    User testUser1 = new User(
-            "user1_fist_name",
-            "user1_last_name",
-            "user1_username",
-            "user1_email",
-            "user1_password",
-            true);
+    User testUser1 = getUser();
 
     User testUser2 = new User(
             "user2_fist_name",
@@ -83,15 +80,34 @@ public class UserServiceTest {
 
   @Test
   public void shouldReturnUserByUsername() {
-    User testUser = new User(
-            "user1_fist_name",
-            "user1_last_name",
-            "user1_username",
-            "user1_email",
-            "user1_password",
-            true);
+    User testUser = getUser();
     BDDMockito.given(userRepository.findByUserName("user1_username")).willReturn(testUser);
     UserDetail user = userService.loadUserByUsername("user1_username");
     assertEquals(testUser.getUserName(), user.getUsername());
+  }
+
+  private User getUser() {
+    return new User(
+              "user1_fist_name",
+              "user1_last_name",
+              "user1_username",
+              "user1_email",
+              "user1_password",
+              true);
+  }
+
+  @Test(expected = UsernameNotFoundException.class)
+  public void shouldRaiseUserNotFoundException() {
+    String testUser = "testUser";
+    BDDMockito.given(userRepository.findByUserName(testUser)).willReturn(null);
+    userService.findByUserName(testUser);
+  }
+
+  @Test
+  public void shouldReturnUserModel() {
+    String testUser = "testUser";
+    BDDMockito.given(userRepository.findByUserName(testUser)).willReturn(getUser());
+    User user = userService.findByUserName(testUser);
+    assertThat(user, samePropertyValuesAs(getUser()));
   }
 }

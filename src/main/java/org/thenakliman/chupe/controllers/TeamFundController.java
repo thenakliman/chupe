@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.controllers;
 
-import java.util.List;
-
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -9,11 +7,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.TeamFund;
+import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.services.TeamFundService;
+
+import java.util.List;
 
 
 @Controller
@@ -49,5 +53,14 @@ public class TeamFundController  extends BaseController {
     }
 
     return new ResponseEntity(teamFund, HttpStatus.OK);
+  }
+
+  /** API for fetching a team fund.
+   * @return list of teamFund
+   */
+  @PostMapping("/team-funds")
+  public ResponseEntity<Fund> saveFund(@RequestHeader HttpHeaders header,
+                                       @RequestBody FundDTO fund) throws NotFoundException {
+    return new ResponseEntity(teamFundService.saveTeamFund(fund), HttpStatus.OK);
   }
 }

@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
 import org.thenakliman.chupe.models.Fund;
@@ -121,5 +122,44 @@ public class TeamFundControllerTest extends BaseControllerTest {
         TeamFund.class);
 
     assertEquals(teamFund, actualTeamFund);
+  }
+
+  @Test
+  public void shouldSaveTeamFundController() throws Exception {
+    FundDTO fund = new FundDTO();
+    fund.setId(10);
+    fund.setTransactionType(TransactionType.CREDIT);
+    fund.setApproved(false);
+    fund.setAmount(1000);
+
+    when(teamFundService.saveTeamFund(fund)).thenReturn(fund);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/team-funds")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(fund))
+    ).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+    Fund actualFund = objectMapper.readValue(
+        mvcResult.getResponse().getContentAsString(),
+        Fund.class);
+
+    assertEquals(fund, actualFund);
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenDataIsInvalid() throws Exception {
+    FundDTO fund = new FundDTO();
+    fund.setId(10);
+    fund.setTransactionType(TransactionType.CREDIT);
+    fund.setApproved(false);
+    fund.setAmount(1000);
+
+    when(teamFundService.saveTeamFund(fund)).thenThrow(new NotFoundException("Not Found"));
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/team-funds")
+        .contentType(MediaType.APPLICATION_JSON)
+    ).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
   }
 }
