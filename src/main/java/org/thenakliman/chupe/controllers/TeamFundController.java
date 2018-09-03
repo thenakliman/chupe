@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.TeamFund;
-import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.services.TeamFundService;
 
@@ -59,7 +58,7 @@ public class TeamFundController  extends BaseController {
    * @return list of teamFund
    */
   @PostMapping("/team-funds")
-  public ResponseEntity<Fund> saveFund(@RequestHeader HttpHeaders header,
+  public ResponseEntity<FundDTO> saveFund(@RequestHeader HttpHeaders header,
                                        @RequestBody FundDTO fund) throws NotFoundException {
     return new ResponseEntity(teamFundService.saveTeamFund(fund), HttpStatus.OK);
   }
