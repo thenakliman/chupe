@@ -1,5 +1,7 @@
 package org.thenakliman.chupe.controllers;
 
+import java.util.List;
+
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -15,8 +17,6 @@ import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.services.TeamFundService;
-
-import java.util.List;
 
 
 @Controller

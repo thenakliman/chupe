@@ -21,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
+import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.models.TransactionType;
@@ -84,10 +85,11 @@ public class TeamFundServiceTest {
   }
 
   private TeamFund getTeamFund() {
-    TeamFund teamFund = new TeamFund();
-    TeamMemberFund teamMemberFund = new TeamMemberFund(10, null, null, false);
     List teamMemberFunds = new ArrayList();
-    teamMemberFunds.add(teamMemberFund);
+    teamMemberFunds.add(new TeamMemberFund(0, "user1", TransactionType.DEBIT, false));
+    teamMemberFunds.add(new TeamMemberFund(0, "user2", TransactionType.DEBIT, false));
+    teamMemberFunds.add(new TeamMemberFund(10, null, null, false));
+    TeamFund teamFund = new TeamFund();
     teamFund.setTeamMemberFunds(teamMemberFunds);
     return teamFund;
   }
@@ -103,10 +105,20 @@ public class TeamFundServiceTest {
   public void shouldReturnTeamFund() throws NotFoundException {
     List<Fund> funds = getFunds();
     when(teamFundRepository.findAll()).thenReturn(funds);
+
+    List<UserDTO> users = new ArrayList<>();
+    users.add(getUserDTO("user1"));
+    users.add(getUserDTO("user2"));
+    when(userService.getAllUsers()).thenReturn(users);
     when(fundTransformer.transformToTeamFund(funds)).thenReturn(getTeamFund());
-    TeamFund teamFund = teamFundService.getTeamFund();
-    assertThat(getTeamFund().getTeamMemberFunds(),
-               samePropertyValuesAs(teamFund.getTeamMemberFunds()));
+    List<TeamMemberFund> teamMemberFunds = teamFundService.getTeamFund().getTeamMemberFunds();
+    List<TeamMemberFund> expectedTeamMemberFunds = getTeamFund().getTeamMemberFunds();
+    assertThat(expectedTeamMemberFunds.get(0),
+               samePropertyValuesAs(teamMemberFunds.get(0)));
+    assertThat(expectedTeamMemberFunds.get(1),
+               samePropertyValuesAs(teamMemberFunds.get(1)));
+    assertThat(expectedTeamMemberFunds.get(2),
+               samePropertyValuesAs(teamMemberFunds.get(2)));
   }
 
   @Test(expected = NotFoundException.class)
@@ -171,6 +183,12 @@ public class TeamFundServiceTest {
 
   private User getUser(String username) {
     User user = new User();
+    user.setUserName(username);
+    return user;
+  }
+
+  private UserDTO getUserDTO(String username) {
+    UserDTO user = new UserDTO();
     user.setUserName(username);
     return user;
   }

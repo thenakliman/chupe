@@ -1,19 +1,25 @@
 package org.thenakliman.chupe.services;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
+import org.thenakliman.chupe.dto.TeamMemberFund;
+import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
+import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.FundTypeRepository;
 import org.thenakliman.chupe.repositories.TeamFundRepository;
 import org.thenakliman.chupe.transformer.FundTransformer;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TeamFundService {
@@ -51,7 +57,21 @@ public class TeamFundService {
     if (funds.isEmpty()) {
       throw new NotFoundException("TeamMemberFund types could not found");
     }
-    return fundTransformer.transformToTeamFund(funds);
+
+    TeamFund teamFund = fundTransformer.transformToTeamFund(funds);
+    List<UserDTO> allUsers = userService.getAllUsers();
+    Set<String> teamMembers = new HashSet<>();
+    teamFund.getTeamMemberFunds().forEach(teamMember -> teamMembers.add(teamMember.getOwner()));
+    allUsers.stream().filter(user -> !teamMembers.contains(user.getUserName())).forEach(user -> {
+      teamFund.getTeamMemberFunds().add(
+          new TeamMemberFund(
+              0,
+              user.getUserName(),
+              TransactionType.DEBIT,
+              false));
+    });
+
+    return teamFund;
   }
 
   /** Save team fund.
