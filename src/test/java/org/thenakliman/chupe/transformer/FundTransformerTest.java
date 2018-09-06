@@ -346,6 +346,23 @@ public class FundTransformerTest {
     assertThat(fund, samePropertyValuesAs(actualFund));
   }
 
+
+  @Test
+  public void shouldConvertNegativeToPositiveFundAmountWhenTransformFunddtoToFundModel() {
+    Fund fund = new Fund();
+    fund.setId(10);
+    fund.setAmount(1000);
+    fund.setTransactionType(TransactionType.CREDIT);
+    fund.setApproved(false);
+    String owner = "test-owner";
+    String addedBy = "test-added-by-user";
+    FundDTO fundDTO = new FundDTO(10, 11, -1000, owner, addedBy, TransactionType.CREDIT, false);;
+
+    Fund actualFund = fundTransformer.transformToFund(fundDTO);
+
+    assertThat(fund, samePropertyValuesAs(actualFund));
+  }
+
   @Test
   public void shouldTransformFundModeltoFundDTO() {
     FundDTO fundDTO = getFundDTO();

@@ -1,5 +1,7 @@
 package org.thenakliman.chupe.transformer;
 
+import static java.lang.Math.abs;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +59,7 @@ public class FundTransformer {
   public Fund transformToFund(FundDTO fundDTO) {
     Fund fund = new Fund();
     fund.setId(fundDTO.getId());
-    fund.setAmount(fundDTO.getAmount());
+    fund.setAmount(abs(fundDTO.getAmount()));
     fund.setApproved(fundDTO.isApproved());
     fund.setTransactionType(fundDTO.getTransactionType());
     return fund;
