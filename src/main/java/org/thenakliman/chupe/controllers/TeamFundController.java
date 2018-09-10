@@ -69,9 +69,9 @@ public class TeamFundController  extends BaseController {
    */
   @GetMapping("/funds")
   public ResponseEntity<List<FundDTO>> getFundsForGivenUser(
-      @RequestParam("username") String username) throws NotFoundException {
+      @RequestParam("owner") String owner) throws NotFoundException {
     try {
-      return new ResponseEntity<>(teamFundService.getAllFundFor(username), HttpStatus.OK);
+      return new ResponseEntity<>(teamFundService.getAllFundFor(owner), HttpStatus.OK);
     } catch (NotFoundException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

@@ -171,7 +171,7 @@ public class TeamFundControllerTest extends BaseControllerTest {
     when(teamFundService.getAllFundFor(anyString())).thenThrow(new NotFoundException("Not Found"));
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-        .post("/api/v1/funds?username=fakeUser")
+        .post("/api/v1/funds?owner=fakeUser")
         .contentType(MediaType.APPLICATION_JSON)
     ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
   }
@@ -189,7 +189,7 @@ public class TeamFundControllerTest extends BaseControllerTest {
     when(teamFundService.getAllFundFor(anyString())).thenReturn(Arrays.asList(fundDTOs));
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-        .post("/api/v1/funds?username=" + fakeUser)
+        .post("/api/v1/funds?owner=" + fakeUser)
         .contentType(MediaType.APPLICATION_JSON)
     ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
     List<FundDTO> actualFundDTOs = objectMapper.readValue(
