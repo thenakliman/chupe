@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.dto.FundDTO;
@@ -79,5 +81,9 @@ public class FundTransformer {
       fund.getTransactionType(),
       fund.isApproved()
     );
+  }
+
+  public List<FundDTO> transformToFundDTOs(List<Fund> teamMemberFunds) {
+    return teamMemberFunds.stream().map(this::transformToFundDTO).collect(Collectors.toList());
   }
 }

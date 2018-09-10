@@ -1,9 +1,12 @@
 package org.thenakliman.chupe.transformer;
 
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -50,9 +53,14 @@ public class FundTransformerTest {
   }
 
   private FundDTO getFundDTO() {
-    String owner = "test-owner";
-    String addedBy = "test-added-by-user";
-    return new FundDTO(10, 11, 1000, owner, addedBy, TransactionType.CREDIT, false);
+    return new FundDTO(
+        10,
+        11,
+        1000,
+        "test-owner",
+        "test-added-by-user",
+        TransactionType.CREDIT,
+        false);
   }
 
   private Fund getFundWithDetailedData() {
@@ -369,5 +377,14 @@ public class FundTransformerTest {
     Fund fund = getFundWithDetailedData();
     FundDTO actualFund = fundTransformer.transformToFundDTO(fund);
     assertThat(fundDTO, samePropertyValuesAs(actualFund));
+  }
+
+  @Test
+  public void shouldTransformFundModeltoFundDTOs() {
+    FundDTO fundDTO = getFundDTO();
+    List<Fund> funds = Arrays.asList(getFundWithDetailedData());
+    List<FundDTO> actualFund = fundTransformer.transformToFundDTOs(funds);
+    assertEquals(actualFund.size(), funds.size());
+    assertThat(fundDTO, samePropertyValuesAs(actualFund.get(0)));
   }
 }

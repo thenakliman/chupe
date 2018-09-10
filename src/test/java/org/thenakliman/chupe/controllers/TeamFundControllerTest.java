@@ -1,10 +1,13 @@
 package org.thenakliman.chupe.controllers;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javassist.NotFoundException;
@@ -161,5 +164,38 @@ public class TeamFundControllerTest extends BaseControllerTest {
         .post("/api/v1/team-funds")
         .contentType(MediaType.APPLICATION_JSON)
     ).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenUsernameIsNotFound() throws Exception {
+    when(teamFundService.getAllFundFor(anyString())).thenThrow(new NotFoundException("Not Found"));
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/funds?username=fakeUser")
+        .contentType(MediaType.APPLICATION_JSON)
+    ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnAllFundsDTOs() throws Exception {
+    FundDTO fundDTOs = new FundDTO();
+    fundDTOs.setId(10);
+    fundDTOs.setTransactionType(TransactionType.CREDIT);
+    fundDTOs.setApproved(false);
+    fundDTOs.setAmount(1000);
+    String fakeUser = "fakeUser";
+    fundDTOs.setOwner(fakeUser);
+
+    when(teamFundService.getAllFundFor(anyString())).thenReturn(Arrays.asList(fundDTOs));
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/funds?username=" + fakeUser)
+        .contentType(MediaType.APPLICATION_JSON)
+    ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+    List<FundDTO> actualFundDTOs = objectMapper.readValue(
+        mvcResult.getResponse().getContentAsString(),
+        List.class);
+
+    assertEquals(fundDTOs, actualFundDTOs);
   }
 }

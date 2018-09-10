@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.TeamFund;
@@ -62,4 +63,18 @@ public class TeamFundController  extends BaseController {
                                        @RequestBody FundDTO fund) throws NotFoundException {
     return new ResponseEntity(teamFundService.saveTeamFund(fund), HttpStatus.OK);
   }
+
+  /** API for fetching a fund for a user.
+   * @return list of fundDTOs
+   */
+  @GetMapping("/funds")
+  public ResponseEntity<List<FundDTO>> getFundsForGivenUser(
+      @RequestParam("username") String username) throws NotFoundException {
+    try {
+      return new ResponseEntity<>(teamFundService.getAllFundFor(username), HttpStatus.OK);
+    } catch (NotFoundException ex) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+
 }

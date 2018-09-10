@@ -108,4 +108,21 @@ public class TeamFundService {
 
     return fundTransformer.transformToFundDTO(teamFundRepository.save(fund));
   }
+
+  /** Get Fund for a given user.
+   *
+   * @param username for which fund to be provided
+   * @return list of fundDTOs
+   * @throws NotFoundException when username does not exist
+   */
+  public List<FundDTO> getAllFundFor(String username) throws NotFoundException {
+    User user = new User();
+    user.setUserName(username);
+    List<Fund> teamMemberFunds = teamFundRepository.findByOwner(user);
+    if (teamMemberFunds == null) {
+      throw new NotFoundException("Not Found");
+    }
+
+    return fundTransformer.transformToFundDTOs(teamMemberFunds);
+  }
 }

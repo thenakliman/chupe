@@ -102,6 +102,27 @@ public class TeamFundServiceTest {
   }
 
   @Test
+  public void shouldReturnAllFundForAUser() throws NotFoundException {
+    User user = new User();
+    String username = "test-username";
+    user.setUserName(username);
+    when(teamFundRepository.findByOwner(any())).thenReturn(Collections.emptyList());
+    when(fundTransformer.transformToFundDTOs(Collections.emptyList())
+            ).thenReturn(Collections.emptyList());
+    List<FundDTO> fundsForAUser = teamFundService.getAllFundFor(username);
+    assertThat(Collections.emptyList(), samePropertyValuesAs(fundsForAUser));
+  }
+
+  @Test(expected = NotFoundException.class)
+  public void shouldReturnNotFoundExceptionWhenUserIsNotFound() throws NotFoundException {
+    User user = new User();
+    String username = "test-username";
+    user.setUserName(username);
+    when(teamFundRepository.findByOwner(any())).thenReturn(null);
+    teamFundService.getAllFundFor(username);
+  }
+
+  @Test
   public void shouldReturnTeamFund() throws NotFoundException {
     List<Fund> funds = getFunds();
     when(teamFundRepository.findAll()).thenReturn(funds);
