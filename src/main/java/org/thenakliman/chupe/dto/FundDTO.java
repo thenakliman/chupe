@@ -1,5 +1,6 @@
 package org.thenakliman.chupe.dto;
 
+import java.util.Date;
 import org.thenakliman.chupe.models.TransactionType;
 
 public class FundDTO {
@@ -17,6 +18,8 @@ public class FundDTO {
 
   private boolean isApproved;
 
+  private Date createdAt;
+
   /** Empty constructor for spring to create bean. */
   public FundDTO() {
     /** For spring to create empty object */
@@ -29,7 +32,8 @@ public class FundDTO {
                  String owner,
                  String addedBy,
                  TransactionType transactionType,
-                 boolean isApproved) {
+                 boolean isApproved,
+                 Date createdAt) {
     this.id = id;
     this.type = type;
     this.addedBy = addedBy;
@@ -37,6 +41,7 @@ public class FundDTO {
     this.owner = owner;
     this.transactionType = transactionType;
     this.isApproved = isApproved;
+    this.createdAt = createdAt;
   }
 
   public long getId() {
@@ -93,5 +98,13 @@ public class FundDTO {
 
   public void setOwner(String owner) {
     this.owner = owner;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
   }
 }

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class FundTransformerTest {
     return fund;
   }
 
-  private FundDTO getFundDTO() {
+  private FundDTO getFundDTO(Date createdAt) {
     return new FundDTO(
         10,
         11,
@@ -60,15 +60,17 @@ public class FundTransformerTest {
         "test-owner",
         "test-added-by-user",
         TransactionType.CREDIT,
-        false);
+        false,
+        createdAt);
   }
 
-  private Fund getFundWithDetailedData() {
+  private Fund getFundWithDetailedData(Date createdAt) {
     Fund fund = new Fund();
     fund.setId(10);
     fund.setAmount(1000);
     fund.setTransactionType(TransactionType.CREDIT);
     fund.setApproved(false);
+    fund.setCreatedAt(createdAt);
 
     FundType fundType = new FundType();
     fundType.setId(11);
@@ -339,19 +341,35 @@ public class FundTransformerTest {
   }
 
   @Test
-  public void shouldTransformFunddtoToFundModel() {
+  public void shouldTransformFunddDtoToFundModel() {
     Fund fund = new Fund();
     fund.setId(10);
     fund.setAmount(1000);
     fund.setTransactionType(TransactionType.CREDIT);
     fund.setApproved(false);
+    Date createdAt = new Date();
+    fund.setCreatedAt(createdAt);
     String owner = "test-owner";
     String addedBy = "test-added-by-user";
-    FundDTO fundDTO = new FundDTO(10, 11, 1000, owner, addedBy, TransactionType.CREDIT, false);;
+    FundDTO fundDTO = new FundDTO(
+        10,
+        11,
+        1000,
+        owner,
+        addedBy,
+        TransactionType.CREDIT,
+        false,
+        createdAt);;
 
     Fund actualFund = fundTransformer.transformToFund(fundDTO);
 
-    assertThat(fund, samePropertyValuesAs(actualFund));
+    assertEquals(fund.getAddedBy(), actualFund.getAddedBy());
+    assertEquals(fund.getOwner(), actualFund.getOwner());
+    assertEquals(fund.getAmount(), actualFund.getAmount());
+    assertEquals(fund.getId(), actualFund.getId());
+    assertEquals(fund.getTransactionType(), actualFund.getTransactionType());
+    assertEquals(fund.getType(), actualFund.getType());
+    assertEquals(fund.getCreatedAt(), actualFund.getCreatedAt());
   }
 
 
@@ -362,27 +380,45 @@ public class FundTransformerTest {
     fund.setAmount(1000);
     fund.setTransactionType(TransactionType.CREDIT);
     fund.setApproved(false);
+    Date createdAt = new Date();
+    fund.setCreatedAt(createdAt);
     String owner = "test-owner";
     String addedBy = "test-added-by-user";
-    FundDTO fundDTO = new FundDTO(10, 11, -1000, owner, addedBy, TransactionType.CREDIT, false);;
+    FundDTO fundDTO = new FundDTO(
+        10,
+        11,
+        -1000,
+        owner,
+        addedBy,
+        TransactionType.CREDIT,
+        false,
+        createdAt);;
 
     Fund actualFund = fundTransformer.transformToFund(fundDTO);
 
-    assertThat(fund, samePropertyValuesAs(actualFund));
+    assertEquals(fund.getAddedBy(), actualFund.getAddedBy());
+    assertEquals(fund.getOwner(), actualFund.getOwner());
+    assertEquals(fund.getAmount(), actualFund.getAmount());
+    assertEquals(fund.getId(), actualFund.getId());
+    assertEquals(fund.getTransactionType(), actualFund.getTransactionType());
+    assertEquals(fund.getType(), actualFund.getType());
+    assertEquals(fund.getCreatedAt(), actualFund.getCreatedAt());
   }
 
   @Test
   public void shouldTransformFundModeltoFundDTO() {
-    FundDTO fundDTO = getFundDTO();
-    Fund fund = getFundWithDetailedData();
+    Date createdAt = new Date();
+    FundDTO fundDTO = getFundDTO(createdAt);
+    Fund fund = getFundWithDetailedData(createdAt);
     FundDTO actualFund = fundTransformer.transformToFundDTO(fund);
     assertThat(fundDTO, samePropertyValuesAs(actualFund));
   }
 
   @Test
-  public void shouldTransformFundModeltoFundDTOs() {
-    FundDTO fundDTO = getFundDTO();
-    List<Fund> funds = Arrays.asList(getFundWithDetailedData());
+  public void shouldTransformFundModelToFundDTOs() {
+    Date createdAt = new Date();
+    FundDTO fundDTO = getFundDTO(createdAt);
+    List<Fund> funds = Arrays.asList(getFundWithDetailedData(createdAt));
     List<FundDTO> actualFund = fundTransformer.transformToFundDTOs(funds);
     assertEquals(actualFund.size(), funds.size());
     assertThat(fundDTO, samePropertyValuesAs(actualFund.get(0)));

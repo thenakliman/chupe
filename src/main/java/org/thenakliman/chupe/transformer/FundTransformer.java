@@ -3,10 +3,10 @@ package org.thenakliman.chupe.transformer;
 import static java.lang.Math.abs;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -64,6 +64,8 @@ public class FundTransformer {
     fund.setAmount(abs(fundDTO.getAmount()));
     fund.setApproved(fundDTO.isApproved());
     fund.setTransactionType(fundDTO.getTransactionType());
+    fund.setCreatedAt(new Date());
+    fund.setUpdatedAt(new Date());
     return fund;
   }
 
@@ -79,8 +81,8 @@ public class FundTransformer {
       fund.getOwner().getUserName(),
       fund.getAddedBy().getUserName(),
       fund.getTransactionType(),
-      fund.isApproved()
-    );
+      fund.isApproved(),
+      fund.getCreatedAt());
   }
 
   public List<FundDTO> transformToFundDTOs(List<Fund> teamMemberFunds) {

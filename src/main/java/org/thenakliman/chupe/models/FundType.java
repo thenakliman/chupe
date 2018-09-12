@@ -26,14 +26,14 @@ public class FundType {
   private int defaultAmount;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "type", unique = true)
+  @Column(name = "type", unique = true, nullable = false)
   private FundTypes type;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "createdBy", referencedColumnName = "username")
   private User createdBy;
 
-  @Column(name = "description")
+  @Column(name = "description", nullable = false)
   private String description;
 
   @Column(name = "created_at", nullable = false)
