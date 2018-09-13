@@ -142,10 +142,21 @@ public class TeamFundServiceTest {
                samePropertyValuesAs(teamMemberFunds.get(2)));
   }
 
-  @Test(expected = NotFoundException.class)
-  public void shouldThrowNotFoundException() throws NotFoundException {
-    when(teamFundRepository.findAll()).thenReturn(Collections.emptyList());
-    teamFundService.getTeamFund();
+  @Test
+  public void shouldReturnAllUsersWithZeroAmountWhenNotFundIsPresent() throws NotFoundException {
+    List<UserDTO> users = new ArrayList<>();
+    String username = "user1";
+    users.add(getUserDTO(username));
+    when(userService.getAllUsers()).thenReturn(users);
+    when(teamFundRepository.findAll()).thenReturn(null);
+    TeamFund teamFund1 = new TeamFund();
+    teamFund1.setTeamMemberFunds(new ArrayList<>());
+    when(fundTransformer.transformToTeamFund(any())).thenReturn(teamFund1);
+
+    TeamFund teamFund = teamFundService.getTeamFund();
+
+    TeamMemberFund teamMemberFund = new TeamMemberFund(0, username, TransactionType.DEBIT, false);
+    assertThat(teamMemberFund, samePropertyValuesAs(teamFund.getTeamMemberFunds().get(0)));
   }
 
   @Test(expected = NotFoundException.class)

@@ -1,5 +1,6 @@
 package org.thenakliman.chupe.services;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -50,12 +51,11 @@ public class TeamFundService {
   /** Get team fund for all members.
    *
    * @return team fund for all members
-   * @throws NotFoundException when team fund is not found
    */
-  public TeamFund getTeamFund() throws NotFoundException {
+  public TeamFund getTeamFund() {
     List<Fund> funds = teamFundRepository.findAll();
-    if (funds.isEmpty()) {
-      throw new NotFoundException("TeamMemberFund types could not found");
+    if (funds == null) {
+      funds = Collections.emptyList();
     }
 
     TeamFund teamFund = fundTransformer.transformToTeamFund(funds);

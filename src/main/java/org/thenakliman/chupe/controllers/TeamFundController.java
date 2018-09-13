@@ -45,13 +45,7 @@ public class TeamFundController  extends BaseController {
    */
   @GetMapping("/team-funds")
   public ResponseEntity<TeamFund> teamFund(@RequestHeader HttpHeaders header) {
-    TeamFund teamFund;
-    try {
-      teamFund = teamFundService.getTeamFund();
-    } catch (NotFoundException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
+    TeamFund teamFund = teamFundService.getTeamFund();
     return new ResponseEntity(teamFund, HttpStatus.OK);
   }
 
