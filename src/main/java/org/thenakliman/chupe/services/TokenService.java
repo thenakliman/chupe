@@ -47,7 +47,7 @@ public class TokenService {
 
   /** Creates a token based on username. */
   public String createToken(String username) {
-    byte[] key = TextCodec.BASE64.decode(tokenProperties.getTokenSigningKey());
+    byte[] key = tokenProperties.getTokenSigningKey().getBytes();
     DateUtil dateUtil = new DateUtil();
     return Jwts.builder()
         .setClaims(getClaims(username))
