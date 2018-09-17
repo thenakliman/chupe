@@ -69,4 +69,20 @@ public class TaskServiceTest {
 
     assertThat(taskDTOs.get(0), samePropertyValuesAs(taskDTOList.get(0)));
   }
+
+  @Test
+  public void shouldSaveTask() {
+    String description = "description";
+    String username = "username";
+    Task task = getTask(description, username);
+    when(taskRepository.save(task)).thenReturn(task);
+
+    TaskDTO taskDTO = getTaskDTO(description, username);
+    when(taskTransformer.transformToTask(taskDTO)).thenReturn(task);
+    when(taskTransformer.transformToTaskDTO(task)).thenReturn(taskDTO);
+
+    TaskDTO actualTask = taskService.saveTask(taskDTO);
+
+    assertThat(taskDTO, samePropertyValuesAs(actualTask));
+  }
 }

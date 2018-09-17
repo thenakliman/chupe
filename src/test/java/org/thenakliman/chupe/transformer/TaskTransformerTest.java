@@ -3,6 +3,9 @@ package org.thenakliman.chupe.transformer;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -48,5 +51,23 @@ public class TaskTransformerTest {
     List<Task> tasks = asList(getTask(description, username));
     List<TaskDTO> taskDTOs = taskTransformer.transformToListOfTaskDTO(tasks);
     assertThat(getTaskDTO(description, username), samePropertyValuesAs(taskDTOs.get(0)));
+    assertThat(taskDTOs, hasSize(1));
+  }
+
+  @Test
+  public void transformTaskDTOToTask() {
+    String description = "fakeDescription";
+    String username = "FakeUser";
+    TaskDTO taskDTO = getTaskDTO(description, username);
+    Task task = taskTransformer.transformToTask(taskDTO);
+    Task expectedTask = getTask(description, username);
+
+    assertEquals(expectedTask.getId(), task.getId());
+    assertNotNull(task.getCreatedAt());
+    assertThat(expectedTask.getCreatedBy(), samePropertyValuesAs(task.getCreatedBy()));
+    assertEquals(expectedTask.getDescription(), task.getDescription());
+    assertEquals(expectedTask.getProgress(), task.getProgress());
+    assertEquals(expectedTask.getState(), task.getState());
+    assertNotNull(task.getUpdatedAt());
   }
 }

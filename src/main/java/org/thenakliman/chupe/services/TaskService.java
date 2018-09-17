@@ -31,4 +31,9 @@ public class TaskService {
     }
     return taskTransformer.transformToListOfTaskDTO(tasks);
   }
+
+  public TaskDTO saveTask(TaskDTO taskDTO) {
+    Task savedTask = taskRepository.save(taskTransformer.transformToTask(taskDTO));
+    return taskTransformer.transformToTaskDTO(savedTask);
+  }
 }
