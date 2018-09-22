@@ -1,5 +1,6 @@
 package org.thenakliman.chupe.services;
 
+import java.util.Date;
 import java.util.List;
 
 import javassist.NotFoundException;
@@ -33,7 +34,10 @@ public class TaskService {
   }
 
   public TaskDTO saveTask(TaskDTO taskDTO) {
-    Task savedTask = taskRepository.save(taskTransformer.transformToTask(taskDTO));
+    Task task = taskTransformer.transformToTask(taskDTO);
+    task.setCreatedAt(new Date());
+    task.setUpdatedAt(new Date());
+    Task savedTask = taskRepository.save(task);
     return taskTransformer.transformToTaskDTO(savedTask);
   }
 }

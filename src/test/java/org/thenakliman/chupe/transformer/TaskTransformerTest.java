@@ -63,11 +63,9 @@ public class TaskTransformerTest {
     Task expectedTask = getTask(description, username);
 
     assertEquals(expectedTask.getId(), task.getId());
-    assertNotNull(task.getCreatedAt());
     assertThat(expectedTask.getCreatedBy(), samePropertyValuesAs(task.getCreatedBy()));
     assertEquals(expectedTask.getDescription(), task.getDescription());
     assertEquals(expectedTask.getProgress(), task.getProgress());
     assertEquals(expectedTask.getState(), task.getState());
-    assertNotNull(task.getUpdatedAt());
   }
 }

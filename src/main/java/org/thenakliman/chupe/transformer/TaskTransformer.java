@@ -1,13 +1,12 @@
 package org.thenakliman.chupe.transformer;
 
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
 import org.thenakliman.chupe.models.User;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -24,8 +23,6 @@ public class TaskTransformer {
     taskDTO.setProgress(task.getProgress());
     taskDTO.setState(task.getState());
     taskDTO.setCreatedBy(task.getCreatedBy().getUserName());
-    taskDTO.setCreatedAt(task.getCreatedAt());
-    taskDTO.setUpdatedAt(task.getUpdatedAt());
     return taskDTO;
   }
 
@@ -43,8 +40,6 @@ public class TaskTransformer {
     User user = new User();
     user.setUserName(taskDTO.getCreatedBy());
     task.setCreatedBy(user);
-    task.setCreatedAt(taskDTO.getCreatedAt() == null ? new Date() : taskDTO.getCreatedAt());
-    task.setUpdatedAt(taskDTO.getUpdatedAt() == null ? new Date() : taskDTO.getUpdatedAt());
     return task;
   }
 

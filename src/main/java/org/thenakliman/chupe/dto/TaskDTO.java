@@ -11,8 +11,8 @@ public class TaskDTO {
   private TaskState state;
   private int progress;
   private String createdBy;
-  private Date createdAt;
-  private Date updatedAt;
+  private Date startedOn;
+  private Date endedOn;
 
   public long getId() {
     return id;
@@ -46,27 +46,27 @@ public class TaskDTO {
     this.createdBy = createdBy;
   }
 
-  public Date getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(Date createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public Date getUpdatedAt() {
-    return updatedAt;
-  }
-
-  public void setUpdatedAt(Date updatedAt) {
-    this.updatedAt = updatedAt;
-  }
-
   public TaskState getState() {
     return state;
   }
 
   public void setState(TaskState state) {
     this.state = state;
+  }
+
+  public Date getStartedOn() {
+    return startedOn;
+  }
+
+  public void setStartedOn(Date startedOn) {
+    this.startedOn = startedOn;
+  }
+
+  public Date getEndedOn() {
+    return endedOn;
+  }
+
+  public void setEndedOn(Date endedOn) {
+    this.endedOn = endedOn;
   }
 }

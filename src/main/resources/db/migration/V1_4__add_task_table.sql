@@ -6,5 +6,7 @@ create table task (
     created_by varchar(256) not null,
     created_at TIMESTAMP default CURRENT_TIMESTAMP not null,
     updated_at TIMESTAMP not null,
+    started_on TIMESTAMP,
+    ended_on TIMESTAMP,
     foreign key(created_by) references users(username)
 );

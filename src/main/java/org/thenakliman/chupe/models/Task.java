@@ -35,6 +35,12 @@ public class Task {
   @JoinColumn(name = "created_by", referencedColumnName = "username")
   private User createdBy;
 
+  @Column(name = "started_on")
+  private Date startOn;
+
+  @Column(name = "ended_on")
+  private Date endedOn;
+
   @Column(name = "created_at", nullable = false)
   private Date createdAt;
 
@@ -95,5 +101,21 @@ public class Task {
 
   public void setState(TaskState state) {
     this.state = state;
+  }
+
+  public Date getStartOn() {
+    return startOn;
+  }
+
+  public void setStartOn(Date startOn) {
+    this.startOn = startOn;
+  }
+
+  public Date getEndedOn() {
+    return endedOn;
+  }
+
+  public void setEndedOn(Date endedOn) {
+    this.endedOn = endedOn;
   }
 }
