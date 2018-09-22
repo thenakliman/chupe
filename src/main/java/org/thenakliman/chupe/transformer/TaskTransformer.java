@@ -1,12 +1,12 @@
 package org.thenakliman.chupe.transformer;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
 import org.thenakliman.chupe.models.User;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Component

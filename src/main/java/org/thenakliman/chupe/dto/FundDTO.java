@@ -1,8 +1,15 @@
 package org.thenakliman.chupe.dto;
 
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.thenakliman.chupe.models.TransactionType;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class FundDTO {
   private long id;
 
@@ -19,92 +26,4 @@ public class FundDTO {
   private boolean isApproved;
 
   private Date createdAt;
-
-  /** Empty constructor for spring to create bean. */
-  public FundDTO() {
-    /** For spring to create empty object */
-  }
-
-  /** Constructor for FundDto. */
-  public FundDTO(long id,
-                 long type,
-                 long amount,
-                 String owner,
-                 String addedBy,
-                 TransactionType transactionType,
-                 boolean isApproved,
-                 Date createdAt) {
-    this.id = id;
-    this.type = type;
-    this.addedBy = addedBy;
-    this.amount = amount;
-    this.owner = owner;
-    this.transactionType = transactionType;
-    this.isApproved = isApproved;
-    this.createdAt = createdAt;
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public TransactionType getTransactionType() {
-    return transactionType;
-  }
-
-  public void setTransactionType(TransactionType transactionType) {
-    this.transactionType = transactionType;
-  }
-
-  public long getType() {
-    return type;
-  }
-
-  public void setType(long type) {
-    this.type = type;
-  }
-
-  public long getAmount() {
-    return amount;
-  }
-
-  public void setAmount(long amount) {
-    this.amount = amount;
-  }
-
-  public boolean isApproved() {
-    return isApproved;
-  }
-
-  public void setApproved(boolean approved) {
-    isApproved = approved;
-  }
-
-  public String getAddedBy() {
-    return addedBy;
-  }
-
-  public void setAddedBy(String addedBy) {
-    this.addedBy = addedBy;
-  }
-
-  public String getOwner() {
-    return owner;
-  }
-
-  public void setOwner(String owner) {
-    this.owner = owner;
-  }
-
-  public Date getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(Date createdAt) {
-    this.createdAt = createdAt;
-  }
 }
