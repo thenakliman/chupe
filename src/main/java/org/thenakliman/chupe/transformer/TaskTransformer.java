@@ -23,6 +23,8 @@ public class TaskTransformer {
     taskDTO.setProgress(task.getProgress());
     taskDTO.setState(task.getState());
     taskDTO.setCreatedBy(task.getCreatedBy().getUserName());
+    taskDTO.setStartedOn(task.getStartOn());
+    taskDTO.setEndedOn(task.getEndedOn());
     return taskDTO;
   }
 
