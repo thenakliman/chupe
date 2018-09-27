@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
+import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.TaskRepository;
 import org.thenakliman.chupe.transformer.TaskTransformer;
 
@@ -34,8 +35,10 @@ public class TaskService {
    * @return list of taskDTO
    * @throws NotFoundException when task does not exist
    */
-  public List<TaskDTO> getAllTask() throws NotFoundException {
-    List<Task> tasks = taskRepository.findAll();
+  public List<TaskDTO> getAllTaskFor(String username) throws NotFoundException {
+    User user = new User();
+    user.setUserName(username);
+    List<Task> tasks = taskRepository.findByCreatedBy(user);
     if (tasks.isEmpty()) {
       throw new NotFoundException("Tasks not found");
     }

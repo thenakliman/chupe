@@ -25,10 +25,10 @@ public class TaskController extends BaseController {
    *
    * @return list of Tasks
    */
-  @GetMapping("/tasks")
-  public ResponseEntity getTasks() {
+  @GetMapping("/tasks/{username}")
+  public ResponseEntity getTasks(@PathVariable(value = "username") String username) {
     try {
-      return new ResponseEntity<>(taskService.getAllTask(), HttpStatus.OK);
+      return new ResponseEntity<>(taskService.getAllTaskFor(username), HttpStatus.OK);
     } catch (NotFoundException ex) {
       return new ResponseEntity(HttpStatus.NOT_FOUND);
     }

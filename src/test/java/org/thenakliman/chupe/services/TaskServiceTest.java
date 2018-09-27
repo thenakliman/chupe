@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,8 +68,11 @@ public class TaskServiceTest {
 
   @Test(expected = NotFoundException.class)
   public void shouldThrowErrorWhenTaskDoesNotExist() throws NotFoundException {
-    when(taskRepository.findAll()).thenReturn(Collections.emptyList());
-    taskService.getAllTask();
+    User user = new User();
+    user.setUserName("username");
+
+    when(taskRepository.findByCreatedBy(any(User.class))).thenReturn(Collections.emptyList());
+    taskService.getAllTaskFor("username");
   }
 
   @Test
@@ -76,11 +80,11 @@ public class TaskServiceTest {
     String description = "description";
     String username = "username";
     List<Task> tasks = asList(getTask(description, username));
-    when(taskRepository.findAll()).thenReturn(tasks);
+    when(taskRepository.findByCreatedBy(any(User.class))).thenReturn(tasks);
     List<TaskDTO> taskDTOs = asList(getTaskDTO(description, username));
     when(taskTransformer.transformToListOfTaskDTO(tasks)).thenReturn(taskDTOs);
 
-    List<TaskDTO> taskDTOList = taskService.getAllTask();
+    List<TaskDTO> taskDTOList = taskService.getAllTaskFor(username);
 
     assertThat(taskDTOs.get(0), samePropertyValuesAs(taskDTOList.get(0)));
   }
@@ -166,7 +170,7 @@ public class TaskServiceTest {
     verify(taskTransformer).transformToTaskDTO(updatedTask);
     verify(dateUtil, times(3)).getTime();
   }
-  
+
   @Test
   public void shouldReturnSetStartedOnWhenStateChangedToOnHold() throws NotFoundException {
     Long id = 101L;
