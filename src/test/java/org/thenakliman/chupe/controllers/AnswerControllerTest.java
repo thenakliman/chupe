@@ -25,8 +25,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.services.AnswerService;
+import org.thenakliman.chupe.services.TokenService;
 
 
 @WebMvcTest(controllers = AnswerController.class)
@@ -43,6 +45,12 @@ public class AnswerControllerTest {
 
   @Autowired
   private Jackson2ObjectMapperBuilder jacksonBuilder;
+
+  @MockBean
+  private TokenService tokenService;
+
+  @MockBean
+  private TokenAuthenticationService tokenAuthenticationService;
 
   private ObjectMapper objectMapper;
 

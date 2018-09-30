@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thenakliman.chupe.dto.FundDTO;
-import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.services.TeamFundService;
@@ -28,8 +27,8 @@ public class TeamFundController  extends BaseController {
   /** API for fetching all type of team fund.
    * @return list of team fund types
    */
-  @GetMapping("/team-funds/type")
-  public ResponseEntity<QuestionDTO> teamFundTypes(@RequestHeader HttpHeaders header) {
+  @GetMapping("/team-funds/types")
+  public ResponseEntity teamFundTypes(@RequestHeader HttpHeaders header) {
     List<FundType> teamFundTypes;
     try {
       teamFundTypes = teamFundService.getAllFundTypes();

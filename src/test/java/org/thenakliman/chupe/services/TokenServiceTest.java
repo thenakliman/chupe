@@ -75,19 +75,20 @@ public class TokenServiceTest {
   @Test
   public void shouldCreateToken() {
     String token = getToken();
+    byte []keyBytes = key.getBytes();
     assertEquals(
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getAudience(),
+            Jwts.parser().setSigningKey(keyBytes).parseClaimsJws(token).getBody().getAudience(),
             audience);
 
     assertEquals(
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getIssuer(),
+            Jwts.parser().setSigningKey(keyBytes).parseClaimsJws(token).getBody().getIssuer(),
             issuer);
 
     assertEquals(
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject(),
+            Jwts.parser().setSigningKey(keyBytes).parseClaimsJws(token).getBody().getSubject(),
             username);
 
-    DefaultClaims tokenClaims = ((DefaultClaims)Jwts.parser().setSigningKey(key)
+    DefaultClaims tokenClaims = ((DefaultClaims)Jwts.parser().setSigningKey(keyBytes)
             .parse(token).getBody());
 
     assertEquals("firstname lastname", tokenClaims.get("name"));

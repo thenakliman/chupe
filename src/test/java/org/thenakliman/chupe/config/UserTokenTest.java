@@ -2,22 +2,29 @@ package org.thenakliman.chupe.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.thenakliman.chupe.dto.User;
+import org.thenakliman.chupe.properties.TokenProperty;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserTokenTest {
 
-  private UserToken userToken;
+  @Mock
+  private TokenProperty tokenProperty;
 
-  private UserToken userTokenSpy;
+  @InjectMocks
+  private UserToken userToken;
 
   //CHECKSTYLE.OFF: LineLength
   private final String tokenSigningKey = "5C062F492D34669254A4765371FED7A7DB27572758FDDBF5286AF4BC22487F23";
@@ -37,11 +44,9 @@ public class UserTokenTest {
 
   @Test
   public void shouldReturnUser() {
-    userToken = new UserToken();
-    userTokenSpy = Mockito.spy(userToken);
-    ReflectionTestUtils.setField(userTokenSpy, "tokenSigningKey", tokenSigningKey);
+    when(tokenProperty.getTokenSigningKey()).thenReturn(tokenSigningKey);
 
-    User user = userTokenSpy.getUser(token);
+    User user = userToken.getUser(token);
 
     User expectedUser = getUser();
     assertEquals(expectedUser.getRoles(), user.getRoles());

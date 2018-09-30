@@ -23,7 +23,7 @@ public class FundDTO {
 
   private TransactionType transactionType;
 
-  private boolean isApproved;
+  private boolean approved;
 
   private Date createdAt;
 }

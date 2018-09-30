@@ -26,8 +26,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.SecurityConfiguration;
+import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.User;
+import org.thenakliman.chupe.services.TokenService;
 import org.thenakliman.chupe.services.UserService;
 
 @RunWith(SpringRunner.class)
@@ -49,6 +51,13 @@ public class UserControllerTest {
 
   @Autowired
   private WebApplicationContext webApplicationContext;
+
+  @MockBean
+  private TokenService tokenService;
+
+  @MockBean
+  private TokenAuthenticationService tokenAuthenticationService;
+
 
   @Before
   public void setUp() {

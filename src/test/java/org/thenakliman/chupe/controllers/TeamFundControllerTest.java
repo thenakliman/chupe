@@ -1,13 +1,14 @@
 package org.thenakliman.chupe.controllers;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javassist.NotFoundException;
@@ -24,19 +25,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
-import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.models.FundTypes;
 import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.services.TeamFundService;
+import org.thenakliman.chupe.services.TokenService;
 
 
-
-
-@WebMvcTest(controllers = TeamFundControllerTest.class)
+@WebMvcTest(controllers = TeamFundController.class)
 public class TeamFundControllerTest extends BaseControllerTest {
   @Autowired
   private MockMvc mockMvc;
@@ -49,6 +49,12 @@ public class TeamFundControllerTest extends BaseControllerTest {
 
   @Autowired
   private Jackson2ObjectMapperBuilder jacksonBuilder;
+
+  @MockBean
+  private TokenService tokenService;
+
+  @MockBean
+  private TokenAuthenticationService tokenAuthenticationService;
 
   private ObjectMapper objectMapper;
 
@@ -80,15 +86,15 @@ public class TeamFundControllerTest extends BaseControllerTest {
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .get("/api/v1/team-funds/types")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(fundType))
-    ).andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
+    ).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
 
-    List<Fund> actualFundTypes = objectMapper.readValue(
+    List<FundType> actualFundTypes = objectMapper.readValue(
         mvcResult.getResponse().getContentAsString(),
-        List.class);
+        new ArrayList<FundType>().getClass());
 
-    assertEquals(actualFundTypes, fundTypes);
+    assertEquals(actualFundTypes.size(), 1);
+    assertThat(actualFundTypes, samePropertyValuesAs(fundTypes));
   }
 
   @Test
@@ -143,9 +149,9 @@ public class TeamFundControllerTest extends BaseControllerTest {
         .content(objectMapper.writeValueAsString(fund))
     ).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-    Fund actualFund = objectMapper.readValue(
+    FundDTO actualFund = objectMapper.readValue(
         mvcResult.getResponse().getContentAsString(),
-        Fund.class);
+        FundDTO.class);
 
     assertEquals(fund, actualFund);
   }
@@ -171,31 +177,33 @@ public class TeamFundControllerTest extends BaseControllerTest {
     when(teamFundService.getAllFundFor(anyString())).thenThrow(new NotFoundException("Not Found"));
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-        .post("/api/v1/funds?owner=fakeUser")
+        .get("/api/v1/funds?owner=fakeUser")
         .contentType(MediaType.APPLICATION_JSON)
     ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
   }
 
   @Test
   public void shouldReturnAllFundsDTOs() throws Exception {
-    FundDTO fundDTOs = new FundDTO();
-    fundDTOs.setId(10);
-    fundDTOs.setTransactionType(TransactionType.CREDIT);
-    fundDTOs.setApproved(false);
-    fundDTOs.setAmount(1000);
+    FundDTO fundDTO = new FundDTO();
+    fundDTO.setId(10);
+    fundDTO.setTransactionType(TransactionType.CREDIT);
+    fundDTO.setApproved(false);
+    fundDTO.setAmount(1000);
     String fakeUser = "fakeUser";
-    fundDTOs.setOwner(fakeUser);
+    fundDTO.setOwner(fakeUser);
 
-    when(teamFundService.getAllFundFor(anyString())).thenReturn(Arrays.asList(fundDTOs));
+    List<FundDTO> fundDTOs = new ArrayList<>();
+    fundDTOs.add(fundDTO);
+    when(teamFundService.getAllFundFor(anyString())).thenReturn(asList(fundDTO));
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-        .post("/api/v1/funds?owner=" + fakeUser)
+        .get("/api/v1/funds?owner=" + fakeUser)
         .contentType(MediaType.APPLICATION_JSON)
-    ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+    ).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     List<FundDTO> actualFundDTOs = objectMapper.readValue(
         mvcResult.getResponse().getContentAsString(),
-        List.class);
+        new ArrayList<FundDTO>().getClass());
 
-    assertEquals(fundDTOs, actualFundDTOs);
+    assertThat(actualFundDTOs, samePropertyValuesAs(fundDTOs));
   }
 }

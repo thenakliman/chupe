@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,14 +29,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.SecurityConfiguration;
+import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.QuestionPriority;
 import org.thenakliman.chupe.models.QuestionStatus;
 import org.thenakliman.chupe.services.QuestionService;
+import org.thenakliman.chupe.services.TokenService;
 
 
-@WebMvcTest(controllers = QuestionController.class)
+@WebMvcTest(controllers = QuestionController.class, secure = false)
 @RunWith(SpringRunner.class)
 public class QuestionControllerTest {
   @Autowired
@@ -49,6 +52,12 @@ public class QuestionControllerTest {
 
   @Autowired
   private Jackson2ObjectMapperBuilder jacksonBuilder;
+
+  @MockBean
+  private TokenService tokenService;
+
+  @MockBean
+  private TokenAuthenticationService tokenAuthenticationService;
 
   private ObjectMapper objectMapper;
 
@@ -104,7 +113,7 @@ public class QuestionControllerTest {
 
   @Test
   public void shouldReturnInternalServerErrorIfThereIsAnException() throws Exception {
-    /** NOTE(thenakliman): Fix willAnswer to willThrow, it is throwing errors
+    /* NOTE(thenakliman): Fix willAnswer to willThrow, it is throwing errors
      * BDDMockito.given(userService.getQuestions()).willThrow(Exception.class); */
 
     BDDMockito.given(questionService.getQuestions()).willAnswer(invocation -> {

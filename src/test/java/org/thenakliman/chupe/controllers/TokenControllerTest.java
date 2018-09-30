@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.services.TokenService;
 
 
@@ -35,6 +36,11 @@ public class TokenControllerTest {
 
   @Autowired
   private Jackson2ObjectMapperBuilder jacksonBuilder;
+
+  @MockBean
+  private TokenAuthenticationService tokenAuthenticationService;
+
+
 
   private ObjectMapper objectMapper;
 
@@ -57,7 +63,7 @@ public class TokenControllerTest {
     BDDMockito.given(tokenService.createToken("testUser")).willReturn(token);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .get("/token?username=testUser"))
-        .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+        .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
     assertEquals(token, mvcResult.getResponse().getHeader("Authorization"));
   }
 }
