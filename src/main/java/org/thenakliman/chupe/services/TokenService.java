@@ -65,13 +65,14 @@ public class TokenService {
   /** Verify that a token is valid. */
   public boolean isTokenValid(String token) {
     try {
-      Jwts.parser()
+      return Jwts.parser()
           .setSigningKey(tokenProperties.getTokenSigningKey().getBytes())
-          .parseClaimsJws(token);
+          .parseClaimsJws(token)
+          .getBody()
+          .getIssuer()
+          .equals(tokenProperties.getTokenIssuer());
     } catch (MalformedJwtException e) {
       return false;
     }
-
-    return true;
   }
 }

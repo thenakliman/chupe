@@ -29,7 +29,7 @@ public class UserToken {
     }
 
     User user = new User();
-    byte[] key = TextCodec.BASE64.decode(tokenProperty.getTokenSigningKey());
+    byte[] key = tokenProperty.getTokenSigningKey().getBytes();
     JwtParser jwtParser = Jwts.parser().setSigningKey(key);
     Claims jwtClaims = jwtParser.parseClaimsJws(userToken).getBody();
 
