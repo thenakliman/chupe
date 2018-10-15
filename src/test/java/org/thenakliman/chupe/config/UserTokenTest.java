@@ -1,5 +1,12 @@
 package org.thenakliman.chupe.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -8,12 +15,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.properties.TokenProperty;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserTokenTest {
@@ -25,8 +26,8 @@ public class UserTokenTest {
   private UserToken userToken;
 
   //CHECKSTYLE.OFF: LineLength
-  private final String tokenSigningKey = "5C062F492D34669254A4765371FED7A7DB27572758FDDBF5286AF4BC22487F23";
-  private String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJjaHVwZS1mcm9udGVuZCIsInN1YiI6ImxhbF9zaW5naCIsInJvbGVzIjpbIm1lbWJlciJdLCJuYW1lIjoiTGFsIFNpbmdoIiwiaXNzIjoiY2h1cGUiLCJleHAiOjE1MzgyOTM1ODYsImlhdCI6MTUzODI5Mjk4NiwiZW1haWwiOiJsYWxzaW5naEBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoibGFsX3NpbmdoIn0.DvaQKUB5GJ46GWFObWfgBlbXAJSLLDNdm8_a-T88djGfhhQuundy2Y4LAkucjsmiC1W62uCRRcShKqotPK_2rg";
+  private final String tokenSigningKey = "testKey";
+  private String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJ0ZXN0QXVkaWVuY2UiLCJzdWIiOiJ1c2VybmFtZSIsInJvbGVzIjpbIm1lbWJlciJdLCJuYW1lIjoiTGFsIFNpbmdoIiwiaXNzIjoidGVzdElzc3VlciIsImV4cCI6NjE1Mzg0MDk2MTcsImlhdCI6MTUzODQwOTY3NywiZW1haWwiOiJsYWxzaW5naEBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoibGFsX3NpbmdoIn0.koTvlIeoOOrSNmdUCcOs4gY__urR1RibPndSEDPS7Vx_f3iZmg4_Sq4VTu2ugMEchG0q2T25PZfxkL3UEBWozg";
   //CHECKSTYLE.ON: LineLength
 
   private User getUser() {

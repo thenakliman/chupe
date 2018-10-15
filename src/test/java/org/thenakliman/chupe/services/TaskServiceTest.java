@@ -58,12 +58,11 @@ public class TaskServiceTest {
   }
 
   private TaskDTO getTaskDTO(String description, String username) {
-    TaskDTO expectedTaskDTO = new TaskDTO();
-    expectedTaskDTO.setId(10L);
-    expectedTaskDTO.setDescription(description);
-    expectedTaskDTO.setCreatedBy(username);
-    expectedTaskDTO.setState(CREATED);
-    return expectedTaskDTO;
+    return TaskDTO.builder()
+        .id(10L)
+        .description(description)
+        .createdBy(username)
+        .state(CREATED).build();
   }
 
   @Test(expected = NotFoundException.class)

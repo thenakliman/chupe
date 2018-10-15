@@ -17,15 +17,14 @@ public class TaskTransformer {
    * @return taskDTO
    */
   public TaskDTO transformToTaskDTO(Task task) {
-    TaskDTO taskDTO = new TaskDTO();
-    taskDTO.setId(task.getId());
-    taskDTO.setDescription(task.getDescription());
-    taskDTO.setProgress(task.getProgress());
-    taskDTO.setState(task.getState());
-    taskDTO.setCreatedBy(task.getCreatedBy().getUserName());
-    taskDTO.setStartedOn(task.getStartOn());
-    taskDTO.setEndedOn(task.getEndedOn());
-    return taskDTO;
+    return TaskDTO.builder()
+        .id(task.getId())
+        .description(task.getDescription())
+        .progress(task.getProgress())
+        .state(task.getState())
+        .createdBy(task.getCreatedBy().getUserName())
+        .startedOn(task.getStartOn())
+        .endedOn(task.getEndedOn()).build();
   }
 
   /** transform TaskDTO to task.
