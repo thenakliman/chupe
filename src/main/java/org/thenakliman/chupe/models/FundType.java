@@ -4,8 +4,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,9 +26,8 @@ public class FundType {
   @Column(name = "default_amount")
   private int defaultAmount;
 
-  @Enumerated(EnumType.STRING)
   @Column(name = "type", unique = true, nullable = false)
-  private FundTypes type;
+  private String type;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "createdBy", referencedColumnName = "username")

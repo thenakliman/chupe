@@ -5,7 +5,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.thenakliman.chupe.models.FundTypes.BIRTHDAY;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +51,7 @@ public class TeamFundServiceTest {
     FundType fundType = new FundType();
     fundType.setId(1);
     fundType.setDescription("description");
-    fundType.setType(BIRTHDAY);
+    fundType.setType("BIRTHDAY");
     List fundTypes = new ArrayList();
     fundTypes.add(fundType);
     return fundTypes;
@@ -227,7 +226,7 @@ public class TeamFundServiceTest {
 
   private FundType getFundType() {
     FundType fundType = new FundType();
-    fundType.setType(BIRTHDAY);
+    fundType.setType("BIRTHDAY");
     return fundType;
   }
 }

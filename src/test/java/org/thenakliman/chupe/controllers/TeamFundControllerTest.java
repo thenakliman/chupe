@@ -30,7 +30,6 @@ import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
 import org.thenakliman.chupe.models.FundType;
-import org.thenakliman.chupe.models.FundTypes;
 import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.services.TeamFundService;
 import org.thenakliman.chupe.services.TokenService;
@@ -74,7 +73,7 @@ public class TeamFundControllerTest extends BaseControllerTest {
   @Test
   public void shouldReturnAllFundTypes() throws Exception {
     FundType fundType = new FundType();
-    fundType.setType(FundTypes.BIRTHDAY);
+    fundType.setType("BIRTHDAY");
     fundType.setId(10);
     fundType.setDefaultAmount(100);
 

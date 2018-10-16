@@ -18,7 +18,6 @@ import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
-import org.thenakliman.chupe.models.FundTypes;
 import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.models.User;
 
@@ -32,7 +31,7 @@ public class FundTransformerTest {
   private void addFundType(Fund fund) {
     FundType fundType = new FundType();
     fundType.setId(10);
-    fundType.setType(FundTypes.BIRTHDAY);
+    fundType.setType("BIRTHDAY");
     fund.setType(fundType);
   }
 
