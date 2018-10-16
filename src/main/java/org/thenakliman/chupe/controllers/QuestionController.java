@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.controllers;
 
-import java.util.List;
-
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -32,12 +30,12 @@ public class QuestionController extends BaseController {
    * 2. Description, of the question or additional data needed to explain question
    * 3. Owner, user asked the question
    * 4. AssignedTO, user responsible for answering the question */
-  @PostMapping("/question")
+  @PostMapping("/questions")
   public ResponseEntity<QuestionDTO> askQuestion(@RequestHeader HttpHeaders header,
                                               @RequestBody Question question) {
 
     QuestionDTO createdQuestion = questionService.addQuestion(question);
-    return new ResponseEntity<>(createdQuestion, HttpStatus.OK);
+    return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
   }
 
   /** API for updating a question.
@@ -47,7 +45,7 @@ public class QuestionController extends BaseController {
    * 2. Description, of the question or additional data needed to explain question
    * 3. Owner, user asked the question
    * 4. AssignedTO, user responsible for answering the question */
-  @PutMapping("/question/{id}")
+  @PutMapping("/questions/{id}")
   public ResponseEntity updateQuestion(@RequestHeader HttpHeaders header,
                                        @PathVariable(value = "id") long id,
                                        @RequestBody QuestionDTO questionDTO) {
@@ -64,8 +62,8 @@ public class QuestionController extends BaseController {
    *
    * @return list of questions
    */
-  @GetMapping("/question")
-  public ResponseEntity<List<QuestionDTO>> getQuestions() {
+  @GetMapping("/questions")
+  public ResponseEntity getQuestions() {
     try {
       return new ResponseEntity<>(questionService.getQuestions(), HttpStatus.OK);
     } catch (Exception ex) {

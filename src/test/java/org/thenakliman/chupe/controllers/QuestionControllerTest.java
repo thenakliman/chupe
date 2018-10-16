@@ -86,10 +86,10 @@ public class QuestionControllerTest {
     BDDMockito.given(questionService.addQuestion(any())).willReturn(questionDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-        .post("/api/v1/question")
+        .post("/api/v1/questions")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(questionDTO)))
-        .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+        .andExpect(MockMvcResultMatchers.status().isCreated()).andReturn();
 
     QuestionDTO result = objectMapper.readValue(
             mvcResult.getResponse().getContentAsString(), QuestionDTO.class);
@@ -102,7 +102,7 @@ public class QuestionControllerTest {
     List<QuestionDTO> questionDTOs = new ArrayList<>();
     BDDMockito.given(questionService.getQuestions()).willReturn(questionDTOs);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-            .get("/api/v1/question")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+            .get("/api/v1/questions")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
     List<QuestionDTO> result = objectMapper.readValue(
             mvcResult.getResponse().getContentAsString(),
@@ -120,7 +120,7 @@ public class QuestionControllerTest {
       throw new Exception(); });
 
     mockMvc.perform(MockMvcRequestBuilders
-            .get("/api/v1/users")).andExpect(MockMvcResultMatchers.status().isNotFound());
+            .get("/api/v1/questions")).andExpect(MockMvcResultMatchers.status().isNotFound());
   }
 
   @Test
@@ -143,7 +143,7 @@ public class QuestionControllerTest {
     questionDTOs.add(questionDTO2);
     BDDMockito.given(questionService.getQuestions()).willReturn(questionDTOs);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-            .get("/api/v1/question")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+            .get("/api/v1/questions")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     /* NOTE(thenakliman): Use jackson to convert response to object and then compare the objects,
      *  currently only length is being matched.
      */
@@ -164,7 +164,7 @@ public class QuestionControllerTest {
         QuestionPriority.LOW);
 
     mockMvc.perform(MockMvcRequestBuilders
-            .put("/api/v1/question/" + id)
+            .put("/api/v1/questions/" + id)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(questionDTO))
       ).andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
@@ -183,7 +183,7 @@ public class QuestionControllerTest {
         .when(questionService).updateQuestions(anyLong(), any());
 
     mockMvc.perform(MockMvcRequestBuilders
-            .put("/api/v1/question/" + id)
+            .put("/api/v1/questions/" + id)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(questionDTO))
       ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
