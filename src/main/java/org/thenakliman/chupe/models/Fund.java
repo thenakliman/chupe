@@ -14,7 +14,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.Data;
 
+@Data
 @Entity(name = "fund")
 @Table
 public class Fund {
@@ -50,76 +52,4 @@ public class Fund {
 
   @Column(name = "updated_at", nullable = false)
   private Date updatedAt;
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public Date getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(Date createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public Date getUpdatedAt() {
-    return updatedAt;
-  }
-
-  public void setUpdatedAt(Date updatedAt) {
-    this.updatedAt = updatedAt;
-  }
-
-  public TransactionType getTransactionType() {
-    return transactionType;
-  }
-
-  public void setTransactionType(TransactionType transactionType) {
-    this.transactionType = transactionType;
-  }
-
-  public User getOwner() {
-    return owner;
-  }
-
-  public void setOwner(User owner) {
-    this.owner = owner;
-  }
-
-  public User getAddedBy() {
-    return addedBy;
-  }
-
-  public void setAddedBy(User addedBy) {
-    this.addedBy = addedBy;
-  }
-
-  public FundType getType() {
-    return type;
-  }
-
-  public void setType(FundType type) {
-    this.type = type;
-  }
-
-  public long getAmount() {
-    return amount;
-  }
-
-  public void setAmount(long amount) {
-    this.amount = amount;
-  }
-
-  public boolean isApproved() {
-    return isApproved;
-  }
-
-  public void setApproved(boolean approved) {
-    isApproved = approved;
-  }
 }

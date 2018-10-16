@@ -53,11 +53,11 @@ public class TokenServiceTest {
     roles.add(memberRole);
     String email = "example@test.com";
     User testUser = new User(
+        "username",
+        "password",
+        email,
         "firstname",
         "lastname",
-        "username",
-        email,
-        "password",
         true);
 
     BDDMockito.given(roleRepository.findByUsername(username)).willReturn(roles);

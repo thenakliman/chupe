@@ -56,12 +56,12 @@ public class UserTransformerTest {
     userDTO.setLastName("user1_lastname");
     userDTO.setEmail("user1_email");
     User u1 = new User(
-            "user1_firstname",
-             "user1_lastname",
-             "user1_username",
-                 "user1_email",
-             "user1_password",
-            true);
+        "user1_username",
+        "user1_password",
+        "user1_email",
+        "user1_firstname",
+        "user1_lastname",
+        true);
     assertThat(userDTO, samePropertyValuesAs(userTransformer.transformToUserDTO(u1)));
   }
 }

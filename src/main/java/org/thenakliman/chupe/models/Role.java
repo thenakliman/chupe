@@ -9,7 +9,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity(name = "authorities")
 @Table
 public class Role implements Serializable {
@@ -23,33 +29,8 @@ public class Role implements Serializable {
   @Column(name = "authority", nullable = false)
   private String role;
 
-  /** Empty constructor. */
-  public Role() {
-    /** String needs empty constructor **/
-  }
-
   public Role(String username, String role) {
     this.username = username;
     this.role = role;
-  }
-
-  public String getRole() {
-    return role;
-  }
-
-  public void setRole(String role) {
-    this.role = role;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public long getId() {
-    return id;
   }
 }
