@@ -3,7 +3,6 @@ package org.thenakliman.chupe.controllers;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -26,10 +25,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
+import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.services.AnswerService;
 import org.thenakliman.chupe.services.TokenService;
-
 
 @WebMvcTest(controllers = AnswerController.class)
 @RunWith(SpringRunner.class)
@@ -67,13 +66,10 @@ public class AnswerControllerTest {
 
   @Test
   public void shouldGetAnswerToGivenQuestion() throws  Exception {
-    Answer answer = new Answer();
     int questionId = 100;
-    answer.setQuestionId(questionId);
-    answer.setAnsweredBy("user");
-    answer.setId(10);
-    answer.setAnswer("answer");
-    List<Answer> answers = new ArrayList<Answer>();
+    AnswerDTO answer = getAnswerDTO(questionId, "user", "answer");
+    answer.setId(10L);
+    List<AnswerDTO> answers = new ArrayList<AnswerDTO>();
     answers.add(answer);
     BDDMockito.given(answerService.getAnswersOfGivenQuestion(questionId)).willReturn(answers);
 
@@ -103,19 +99,12 @@ public class AnswerControllerTest {
 
   @Test
   public void shouldCreateAnswer() throws  Exception {
-    Answer answer = new Answer();
     int questionId = 100;
-    answer.setQuestionId(questionId);
     String user = "user";
-    answer.setAnsweredBy(user);
     String answer1 = "answer";
-    answer.setAnswer(answer1);
 
-    Answer expectedAnswer = new Answer();
-    expectedAnswer.setQuestionId(questionId);
-    expectedAnswer.setAnsweredBy(user);
-    expectedAnswer.setId(10);
-    expectedAnswer.setAnswer(answer1);
+    AnswerDTO expectedAnswer = getAnswerDTO(questionId, user, answer1);
+    AnswerDTO answer = getAnswerDTO(questionId, user, answer1);
 
     BDDMockito.given(answerService.addAnswer(any())).willReturn(expectedAnswer);
 
@@ -125,9 +114,52 @@ public class AnswerControllerTest {
         .content(objectMapper.writeValueAsString(answer)))
         .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-    Answer result = objectMapper.readValue(
-        mvcResult.getResponse().getContentAsString(), Answer.class);
+    AnswerDTO result = objectMapper.readValue(
+        mvcResult.getResponse().getContentAsString(), AnswerDTO.class);
 
     assertThat(expectedAnswer, samePropertyValuesAs(result));
+  }
+
+  private AnswerDTO getAnswerDTO(int questionId, String user, String answer1) {
+    return AnswerDTO.builder()
+        .questionId(questionId)
+        .answeredBy(user)
+        .answer(answer1).build();
+  }
+
+  @Test
+  public void shouldReturnNotFoundStatusCodeIfAnswerNotFound() throws  Exception {
+    Long answerId = 1000L;
+    AnswerDTO answerDTO = AnswerDTO.builder().build();
+    BDDMockito.given(
+        answerService.updateAnswer(answerId, answerDTO))
+        .willThrow(new NotFoundException(answerId + " question not found"));
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/answers/" + answerId)
+        .content(objectMapper.writeValueAsString(answerDTO))
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnUpdatedAnswer() throws  Exception {
+    Long answerId = 1000L;
+    AnswerDTO answer = getAnswerDTO(10, "user", "answer");
+    BDDMockito.given(
+        answerService.updateAnswer(answerId, answer))
+        .willReturn(answer);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/answers/" + answerId)
+        .content(objectMapper.writeValueAsString(answer))
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+    AnswerDTO result = objectMapper.readValue(
+        mvcResult.getResponse().getContentAsString(), AnswerDTO.class);
+
+    assertThat(answer, samePropertyValuesAs(result));
+
   }
 }

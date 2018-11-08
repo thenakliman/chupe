@@ -1,78 +1,130 @@
 package org.thenakliman.chupe.services;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static org.mockito.BDDMockito.given;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javassist.NotFoundException;
 import org.assertj.core.util.DateUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
+import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.AnswerRepository;
+import org.thenakliman.chupe.transformer.AnswerTransformer;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnswerServiceTest {
 
   @Mock
-  AnswerRepository answerRepository;
+  private AnswerRepository answerRepository;
+
+  @Mock
+  private AnswerTransformer answerTransformer;
+
+  @Mock
+  private org.thenakliman.chupe.common.utils.DateUtil dateUtil;
 
   @InjectMocks
-  AnswerService answerService;
+  private AnswerService answerService;
+
+  private AnswerDTO getAnswerDTO(String username, String answer, Long questionId, Long id) {
+    return AnswerDTO.builder()
+        .answer(username)
+        .answer(answer)
+        .questionId(questionId)
+        .id(id)
+        .build();
+  }
+
+  private Answer getAnswer(String username, String answer, Long questionId, Long id) {
+    Answer answerModel = new Answer();
+    answerModel.setAnswer(answer);
+    User user = new User();
+    user.setUserName(username);
+    answerModel.setAnsweredBy(user);
+    answerModel.setId(id);
+    answerModel.setQuestionId(questionId);
+    return answerModel;
+  }
 
   @Test
   public void shouldReturnAllAnswerOfGivenQuestion() throws NotFoundException {
-    Answer answer = new Answer();
-    answer.setAnswer("testAnswer");
-    answer.setAnsweredBy("user");
-    int questionId = 10;
-    answer.setId(1);
-    answer.setQuestionId(questionId);
+    String username = "user";
+    String testAnswer = "testAnswer";
+    Long questionId = 10L;
+    Long answerId = 1L;
+    List<Answer> answers = Arrays.asList(getAnswer(username, testAnswer, questionId, answerId));
+    given(answerRepository.findByQuestionId(questionId)).willReturn(answers);
+    List<AnswerDTO> answerDTOs = Arrays.asList(
+        getAnswerDTO(username, testAnswer, questionId, answerId));
+    given(answerTransformer.transformToAnswerDTOs(answers)).willReturn(answerDTOs);
+    List<AnswerDTO> receivedAnswer = answerService.getAnswersOfGivenQuestion(questionId);
 
-    List<Answer> answers = new ArrayList<>();
-    answers.add(answer);
-
-    BDDMockito.given(answerRepository.findByQuestionId(questionId)).willReturn(answers);
-
-    List<Answer> receivedAnswer = answerService.getAnswersOfGivenQuestion(questionId);
-
-    assertEquals(receivedAnswer, answers);
+    assertThat(receivedAnswer, hasSize(1));
+    assertThat(receivedAnswer, hasItems(getAnswerDTO(username, testAnswer, questionId, answerId)));
   }
 
   @Test(expected = NotFoundException.class)
   public void shouldReturnNotFoundExceptionIfAnswerDoesNotExistForAQuestion()
         throws NotFoundException {
     int questionId = 10;
-    BDDMockito.given(answerRepository.findByQuestionId(questionId)).willReturn(null);
+    given(answerRepository.findByQuestionId(questionId)).willReturn(null);
     answerService.getAnswersOfGivenQuestion(questionId);
   }
 
   @Test
-  public void shouldReturnAnswerAfterUpdate() {
-    Answer answer = new Answer();
-    String testAnswer = "testAnswer";
-    answer.setAnswer(testAnswer);
+  public void shouldReturnAnswerAfterSave() {
+    Long questionId = 10L;
+    Long id = 1011L;
+    String testAnswer = "test answer";
     String user = "user";
-    answer.setAnsweredBy(user);
-    int questionId = 10;
-    answer.setQuestionId(questionId);
+    AnswerDTO answerDTO = getAnswerDTO(testAnswer, user, questionId, id);
+    Answer answer = getAnswer(testAnswer, user, questionId, id);
 
-    Answer answerFromRespository = new Answer();
-    answerFromRespository.setAnswer(testAnswer);
-    answerFromRespository.setAnsweredBy(user);
-    answerFromRespository.setQuestionId(questionId);
-    answerFromRespository.setId(1011);
-    answerFromRespository.setCreatedAt(DateUtil.now());
+    given(answerTransformer.transformToAnswer(answerDTO)).willReturn(answer);
+    given(answerRepository.save(answer)).willReturn(answer);
+    given(answerTransformer.transformToAnswerDTO(answer)).willReturn(answerDTO);
 
-    BDDMockito.given(answerRepository.save(answer)).willReturn(answerFromRespository);
+    assertThat(answerService.addAnswer(answerDTO), samePropertyValuesAs(answerDTO));
+  }
 
-    assertEquals(answerFromRespository,
-                 answerService.addAnswer(answer));
+  @Test(expected = NotFoundException.class)
+  public void shouldReturnNotFoundExceptionIfAnswerDoesNotExistForAQuestionWhileUpating()
+        throws NotFoundException {
+    Long answerId = 10L;
+    given(answerRepository.findById(answerId)).willReturn(Optional.empty());
+    answerService.updateAnswer(answerId, AnswerDTO.builder().build());
+  }
+
+  @Test
+  public void shouldReturnUpdatedAnswerAfterUpdate() throws NotFoundException {
+    Date date = DateUtil.now();
+    String testAnswer = "testAnswer";
+    String user = "user";
+    Long questionId = 10L;
+    Long answerId = 1011L;
+
+
+    given(dateUtil.getTime()).willReturn(date);
+    AnswerDTO answerDTO = getAnswerDTO(testAnswer, user, questionId, answerId);
+    Answer answer = getAnswer(testAnswer, user, questionId, answerId);
+    given(answerRepository.findById(answerId)).willReturn(Optional.of(answer));
+    given(answerRepository.save(answer)).willReturn(answer);
+    given(answerTransformer.transformToAnswerDTO(answer)).willReturn(answerDTO);
+
+    assertThat(answerDTO, samePropertyValuesAs(answerService.updateAnswer(answerId, answerDTO)));
   }
 }
