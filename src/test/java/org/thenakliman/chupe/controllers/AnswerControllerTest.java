@@ -71,7 +71,7 @@ public class AnswerControllerTest {
     answer.setId(10L);
     List<AnswerDTO> answers = new ArrayList<AnswerDTO>();
     answers.add(answer);
-    BDDMockito.given(answerService.getAnswersOfGivenQuestion(questionId)).willReturn(answers);
+    BDDMockito.given(answerService.getAnswers(questionId)).willReturn(answers);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .get("/api/v1/answers?questionId=" + questionId)
@@ -88,7 +88,7 @@ public class AnswerControllerTest {
   public void shouldReturnNotFoundStatusCodeIfQuestionNotFound() throws  Exception {
     int questionId = 1000;
     BDDMockito.given(
-        answerService.getAnswersOfGivenQuestion(questionId))
+        answerService.getAnswers(questionId))
             .willThrow(new NotFoundException(questionId + " question not found"));
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders

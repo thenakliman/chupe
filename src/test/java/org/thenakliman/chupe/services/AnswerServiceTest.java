@@ -1,15 +1,13 @@
 package org.thenakliman.chupe.services;
 
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.BDDMockito.given;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javassist.NotFoundException;
 import org.assertj.core.util.DateUtil;
@@ -18,21 +16,20 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.AnswerRepository;
-import org.thenakliman.chupe.transformer.AnswerTransformer;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnswerServiceTest {
+  @Mock
+  private ModelMapper modelMapper;
 
   @Mock
   private AnswerRepository answerRepository;
-
-  @Mock
-  private AnswerTransformer answerTransformer;
 
   @Mock
   private org.thenakliman.chupe.common.utils.DateUtil dateUtil;
@@ -66,12 +63,12 @@ public class AnswerServiceTest {
     String testAnswer = "testAnswer";
     Long questionId = 10L;
     Long answerId = 1L;
-    List<Answer> answers = Arrays.asList(getAnswer(username, testAnswer, questionId, answerId));
-    given(answerRepository.findByQuestionId(questionId)).willReturn(answers);
-    List<AnswerDTO> answerDTOs = Arrays.asList(
-        getAnswerDTO(username, testAnswer, questionId, answerId));
-    given(answerTransformer.transformToAnswerDTOs(answers)).willReturn(answerDTOs);
-    List<AnswerDTO> receivedAnswer = answerService.getAnswersOfGivenQuestion(questionId);
+    Answer answer = getAnswer(username, testAnswer, questionId, answerId);
+    given(answerRepository.findByQuestionId(questionId)).willReturn(singletonList(answer));
+    AnswerDTO answerDTO = getAnswerDTO(username, testAnswer, questionId, answerId);
+    given(modelMapper.map(answer, AnswerDTO.class)).willReturn(answerDTO);
+
+    List<AnswerDTO> receivedAnswer = answerService.getAnswers(questionId);
 
     assertThat(receivedAnswer, hasSize(1));
     assertThat(receivedAnswer, hasItems(getAnswerDTO(username, testAnswer, questionId, answerId)));
@@ -82,7 +79,7 @@ public class AnswerServiceTest {
         throws NotFoundException {
     int questionId = 10;
     given(answerRepository.findByQuestionId(questionId)).willReturn(null);
-    answerService.getAnswersOfGivenQuestion(questionId);
+    answerService.getAnswers(questionId);
   }
 
   @Test
@@ -94,9 +91,9 @@ public class AnswerServiceTest {
     AnswerDTO answerDTO = getAnswerDTO(testAnswer, user, questionId, id);
     Answer answer = getAnswer(testAnswer, user, questionId, id);
 
-    given(answerTransformer.transformToAnswer(answerDTO)).willReturn(answer);
+    given(modelMapper.map(answerDTO, Answer.class)).willReturn(answer);
     given(answerRepository.save(answer)).willReturn(answer);
-    given(answerTransformer.transformToAnswerDTO(answer)).willReturn(answerDTO);
+    given(modelMapper.map(answer, AnswerDTO.class)).willReturn(answerDTO);
 
     assertThat(answerService.addAnswer(answerDTO), samePropertyValuesAs(answerDTO));
   }
@@ -123,7 +120,7 @@ public class AnswerServiceTest {
     Answer answer = getAnswer(testAnswer, user, questionId, answerId);
     given(answerRepository.findById(answerId)).willReturn(Optional.of(answer));
     given(answerRepository.save(answer)).willReturn(answer);
-    given(answerTransformer.transformToAnswerDTO(answer)).willReturn(answerDTO);
+    given(modelMapper.map(answer, AnswerDTO.class)).willReturn(answerDTO);
 
     assertThat(answerDTO, samePropertyValuesAs(answerService.updateAnswer(answerId, answerDTO)));
   }

@@ -20,7 +20,7 @@ import org.thenakliman.chupe.services.AnswerService;
 public class AnswerController extends BaseController {
 
   @Autowired
-  AnswerService answerService;
+  private AnswerService answerService;
 
   /** API for fetching all the answer.
    *
@@ -32,7 +32,7 @@ public class AnswerController extends BaseController {
   public ResponseEntity<List<AnswerDTO>> getAnswerOfGivenQuestion(
           @RequestParam("questionId") long id) throws NotFoundException {
     try {
-      return new ResponseEntity<>(answerService.getAnswersOfGivenQuestion(id), HttpStatus.OK);
+      return new ResponseEntity<>(answerService.getAnswers(id), HttpStatus.OK);
     } catch (NotFoundException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
