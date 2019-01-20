@@ -1,60 +1,60 @@
 package org.thenakliman.chupe.services;
 
-import java.util.List;
-import java.util.Optional;
 import javassist.NotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.repositories.QuestionRepository;
-import org.thenakliman.chupe.transformer.QuestionTransformer;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
 public class QuestionService {
 
   @Autowired
-  private QuestionTransformer questionTransformer;
-
-  @Autowired
   private QuestionRepository questionsRepository;
 
+  @Autowired
+  private ModelMapper modelMapper;
+
   public QuestionDTO addQuestion(Question question) {
-    return questionTransformer.transformToQuestionDTO(questionsRepository.save(question));
+    return modelMapper.map(questionsRepository.save(question), QuestionDTO.class);
   }
 
   public List<QuestionDTO> getQuestions() {
-    return questionTransformer.transformToQuestionDTO(questionsRepository.findAll());
+    return questionsRepository.findAll()
+        .stream()
+        .map(question -> modelMapper.map(question, QuestionDTO.class))
+        .collect(Collectors.toList());
   }
 
-  /** Update a question.
+  /**
+   * Update a question.
    *
-   * @param id question id
+   * @param id       question id
    * @param question question dto containing new question details
    * @throws NotFoundException if question does not exist, we are trying to update
    */
   public void updateQuestions(long id, QuestionDTO question) throws NotFoundException {
+    Optional<Question> savedQuestion = questionsRepository.findById(id);
 
-    Optional<Question> existingQuestion = questionsRepository.findById(id);
-    if (existingQuestion == null) {
-      throw new NotFoundException("Question with id " + id + " could not be found");
+    if (!savedQuestion.isPresent()) {
+      throw new NotFoundException(String.format("Question %s not found", id));
     }
 
-    Question updatedQuestion = new Question();
-    updatedQuestion.setId((int)id);
-    updatedQuestion.setAssignedTo(question.getAssignedTo());
-    updatedQuestion.setDescription(question.getDescription());
-    updatedQuestion.setOwner(question.getOwner());
-    updatedQuestion.setQuestion(question.getQuestion());
-    updatedQuestion.setStatus(question.getStatus());
-    updatedQuestion.setPriority(question.getPriority());
-    if (existingQuestion.isPresent()) {
-      updatedQuestion.setCreatedAt(existingQuestion.get().getCreatedAt());
-    } else {
-      updatedQuestion.setCreatedAt(new DateUtil().getTime());
-    }
-    questionsRepository.save(updatedQuestion);
+    savedQuestion.ifPresent(existingQuestion -> {
+      existingQuestion.setAssignedTo(question.getAssignedTo());
+      existingQuestion.setDescription(question.getDescription());
+      existingQuestion.setOwner(question.getOwner());
+      existingQuestion.setQuestion(question.getQuestion());
+      existingQuestion.setStatus(question.getStatus());
+      existingQuestion.setPriority(question.getPriority());
+      questionsRepository.save(existingQuestion);
+    });
   }
 }

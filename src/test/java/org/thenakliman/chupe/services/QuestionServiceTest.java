@@ -19,21 +19,21 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.QuestionPriority;
 import org.thenakliman.chupe.models.QuestionStatus;
 import org.thenakliman.chupe.repositories.QuestionRepository;
-import org.thenakliman.chupe.transformer.QuestionTransformer;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class QuestionServiceTest {
   @Mock
-  private QuestionTransformer questionTransformer;
+  private QuestionRepository questionsRepository;
 
   @Mock
-  private QuestionRepository questionsRepository;
+  private ModelMapper modelMapper;
 
   @InjectMocks
   private QuestionService questionService;
@@ -70,12 +70,12 @@ public class QuestionServiceTest {
   @Test
   public void shouldCreateQuestion() {
     Question question = getTestQuestion();
-    QuestionDTO questionDTO = getTestQuestionDTO();
     given(questionsRepository.save(question)).willReturn(question);
-    given(questionTransformer.transformToQuestionDTO(question))
-            .willReturn(questionDTO);
+    QuestionDTO questionDTO = getTestQuestionDTO();
+    given(modelMapper.map(question, QuestionDTO.class)).willReturn(questionDTO);
 
     QuestionDTO receivedQuestion = questionService.addQuestion(question);
+
     assertEquals(questionDTO, receivedQuestion);
   }
 
@@ -83,9 +83,9 @@ public class QuestionServiceTest {
   public void shouldReturnNullIfNoQuestion() {
     List<Question> question = new ArrayList<>();
     given(questionsRepository.findAll()).willReturn(question);
-    given(questionTransformer.transformToQuestionDTO(question))
-            .willReturn(new ArrayList<>());
+
     List<QuestionDTO> receivedQuestion = questionService.getQuestions();
+
     assertEquals(new ArrayList<>(), receivedQuestion);
   }
 
@@ -103,8 +103,6 @@ public class QuestionServiceTest {
     QuestionDTO questionDTO = getTestQuestionDTO();
     List<QuestionDTO> questionDTOs = new ArrayList<>();
     questionDTOs.add(questionDTO);
-    given(questionTransformer.transformToQuestionDTO(questions))
-            .willReturn(questionDTOs);
     List<QuestionDTO> receivedQuestion = questionService.getQuestions();
 
     assertThat(questionDTOs, samePropertyValuesAs(receivedQuestion));
@@ -129,7 +127,7 @@ public class QuestionServiceTest {
 
   @Test(expected = NotFoundException.class)
   public void shouldRaiseNotFoundException() throws NotFoundException {
-    when(questionsRepository.findById(id)).thenReturn(null);
+    when(questionsRepository.findById(id)).thenReturn(Optional.empty());
     questionService.updateQuestions(id, getTestQuestionDTO());
   }
 }
