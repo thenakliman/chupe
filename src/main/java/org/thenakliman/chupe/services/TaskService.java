@@ -1,14 +1,17 @@
 package org.thenakliman.chupe.services;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 import static org.thenakliman.chupe.models.TaskState.CREATED;
 import static org.thenakliman.chupe.models.TaskState.DONE;
 import static org.thenakliman.chupe.models.TaskState.IN_PROGRESS;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javassist.NotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.DateUtil;
@@ -25,53 +28,43 @@ public class TaskService {
   private TaskRepository taskRepository;
 
   @Autowired
-  private TaskTransformer taskTransformer;
-  
+  private ModelMapper modelMapper;
+
   @Autowired
   private DateUtil dateUtil;
 
-  /** Should return all task.
-   *
-   * @return list of taskDTO
-   * @throws NotFoundException when task does not exist
-   */
-  public List<TaskDTO> getAllTaskFor(String username) throws NotFoundException {
+  public List<TaskDTO> getAllTask(String username) throws NotFoundException {
     User user = new User();
     user.setUserName(username);
     List<Task> tasks = taskRepository.findByCreatedBy(user);
     if (tasks.isEmpty()) {
       throw new NotFoundException("Tasks not found");
     }
-    return taskTransformer.transformToListOfTaskDTO(tasks);
+
+    return tasks
+        .stream()
+        .map(task -> modelMapper.map(task, TaskDTO.class))
+        .collect(toList());
   }
 
-  /** Save task.
-   * @param taskDTO to be saved
-   * @return TaskDTO of the saved task
-   */
   public TaskDTO saveTask(TaskDTO taskDTO) {
-    Task task = taskTransformer.transformToTask(taskDTO);
+    Task task = modelMapper.map(taskDTO, Task.class);
     task.setCreatedAt(dateUtil.getTime());
     task.setUpdatedAt(dateUtil.getTime());
     Task savedTask = taskRepository.save(task);
-    return taskTransformer.transformToTaskDTO(savedTask);
+    return modelMapper.map(savedTask, TaskDTO.class);
   }
 
-  /** Update task.
-   * @param id of the task to be updated
-   * @param taskDTO to be saved
-   * @return TaskDTO of the saved task
-   */
   public TaskDTO updateTask(Long id, TaskDTO taskDTO) throws NotFoundException {
     Optional<Task> task = taskRepository.findById(id);
     if (!task.isPresent()) {
-      throw new NotFoundException(format("Task not found with id {}", id));
+      throw new NotFoundException(format("Task not found with id %d", id));
     }
 
     updateTaskAsPerUpdatePayload(task.get(), taskDTO);
 
     Task savedTask = taskRepository.save(task.get());
-    return taskTransformer.transformToTaskDTO(savedTask);
+    return modelMapper.map(savedTask, TaskDTO.class);
   }
 
   private void updateTaskAsPerUpdatePayload(Task existingTask, TaskDTO updatedTask) {

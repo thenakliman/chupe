@@ -83,7 +83,7 @@ public class TaskControllerTest extends BaseControllerTest {
     TaskDTO taskDTO = TaskDTO.builder().description(description).build();
     List<TaskDTO> taskDTOs = new ArrayList<>();
     taskDTOs.add(taskDTO);
-    given(taskService.getAllTaskFor(username)).willReturn(taskDTOs);
+    given(taskService.getAllTask(username)).willReturn(taskDTOs);
 
     SecurityContextHolder.getContext().setAuthentication(authToken);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -100,7 +100,7 @@ public class TaskControllerTest extends BaseControllerTest {
 
   @Test
   public void shouldGiveNotFoundWhenTaskIsNotFound() throws  Exception {
-    given(taskService.getAllTaskFor(username)).willThrow(new NotFoundException("Not Found"));
+    given(taskService.getAllTask(username)).willThrow(new NotFoundException("Not Found"));
 
     SecurityContextHolder.getContext().setAuthentication(authToken);
     mockMvc.perform(MockMvcRequestBuilders

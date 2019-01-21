@@ -1,35 +1,32 @@
 package org.thenakliman.chupe.services;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.thenakliman.chupe.models.TaskState.CREATED;
-import static org.thenakliman.chupe.models.TaskState.DONE;
-import static org.thenakliman.chupe.models.TaskState.IN_PROGRESS;
-import static org.thenakliman.chupe.models.TaskState.ON_HOLD;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 import javassist.NotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.TaskRepository;
 import org.thenakliman.chupe.transformer.TaskTransformer;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Collections.singletonList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.thenakliman.chupe.models.TaskState.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,7 +35,7 @@ public class TaskServiceTest {
   private TaskRepository taskRepository;
 
   @Mock
-  private TaskTransformer taskTransformer;
+  private ModelMapper modelMapper;
 
   @Mock
   private DateUtil dateUtil;
@@ -71,21 +68,22 @@ public class TaskServiceTest {
     user.setUserName("username");
 
     when(taskRepository.findByCreatedBy(any(User.class))).thenReturn(Collections.emptyList());
-    taskService.getAllTaskFor("username");
+    taskService.getAllTask("username");
   }
 
   @Test
   public void shouldFetchAllTasks() throws NotFoundException {
     String description = "description";
     String username = "username";
-    List<Task> tasks = asList(getTask(description, username));
-    when(taskRepository.findByCreatedBy(any(User.class))).thenReturn(tasks);
-    List<TaskDTO> taskDTOs = asList(getTaskDTO(description, username));
-    when(taskTransformer.transformToListOfTaskDTO(tasks)).thenReturn(taskDTOs);
+    Task task = getTask(description, username);
+    when(taskRepository.findByCreatedBy(any(User.class))).thenReturn(singletonList(task));
+    TaskDTO taskDTO = getTaskDTO(description, username);
+    when(modelMapper.map(task, TaskDTO.class)).thenReturn(taskDTO);
 
-    List<TaskDTO> taskDTOList = taskService.getAllTaskFor(username);
+    List<TaskDTO> taskDTOList = taskService.getAllTask(username);
 
-    assertThat(taskDTOs.get(0), samePropertyValuesAs(taskDTOList.get(0)));
+    assertThat(taskDTOList, hasItems(taskDTO));
+    assertThat(taskDTOList, hasSize(1));
   }
 
   @Test
@@ -96,8 +94,8 @@ public class TaskServiceTest {
     when(taskRepository.save(task)).thenReturn(task);
 
     TaskDTO taskDTO = getTaskDTO(description, username);
-    when(taskTransformer.transformToTask(taskDTO)).thenReturn(task);
-    when(taskTransformer.transformToTaskDTO(task)).thenReturn(taskDTO);
+    when(modelMapper.map(taskDTO, Task.class)).thenReturn(task);
+    when(modelMapper.map(task, TaskDTO.class)).thenReturn(taskDTO);
 
     TaskDTO actualTask = taskService.saveTask(taskDTO);
 
@@ -130,14 +128,14 @@ public class TaskServiceTest {
 
     TaskDTO updatedTaskDTO = getTaskDTO(description, username);
     updatedTaskDTO.setState(IN_PROGRESS);
-    when(taskTransformer.transformToTaskDTO(updatedTask)).thenReturn(updatedTaskDTO);
+    when(modelMapper.map(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
 
     TaskDTO receivedTaskDTO = taskService.updateTask(id, taskDTO);
 
     assertThat(receivedTaskDTO, samePropertyValuesAs(updatedTaskDTO));
     verify(taskRepository).findById(id);
     verify(taskRepository).save(any());
-    verify(taskTransformer).transformToTaskDTO(updatedTask);
+    verify(modelMapper).map(updatedTask, TaskDTO.class);
     verify(dateUtil, times(2)).getTime();
   }
 
@@ -159,14 +157,14 @@ public class TaskServiceTest {
 
     TaskDTO updatedTaskDTO = getTaskDTO(description, username);
     updatedTaskDTO.setState(DONE);
-    when(taskTransformer.transformToTaskDTO(updatedTask)).thenReturn(updatedTaskDTO);
+    when(modelMapper.map(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
 
     TaskDTO receivedTaskDTO = taskService.updateTask(id, taskDTO);
 
     assertThat(receivedTaskDTO, samePropertyValuesAs(updatedTaskDTO));
     verify(taskRepository).findById(id);
     verify(taskRepository).save(any());
-    verify(taskTransformer).transformToTaskDTO(updatedTask);
+    verify(modelMapper).map(updatedTask, TaskDTO.class);
     verify(dateUtil, times(3)).getTime();
   }
 
@@ -189,14 +187,14 @@ public class TaskServiceTest {
 
     TaskDTO updatedTaskDTO = getTaskDTO(description, username);
     updatedTaskDTO.setState(ON_HOLD);
-    when(taskTransformer.transformToTaskDTO(updatedTask)).thenReturn(updatedTaskDTO);
+    when(modelMapper.map(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
 
     TaskDTO receivedTaskDTO = taskService.updateTask(id, taskDTO);
 
     assertThat(receivedTaskDTO, samePropertyValuesAs(updatedTaskDTO));
     verify(taskRepository).findById(id);
     verify(taskRepository).save(any());
-    verify(taskTransformer).transformToTaskDTO(updatedTask);
+    verify(modelMapper).map(updatedTask, TaskDTO.class);
     verify(dateUtil, times(1)).getTime();
   }
 }

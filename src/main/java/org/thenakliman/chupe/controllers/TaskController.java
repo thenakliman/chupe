@@ -31,7 +31,7 @@ public class TaskController extends BaseController {
         (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     try {
       return new ResponseEntity<>(
-          taskService.getAllTaskFor(userDetails.getUsername()),
+          taskService.getAllTask(userDetails.getUsername()),
           HttpStatus.OK);
     } catch (NotFoundException ex) {
       return new ResponseEntity(HttpStatus.NOT_FOUND);
