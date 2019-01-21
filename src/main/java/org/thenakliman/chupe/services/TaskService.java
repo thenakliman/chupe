@@ -1,15 +1,5 @@
 package org.thenakliman.chupe.services;
 
-import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
-import static org.thenakliman.chupe.models.TaskState.CREATED;
-import static org.thenakliman.chupe.models.TaskState.DONE;
-import static org.thenakliman.chupe.models.TaskState.IN_PROGRESS;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +9,13 @@ import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.TaskRepository;
-import org.thenakliman.chupe.transformer.TaskTransformer;
+
+import java.util.List;
+import java.util.Optional;
+
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
+import static org.thenakliman.chupe.models.TaskState.*;
 
 
 @Service

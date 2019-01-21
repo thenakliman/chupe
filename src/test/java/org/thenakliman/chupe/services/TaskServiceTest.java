@@ -12,7 +12,6 @@ import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.TaskRepository;
-import org.thenakliman.chupe.transformer.TaskTransformer;
 
 import java.util.Collections;
 import java.util.Date;
