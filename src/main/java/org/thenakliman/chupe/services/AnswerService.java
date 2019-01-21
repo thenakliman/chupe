@@ -1,5 +1,9 @@
 package org.thenakliman.chupe.services;
 
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -12,10 +16,6 @@ import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.AnswerRepository;
-
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class AnswerService {
