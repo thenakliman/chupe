@@ -1,4 +1,4 @@
-package org.thenakliman.chupe.transformer;
+package org.thenakliman.chupe.mappings;
 
 import com.github.jmnarloch.spring.boot.modelmapper.ConverterConfigurerSupport;
 import org.modelmapper.AbstractConverter;
@@ -6,7 +6,6 @@ import org.modelmapper.Converter;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FundDTO;
-import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.models.User;

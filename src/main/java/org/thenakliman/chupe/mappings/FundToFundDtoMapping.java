@@ -1,4 +1,4 @@
-package org.thenakliman.chupe.transformer;
+package org.thenakliman.chupe.mappings;
 
 import com.github.jmnarloch.spring.boot.modelmapper.PropertyMapConfigurerSupport;
 import org.modelmapper.PropertyMap;

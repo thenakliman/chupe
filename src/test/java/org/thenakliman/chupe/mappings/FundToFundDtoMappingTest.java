@@ -1,4 +1,4 @@
-package org.thenakliman.chupe.transformer;
+package org.thenakliman.chupe.mappings;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -24,7 +24,7 @@ import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.FundTypeRepository;
 import org.thenakliman.chupe.repositories.TeamFundRepository;
-import org.thenakliman.chupe.transformer.FundTransformer;
+import org.thenakliman.chupe.mappings.FundTransformer;
 
 
 @Service

@@ -10,7 +10,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +30,7 @@ import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.FundTypeRepository;
 import org.thenakliman.chupe.repositories.TeamFundRepository;
-import org.thenakliman.chupe.transformer.FundTransformer;
+import org.thenakliman.chupe.mappings.FundTransformer;
 
 
 @RunWith(MockitoJUnitRunner.class)

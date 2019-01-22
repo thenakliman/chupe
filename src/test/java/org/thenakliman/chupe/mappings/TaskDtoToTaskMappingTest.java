@@ -1,4 +1,4 @@
-package org.thenakliman.chupe.transformer;
+package org.thenakliman.chupe.mappings;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,8 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.common.utils.DateUtil;
-import org.thenakliman.chupe.dto.AnswerDTO;
-import org.thenakliman.chupe.models.Answer;
+import org.thenakliman.chupe.dto.TaskDTO;
+import org.thenakliman.chupe.models.Task;
 import org.thenakliman.chupe.models.User;
 
 import java.util.Date;
@@ -17,9 +17,10 @@ import java.util.Date;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
+import static org.thenakliman.chupe.models.TaskState.IN_PROGRESS;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AnswerDtoToAnswerMappingTest {
+public class TaskDtoToTaskMappingTest {
 
   @Mock
   private DateUtil dateUtil;
@@ -32,42 +33,46 @@ public class AnswerDtoToAnswerMappingTest {
   @Before
   public void setUp() throws Exception {
     now = new Date();
-    modelMapper.addConverter(new AnswerDtoToAnswerMapping(dateUtil).converter());
+    modelMapper.addConverter(new TaskDtoToTaskMapping(dateUtil).converter());
     when(dateUtil.getTime()).thenReturn(now);
   }
 
   @Test
-  public void shouldMapAnswerToAnswerDTO() {
+  public void shouldMapTaskDtoToTask() {
     String userName = "user-name";
-    long answerId = 1001L;
-    long questionId = 10L;
-    String testAnswer = "test-Answer";
-
-    AnswerDTO answerDTO = AnswerDTO
+    long taskId = 1001L;
+    String description = "description";
+    TaskDTO taskDTO = TaskDTO
         .builder()
-        .questionId(questionId)
-        .id(answerId)
-        .answeredBy(userName)
-        .answer(testAnswer)
+        .description(description)
+        .createdBy(userName)
+        .endedOn(now)
+        .id(taskId)
+        .progress(10)
+        .startedOn(now)
+        .state(IN_PROGRESS)
         .build();
 
-    Answer answer = modelMapper.map(answerDTO, Answer.class);
+    Task mappedTask = modelMapper.map(taskDTO, Task.class);
 
     User user = User
         .builder()
         .userName(userName)
         .build();
 
-    Answer expectedAnswer = Answer
+    Task task = Task
         .builder()
-        .answer(testAnswer)
-        .answeredBy(user)
-        .id(answerId)
-        .questionId(questionId)
+        .description(description)
+        .createdBy(user)
+        .endedOn(now)
+        .id(taskId)
+        .progress(10)
+        .startOn(now)
+        .state(IN_PROGRESS)
         .createdAt(now)
         .updatedAt(now)
         .build();
 
-    assertThat(answer, samePropertyValuesAs(expectedAnswer));
+    assertThat(mappedTask, samePropertyValuesAs(task));
   }
 }
