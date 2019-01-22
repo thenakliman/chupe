@@ -20,11 +20,6 @@ import org.thenakliman.chupe.models.TransactionType;
 @Component
 public class FundTransformer {
 
-  /** Transform Fund to TeamFund.
-   *
-   * @param funds List of all funds transations
-   * @return Team fund for each member
-   */
   public TeamFund transformToTeamFund(List<Fund> funds) {
     TeamFund teamFund = new TeamFund();
     Map<String, TeamMemberFund> teamMemberFundMap = new HashMap<>();
@@ -51,41 +46,5 @@ public class FundTransformer {
 
     teamFund.setTeamMemberFunds(new ArrayList(teamMemberFundMap.values()));
     return teamFund;
-  }
-
-  /** Transform FundDTO to Fund model.
-   *
-   * @param fundDTO fund dto
-   * @return Fund model
-   */
-  public Fund transformToFund(FundDTO fundDTO) {
-    Fund fund = new Fund();
-    fund.setId(fundDTO.getId());
-    fund.setAmount(abs(fundDTO.getAmount()));
-    fund.setApproved(fundDTO.isApproved());
-    fund.setTransactionType(fundDTO.getTransactionType());
-    fund.setCreatedAt(new Date());
-    fund.setUpdatedAt(new Date());
-    return fund;
-  }
-
-  /** Transform FundDTO to Fund model.
-   * @param fund to be transformed
-   * @return fundDTO
-   */
-  public FundDTO transformToFundDTO(Fund fund) {
-    return new FundDTO(
-      fund.getId(),
-      fund.getType().getId(),
-      fund.getAmount(),
-      fund.getOwner().getUserName(),
-      fund.getAddedBy().getUserName(),
-      fund.getTransactionType(),
-      fund.isApproved(),
-      fund.getCreatedAt());
-  }
-
-  public List<FundDTO> transformToFundDTOs(List<Fund> teamMemberFunds) {
-    return teamMemberFunds.stream().map(this::transformToFundDTO).collect(Collectors.toList());
   }
 }

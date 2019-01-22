@@ -5,15 +5,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
 import org.thenakliman.chupe.models.Fund;
@@ -35,12 +32,11 @@ public class FundTransformerTest {
     fund.setType(fundType);
   }
 
-  private String addFundOwner(Fund fund, String ownerUsername, TransactionType transactionType) {
+  private void addFundOwner(Fund fund, String ownerUsername, TransactionType transactionType) {
     User fundOwner = new User();
     fundOwner.setUserName(ownerUsername);
     fund.setOwner(fundOwner);
     fund.setTransactionType(transactionType);
-    return ownerUsername;
   }
 
   private Fund getFund(int id, long amount) {
@@ -48,40 +44,6 @@ public class FundTransformerTest {
     fund.setId(id);
     fund.setAmount(amount);
     fund.setApproved(false);
-    return fund;
-  }
-
-  private FundDTO getFundDTO(Date createdAt) {
-    return new FundDTO(
-        10,
-        11,
-        1000,
-        "test-owner",
-        "test-added-by-user",
-        TransactionType.CREDIT,
-        false,
-        createdAt);
-  }
-
-  private Fund getFundWithDetailedData(Date createdAt) {
-    Fund fund = new Fund();
-    fund.setId(10);
-    fund.setAmount(1000);
-    fund.setTransactionType(TransactionType.CREDIT);
-    fund.setApproved(false);
-    fund.setCreatedAt(createdAt);
-
-    FundType fundType = new FundType();
-    fundType.setId(11);
-    fund.setType(fundType);
-
-    User owner = new User();
-    owner.setUserName("test-owner");
-    fund.setOwner(owner);
-
-    User addedBy = new User();
-    addedBy.setUserName("test-added-by-user");
-    fund.setAddedBy(addedBy);
     return fund;
   }
 
@@ -337,89 +299,5 @@ public class FundTransformerTest {
                 teamFund.getTeamMemberFunds().stream().filter(actualTeamMemberFund ->
                     expectedTeamMemberFund.getOwner().equals(actualTeamMemberFund.getOwner()))
                         .findFirst().get())));
-  }
-
-  @Test
-  public void shouldTransformFunddDtoToFundModel() {
-    Fund fund = new Fund();
-    fund.setId(10);
-    fund.setAmount(1000);
-    fund.setTransactionType(TransactionType.CREDIT);
-    fund.setApproved(false);
-    Date createdAt = new Date();
-    fund.setCreatedAt(createdAt);
-    String owner = "test-owner";
-    String addedBy = "test-added-by-user";
-    FundDTO fundDTO = new FundDTO(
-        10,
-        11,
-        1000,
-        owner,
-        addedBy,
-        TransactionType.CREDIT,
-        false,
-        createdAt);;
-
-    Fund actualFund = fundTransformer.transformToFund(fundDTO);
-
-    assertEquals(fund.getAddedBy(), actualFund.getAddedBy());
-    assertEquals(fund.getOwner(), actualFund.getOwner());
-    assertEquals(fund.getAmount(), actualFund.getAmount());
-    assertEquals(fund.getId(), actualFund.getId());
-    assertEquals(fund.getTransactionType(), actualFund.getTransactionType());
-    assertEquals(fund.getType(), actualFund.getType());
-    assertEquals(fund.getCreatedAt(), actualFund.getCreatedAt());
-  }
-
-
-  @Test
-  public void shouldConvertNegativeToPositiveFundAmountWhenTransformFunddtoToFundModel() {
-    Fund fund = new Fund();
-    fund.setId(10);
-    fund.setAmount(1000);
-    fund.setTransactionType(TransactionType.CREDIT);
-    fund.setApproved(false);
-    Date createdAt = new Date();
-    fund.setCreatedAt(createdAt);
-    String owner = "test-owner";
-    String addedBy = "test-added-by-user";
-    FundDTO fundDTO = new FundDTO(
-        10,
-        11,
-        -1000,
-        owner,
-        addedBy,
-        TransactionType.CREDIT,
-        false,
-        createdAt);;
-
-    Fund actualFund = fundTransformer.transformToFund(fundDTO);
-
-    assertEquals(fund.getAddedBy(), actualFund.getAddedBy());
-    assertEquals(fund.getOwner(), actualFund.getOwner());
-    assertEquals(fund.getAmount(), actualFund.getAmount());
-    assertEquals(fund.getId(), actualFund.getId());
-    assertEquals(fund.getTransactionType(), actualFund.getTransactionType());
-    assertEquals(fund.getType(), actualFund.getType());
-    assertEquals(fund.getCreatedAt(), actualFund.getCreatedAt());
-  }
-
-  @Test
-  public void shouldTransformFundModeltoFundDTO() {
-    Date createdAt = new Date();
-    FundDTO fundDTO = getFundDTO(createdAt);
-    Fund fund = getFundWithDetailedData(createdAt);
-    FundDTO actualFund = fundTransformer.transformToFundDTO(fund);
-    assertThat(fundDTO, samePropertyValuesAs(actualFund));
-  }
-
-  @Test
-  public void shouldTransformFundModelToFundDTOs() {
-    Date createdAt = new Date();
-    FundDTO fundDTO = getFundDTO(createdAt);
-    List<Fund> funds = Arrays.asList(getFundWithDetailedData(createdAt));
-    List<FundDTO> actualFund = fundTransformer.transformToFundDTOs(funds);
-    assertEquals(actualFund.size(), funds.size());
-    assertThat(fundDTO, samePropertyValuesAs(actualFund.get(0)));
   }
 }

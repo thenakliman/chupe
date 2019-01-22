@@ -1,12 +1,17 @@
 package org.thenakliman.chupe.services;
 
-import java.util.Collections;
+import static java.lang.String.format;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import javassist.NotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.dto.FundDTO;
@@ -36,10 +41,9 @@ public class TeamFundService {
   @Autowired
   private UserService userService;
 
-  /** Get all fund types.
-   *
-   * @returns list of fund types.
-   */
+  @Autowired
+  private ModelMapper modelMapper;
+
   public List<FundType> getAllFundTypes() throws NotFoundException {
     List<FundType> fundTypes = fundTypeRepository.findAll();
     if (fundTypes.isEmpty()) {
@@ -48,14 +52,10 @@ public class TeamFundService {
     return fundTypes;
   }
 
-  /** Get team fund for all members.
-   *
-   * @return team fund for all members
-   */
   public TeamFund getTeamFund() {
     List<Fund> funds = teamFundRepository.findAll();
-    if (funds == null) {
-      funds = Collections.emptyList();
+    if (isNull(funds)) {
+      funds = emptyList();
     }
 
     TeamFund teamFund = fundTransformer.transformToTeamFund(funds);
@@ -74,55 +74,46 @@ public class TeamFundService {
     return teamFund;
   }
 
-  /** Save team fund.
-   *
-   * @param fundDTO fund dto received
-   * @return Saved fund
-   * @throws NotFoundException when any of the children is not found
-   */
   public FundDTO saveTeamFund(FundDTO fundDTO) throws NotFoundException {
-    Fund fund = fundTransformer.transformToFund(fundDTO);
+    Fund fund = modelMapper.map(fundDTO, Fund.class);
 
     Optional<FundType> fundType = fundTypeRepository.findById(fundDTO.getType());
 
     if (!fundType.isPresent()) {
-      String fundTypeNotFound = String.format("Fund type with id {} not found.", fundDTO.getId());
+      String fundTypeNotFound = format("Fund type with id %d not found.", fundDTO.getId());
       throw new NotFoundException(fundTypeNotFound);
     }
     fund.setType(fundType.get());
 
     User addedBy = userService.findByUserName(fundDTO.getAddedBy());
-    if (addedBy == null) {
-      String addedByUserNotFound = "Added by user with username {} not found";;
-      throw new NotFoundException(String.format(addedByUserNotFound, fundDTO.getAddedBy()));
+    if (isNull(addedBy)) {
+      String addedByUserNotFound = "Added by user with username %s not found";;
+      throw new NotFoundException(format(addedByUserNotFound, fundDTO.getAddedBy()));
     }
     fund.setAddedBy(addedBy);
 
     User owner = userService.findByUserName(fundDTO.getOwner());
-    if (owner == null) {
-      String ownerUserNotFound = "Owner user with username {} not found";
-      throw new NotFoundException(String.format(ownerUserNotFound, fundDTO.getOwner()));
+    if (isNull(owner)) {
+      String ownerUserNotFound = "Owner user with username %s not found";
+      throw new NotFoundException(format(ownerUserNotFound, fundDTO.getOwner()));
     }
 
     fund.setOwner(owner);
 
-    return fundTransformer.transformToFundDTO(teamFundRepository.save(fund));
+    return modelMapper.map(teamFundRepository.save(fund), FundDTO.class);
   }
 
-  /** Get Fund for a given user.
-   *
-   * @param username for which fund to be provided
-   * @return list of fundDTOs
-   * @throws NotFoundException when username does not exist
-   */
-  public List<FundDTO> getAllFundFor(String username) throws NotFoundException {
+  public List<FundDTO> getFundForATeamMember(String username) throws NotFoundException {
     User user = new User();
     user.setUserName(username);
     List<Fund> teamMemberFunds = teamFundRepository.findByOwner(user);
-    if (teamMemberFunds == null) {
+    if (isNull(teamMemberFunds)) {
       throw new NotFoundException("Not Found");
     }
 
-    return fundTransformer.transformToFundDTOs(teamMemberFunds);
+    return teamMemberFunds
+        .stream()
+        .map(teamMemberFund -> modelMapper.map(teamMemberFund, FundDTO.class))
+        .collect(toList());
   }
 }
