@@ -18,13 +18,13 @@ import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
 import org.thenakliman.chupe.dto.UserDTO;
+import org.thenakliman.chupe.mappings.FundTransformer;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.FundTypeRepository;
 import org.thenakliman.chupe.repositories.TeamFundRepository;
-import org.thenakliman.chupe.mappings.FundTransformer;
 
 
 @Service
