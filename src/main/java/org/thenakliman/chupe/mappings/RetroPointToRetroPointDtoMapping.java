@@ -7,7 +7,8 @@ import org.thenakliman.chupe.dto.RetroPointDTO;
 import org.thenakliman.chupe.models.RetroPoint;
 
 @Component
-public class RetroPointToRetroPointDtoMapping extends PropertyMapConfigurerSupport<RetroPoint, RetroPointDTO> {
+public class RetroPointToRetroPointDtoMapping extends
+    PropertyMapConfigurerSupport<RetroPoint, RetroPointDTO> {
 
   @Override
   public PropertyMap<RetroPoint, RetroPointDTO> mapping() {
@@ -16,6 +17,7 @@ public class RetroPointToRetroPointDtoMapping extends PropertyMapConfigurerSuppo
       @Override
       protected void configure() {
         map().setAddedBy(source.getAddedBy().getUserName());
+        map().setRetroId(source.getRetro().getId());
       }
     };
   }

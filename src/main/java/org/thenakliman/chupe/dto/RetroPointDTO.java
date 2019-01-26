@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import org.thenakliman.chupe.models.RetroPointType;
 
 @AllArgsConstructor
@@ -13,6 +12,8 @@ import org.thenakliman.chupe.models.RetroPointType;
 @Data
 public class RetroPointDTO {
   private long id;
+
+  private long retroId;
 
   private String description;
 

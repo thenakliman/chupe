@@ -1,0 +1,1 @@
+ALTER TABLE retrospection_point ADD retro_id INTEGER references retrospection(id);

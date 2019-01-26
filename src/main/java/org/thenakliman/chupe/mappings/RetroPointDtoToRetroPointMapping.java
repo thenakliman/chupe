@@ -6,11 +6,13 @@ import org.modelmapper.Converter;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.RetroPointDTO;
+import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.RetroPoint;
 import org.thenakliman.chupe.models.User;
 
 @Component
-public class RetroPointDtoToRetroPointMapping extends ConverterConfigurerSupport<RetroPointDTO, RetroPoint> {
+public class RetroPointDtoToRetroPointMapping extends
+    ConverterConfigurerSupport<RetroPointDTO, RetroPoint> {
 
   private DateUtil dateUtil;
 
@@ -35,6 +37,13 @@ public class RetroPointDtoToRetroPointMapping extends ConverterConfigurerSupport
             .build();
       }
     };
+  }
+
+  private Retro getRetro(Long retroId) {
+    return Retro
+        .builder()
+        .id(retroId)
+        .build();
   }
 
   private User getUser(String addedBy) {
