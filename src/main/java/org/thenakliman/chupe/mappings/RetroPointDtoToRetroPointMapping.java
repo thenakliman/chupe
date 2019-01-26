@@ -32,6 +32,7 @@ public class RetroPointDtoToRetroPointMapping extends
             .description(source.getDescription())
             .id(source.getId())
             .type(source.getType())
+            .retro(getRetro(source.getRetroId()))
             .createdAt(dateUtil.getTime())
             .updatedAt(dateUtil.getTime())
             .build();

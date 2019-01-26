@@ -42,12 +42,14 @@ public class RetroPointDtoToRetroPointMappingTest {
     String description = "test-description";
     long retroPointId = 10110L;
     RetroPointType retroPointType = NEED_IMPROVEMENT;
+    long retroId = 1203L;
     RetroPointDTO retroPointDTO = RetroPointDTO
         .builder()
         .addedBy(addedBy)
         .description(description)
         .id(retroPointId)
         .type(retroPointType)
+        .retroId(retroId)
         .build();
 
     RetroPoint retroPoint = modelMapper.map(retroPointDTO, RetroPoint.class);
@@ -56,6 +58,7 @@ public class RetroPointDtoToRetroPointMappingTest {
     assertEquals(description, retroPoint.getDescription());
     assertEquals(Long.valueOf(retroPointId), retroPoint.getId());
     assertEquals(retroPointType, retroPoint.getType());
+    assertEquals(Long.valueOf(retroId), retroPoint.getRetro().getId());
     assertEquals(now, retroPoint.getCreatedAt());
     assertEquals(now, retroPoint.getUpdatedAt());
   }
