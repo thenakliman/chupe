@@ -92,7 +92,6 @@ public class RetroPointServiceTest {
 
   @Test(expected = NotFoundException.class)
   public void shouldRaisedNotFoundExceptionWhenRetroDoesNotExistForFetchingAllPoints() throws NotFoundException {
-    when(retroRepository.findById(retroId)).thenReturn(Optional.empty());
     retroPointService.getRetroPoints(retroId);
   }
 
@@ -115,5 +114,24 @@ public class RetroPointServiceTest {
     RetroPointDTO updateRetroPoint = retroPointService.updateRetroPoint(retroId, retroPointDTO);
 
     assertThat(updateRetroPoint, samePropertyValuesAs(retroPointDTO));
+  }
+
+  @Test(expected = NotFoundException.class)
+  public void shouldThrowNotFoundExceptionWhenRetroPointDoesNotExist() throws NotFoundException {
+    Long retroId = 1939L;
+    when(retroPointRepository.findById(retroId)).thenReturn(Optional.empty());
+
+    retroPointService.getRetroPoint(retroId);
+  }
+
+  @Test
+  public void shouldReturnRetroPoint() throws NotFoundException {
+    Long retroId = 1939L;
+    RetroPoint retroPoint = RetroPoint.builder().build();
+    when(retroPointRepository.findById(retroId)).thenReturn(Optional.of(retroPoint));
+
+    RetroPoint actualRetroPoint = retroPointService.getRetroPoint(retroId);
+
+    assertEquals(retroPoint, actualRetroPoint);
   }
 }

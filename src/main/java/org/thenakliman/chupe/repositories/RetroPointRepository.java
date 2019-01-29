@@ -9,5 +9,5 @@ import org.thenakliman.chupe.models.RetroPoint;
 
 @Repository
 public interface RetroPointRepository extends JpaRepository<RetroPoint, Long> {
-  public List<RetroPoint> findByRetro(Retro retro);
+  public List<RetroPoint> findAllByRetro(Retro retro);
 }

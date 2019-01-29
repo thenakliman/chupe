@@ -60,7 +60,7 @@ public class TaskControllerTest extends BaseControllerTest {
 
   private Authentication authToken;
 
-  final String username = "username";
+  private final String username = "username";
 
   /** Setup web application context. */
   @Before()

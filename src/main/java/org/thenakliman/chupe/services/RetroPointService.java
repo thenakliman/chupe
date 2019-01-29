@@ -49,7 +49,7 @@ public class RetroPointService {
     Retro retro = retroOptional.orElseThrow(
         () -> new NotFoundException(format("Retro not found for %d id", retroId)));
 
-    List<RetroPoint> retroPoints = retroPointRepository.findByRetro(retro);
+    List<RetroPoint> retroPoints = retroPointRepository.findAllByRetro(retro);
     return retroPoints
         .stream()
         .map(retroPoint -> modelMapper.map(retroPoint, RetroPointDTO.class))
@@ -67,5 +67,11 @@ public class RetroPointService {
     retroPoint.setUpdatedAt(dateUtil.getTime());
     RetroPoint updatedRetroPoint = retroPointRepository.save(retroPoint);
     return modelMapper.map(updatedRetroPoint, RetroPointDTO.class);
+  }
+
+  RetroPoint getRetroPoint(Long id) throws NotFoundException {
+    Optional<RetroPoint> retroPoint = retroPointRepository.findById(id);
+    return retroPoint.orElseThrow(
+        () -> new NotFoundException("Retro poing not found for id " + id));
   }
 }
