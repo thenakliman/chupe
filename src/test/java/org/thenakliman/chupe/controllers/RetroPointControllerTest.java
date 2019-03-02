@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.controllers;
 
-import java.util.ArrayList;
-
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
@@ -9,6 +7,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +61,7 @@ public class RetroPointControllerTest extends BaseControllerTest {
 
   private Authentication authToken;
 
-  final private Long retroId = 2357L;
+  private final Long retroId = 2357L;
 
   @Before()
   public void testSetup() {
@@ -142,7 +141,8 @@ public class RetroPointControllerTest extends BaseControllerTest {
   public void shouldRaiseNotFoundWhenUpdateTask() throws Exception {
     RetroPointDTO retroDTO = getRetroPointDTO();
     long retroPointId = 10L;
-    given(retroPointService.updateRetroPoint(retroPointId, retroDTO)).willThrow(new NotFoundException("not Found"));
+    given(retroPointService.updateRetroPoint(retroPointId, retroDTO)).willThrow(
+        new NotFoundException("not Found"));
 
     mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/retros/" + retroPointId)

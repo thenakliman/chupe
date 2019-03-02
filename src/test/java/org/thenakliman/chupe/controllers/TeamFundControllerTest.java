@@ -173,7 +173,8 @@ public class TeamFundControllerTest extends BaseControllerTest {
 
   @Test
   public void shouldReturnBadRequestWhenUsernameIsNotFound() throws Exception {
-    when(teamFundService.getFundForATeamMember(anyString())).thenThrow(new NotFoundException("Not Found"));
+    when(teamFundService.getFundForATeamMember(anyString())).thenThrow(
+        new NotFoundException("Not Found"));
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .get("/api/v1/funds?owner=fakeUser")

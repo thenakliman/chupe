@@ -1,12 +1,14 @@
 package org.thenakliman.chupe.services;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Optional;
 
 import javassist.NotFoundException;
+import javassist.tools.web.BadHttpRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,26 +16,28 @@ import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.RetroPointDTO;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.RetroPoint;
+import org.thenakliman.chupe.models.RetroVote;
+import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.RetroPointRepository;
-import org.thenakliman.chupe.repositories.RetroRepository;
+import org.thenakliman.chupe.repositories.RetroVoteRepository;
 
 @Service
 public class RetroPointService {
   private ModelMapper modelMapper;
   private RetroPointRepository retroPointRepository;
-  private RetroRepository retroRepository;
   private DateUtil dateUtil;
+  private RetroVoteRepository retroVoteRepository;
 
   @Autowired
   public RetroPointService(ModelMapper modelMapper,
                            RetroPointRepository retroPointRepository,
-                           RetroRepository retroRepository,
-                           DateUtil dateUtil) {
+                           DateUtil dateUtil,
+                           RetroVoteRepository retroVoteRepository) {
 
     this.modelMapper = modelMapper;
     this.retroPointRepository = retroPointRepository;
-    this.retroRepository = retroRepository;
     this.dateUtil = dateUtil;
+    this.retroVoteRepository = retroVoteRepository;
   }
 
   public RetroPointDTO saveRetroPoint(RetroPointDTO retroPointDTO) {
@@ -43,17 +47,17 @@ public class RetroPointService {
     return modelMapper.map(savedRetroPoint, RetroPointDTO.class);
   }
 
-  public List<RetroPointDTO> getRetroPoints(Long retroId) throws NotFoundException {
-    Optional<Retro> retroOptional = retroRepository.findById(retroId);
-
-    Retro retro = retroOptional.orElseThrow(
-        () -> new NotFoundException(format("Retro not found for %d id", retroId)));
-
-    List<RetroPoint> retroPoints = retroPointRepository.findAllByRetro(retro);
+  public List<RetroPointDTO> getRetroPoints(Long retroId) {
+    List<RetroPoint> retroPoints = retroPointRepository.findAllByRetroId(retroId);
     return retroPoints
         .stream()
         .map(retroPoint -> modelMapper.map(retroPoint, RetroPointDTO.class))
+        .peek(retroPointDTO -> retroPointDTO.setVotes(getVotes(retroPointDTO.getId())))
         .collect(toList());
+  }
+
+  private long getVotes(Long retroPointId) {
+    return retroVoteRepository.countByRetroPointId(retroPointId);
   }
 
   public RetroPointDTO updateRetroPoint(Long retroPointId,
@@ -72,6 +76,58 @@ public class RetroPointService {
   RetroPoint getRetroPoint(Long id) throws NotFoundException {
     Optional<RetroPoint> retroPoint = retroPointRepository.findById(id);
     return retroPoint.orElseThrow(
-        () -> new NotFoundException("Retro poing not found for id " + id));
+        () -> new NotFoundException("Retro point not found for id " + id));
+  }
+
+  public void castVote(Long retroPointId, String username)
+      throws BadHttpRequest, NotFoundException {
+
+    RetroVote alreadyCastedVote = retroVoteRepository.findByRetroPointIdAndVotedByUserName(
+        retroPointId,
+        username);
+
+    if (isNull(alreadyCastedVote)) {
+      saveVote(retroPointId, username);
+    } else {
+      retroVoteRepository.delete(alreadyCastedVote);
+    }
+  }
+
+  private void saveVote(Long retroPointId, String username)
+      throws BadHttpRequest, NotFoundException {
+
+    Retro retro = getRetro(retroPointId);
+    long votesByUser = retroVoteRepository.countByVotedByUserNameAndRetroPointRetroId(
+        username,
+        retro.getId());
+
+    if (votesByUser >= retro.getMaximumVote()) {
+      throw new BadHttpRequest();
+    }
+
+    retroVoteRepository.save(getRetroVote(username, retroPointId));
+  }
+
+  private Retro getRetro(Long retroPointId) throws NotFoundException {
+    Optional<RetroPoint> retroPointOptional = retroPointRepository.findById(retroPointId);
+    RetroPoint retroPoint = retroPointOptional.orElseThrow(
+        () -> new NotFoundException("Retro poing not found for id " + retroPointId));
+
+    return retroPoint.getRetro();
+  }
+
+  private RetroVote getRetroVote(String user, Long retroPointId) {
+    RetroPoint retroPoint = RetroPoint
+        .builder()
+        .id(retroPointId)
+        .build();
+
+    return RetroVote
+        .builder()
+        .votedBy(User.builder().userName(user).build())
+        .retroPoint(retroPoint)
+        .createdAt(dateUtil.getTime())
+        .updatedAt(dateUtil.getTime())
+        .build();
   }
 }

@@ -5,19 +5,19 @@ import javassist.tools.web.BadHttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.thenakliman.chupe.dto.User;
-import org.thenakliman.chupe.services.RetroVoteService;
+import org.thenakliman.chupe.services.RetroPointService;
+
 
 @Controller
 public class VoteController extends BaseController {
-  private RetroVoteService retroVoteService;
+  private RetroPointService retroPointService;
 
-  public VoteController(RetroVoteService retroVoteService) {
-    this.retroVoteService = retroVoteService;
+  public VoteController(RetroPointService retroPointService) {
+    this.retroPointService = retroPointService;
   }
 
   @PostMapping("/retro-point-votes/{id}")
@@ -26,7 +26,7 @@ public class VoteController extends BaseController {
         (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     try {
-      retroVoteService.castVote(id, userDetails.getUsername());
+      retroPointService.castVote(id, userDetails.getUsername());
     } catch (NotFoundException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     } catch (BadHttpRequest ex) {

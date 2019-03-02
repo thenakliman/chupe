@@ -1,5 +1,11 @@
 package org.thenakliman.chupe.mappings;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.thenakliman.chupe.models.TransactionType.DEBIT;
+
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,12 +17,6 @@ import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.TransactionType;
-
-import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.thenakliman.chupe.models.TransactionType.DEBIT;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FundDtoToFundMappingTest {

@@ -27,13 +27,7 @@ public class RetroPointController extends BaseController {
 
   @GetMapping("/retro-points")
   public ResponseEntity getRetros(@RequestParam("retroId") long id) {
-    List<RetroPointDTO> retroPoints;
-    try {
-      retroPoints = retroPointService.getRetroPoints(id);
-    } catch (NotFoundException ex) {
-      return new ResponseEntity(HttpStatus.NOT_FOUND);
-    }
-
+    List<RetroPointDTO> retroPoints = retroPointService.getRetroPoints(id);
     return new ResponseEntity<>(retroPoints, HttpStatus.OK);
   }
 

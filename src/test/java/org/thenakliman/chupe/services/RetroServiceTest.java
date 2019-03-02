@@ -1,5 +1,19 @@
 package org.thenakliman.chupe.services;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,20 +26,6 @@ import org.thenakliman.chupe.dto.RetroDTO;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.RetroRepository;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)

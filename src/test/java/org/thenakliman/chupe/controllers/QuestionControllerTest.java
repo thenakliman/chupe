@@ -1,6 +1,15 @@
 package org.thenakliman.chupe.controllers;
 
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,16 +34,6 @@ import org.thenakliman.chupe.models.QuestionPriority;
 import org.thenakliman.chupe.models.QuestionStatus;
 import org.thenakliman.chupe.services.QuestionService;
 import org.thenakliman.chupe.services.TokenService;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
 
 
 @WebMvcTest(controllers = QuestionController.class, secure = false)

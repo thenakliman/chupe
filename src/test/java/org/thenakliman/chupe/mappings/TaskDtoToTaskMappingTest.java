@@ -1,5 +1,11 @@
 package org.thenakliman.chupe.mappings;
 
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+import static org.thenakliman.chupe.models.TaskState.IN_PROGRESS;
+
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,13 +17,6 @@ import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
 import org.thenakliman.chupe.models.User;
-
-import java.util.Date;
-
-import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-import static org.thenakliman.chupe.models.TaskState.IN_PROGRESS;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskDtoToTaskMappingTest {

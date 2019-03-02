@@ -6,9 +6,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 
-import java.util.ArrayList;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -144,7 +143,8 @@ public class RetroControllerTest extends BaseControllerTest {
     String name = "my name";
     RetroDTO retroDTO = getRetroDTO(name);
     long retroId = 10L;
-    given(retroService.updateRetro(retroId, retroDTO)).willThrow(new NotFoundException("not Found"));
+    given(retroService.updateRetro(retroId, retroDTO)).willThrow(
+        new NotFoundException("not Found"));
 
     mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/retros/" + retroId)

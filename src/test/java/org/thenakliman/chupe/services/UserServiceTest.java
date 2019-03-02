@@ -1,8 +1,17 @@
 package org.thenakliman.chupe.services;
 
+import static java.util.Collections.emptyList;
+import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -11,17 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.UserRepository;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static java.util.Collections.emptyList;
-import static junit.framework.TestCase.assertEquals;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
-import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
 
 
 @RunWith(MockitoJUnitRunner.class)

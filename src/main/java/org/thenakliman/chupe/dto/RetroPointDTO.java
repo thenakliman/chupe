@@ -20,4 +20,6 @@ public class RetroPointDTO {
   private RetroPointType type;
 
   private String addedBy;
+
+  private long votes;
 }
