@@ -5,6 +5,7 @@ import java.util.List;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.thenakliman.chupe.dto.RetroDTO;
+import org.thenakliman.chupe.dto.UpsertRetroDTO;
+import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.services.RetroService;
 
 
@@ -30,18 +33,21 @@ public class RetroController extends BaseController {
   }
 
   @PostMapping("/retros")
-  public ResponseEntity createRetro(@RequestBody RetroDTO retroDTO) {
-    RetroDTO retro = retroService.saveRetro(retroDTO);
+  public ResponseEntity createRetro(@RequestBody UpsertRetroDTO upsertRetroDTO) {
+    User userDetails =
+        (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    RetroDTO retro = retroService.saveRetro(upsertRetroDTO, userDetails.getUsername());
     return new ResponseEntity<>(retro, HttpStatus.CREATED);
   }
 
   @PutMapping("/retros/{id}")
-  public ResponseEntity<RetroDTO> updateRetro(@RequestBody RetroDTO retroDTO,
+  public ResponseEntity<RetroDTO> updateRetro(@RequestBody UpsertRetroDTO upsertRetroDTO,
                                             @PathVariable(value = "id") long id) {
     RetroDTO updatedRetro;
 
     try {
-      updatedRetro = retroService.updateRetro(id, retroDTO);
+      updatedRetro = retroService.updateRetro(id, upsertRetroDTO);
     } catch (NotFoundException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

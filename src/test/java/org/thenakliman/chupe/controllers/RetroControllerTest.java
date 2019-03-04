@@ -4,6 +4,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.RetroDTO;
+import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.services.RetroService;
 import org.thenakliman.chupe.services.TokenService;
@@ -101,11 +103,20 @@ public class RetroControllerTest extends BaseControllerTest {
           .build();
   }
 
+  private UpsertRetroDTO getUpsertRetroDTO(String name) {
+    return UpsertRetroDTO
+          .builder()
+          .name(name)
+          .maximumVote(10L)
+          .build();
+  }
+
   @Test
   public void shouldCreateRetro() throws  Exception {
     String name = "today name";
     RetroDTO retroDTO = getRetroDTO(name);
-    given(retroService.saveRetro(retroDTO)).willReturn(retroDTO);
+    given(retroService.saveRetro(any(), any())).willReturn(retroDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/retros")
@@ -124,7 +135,7 @@ public class RetroControllerTest extends BaseControllerTest {
     String name = "today task";
     RetroDTO retroDTO = getRetroDTO(name);
     long retroId = 10L;
-    given(retroService.updateRetro(retroId, retroDTO)).willReturn(retroDTO);
+    given(retroService.updateRetro(retroId, getUpsertRetroDTO(name))).willReturn(retroDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/retros/" + retroId)
@@ -143,7 +154,7 @@ public class RetroControllerTest extends BaseControllerTest {
     String name = "my name";
     RetroDTO retroDTO = getRetroDTO(name);
     long retroId = 10L;
-    given(retroService.updateRetro(retroId, retroDTO)).willThrow(
+    given(retroService.updateRetro(retroId, getUpsertRetroDTO(name))).willThrow(
         new NotFoundException("not Found"));
 
     mockMvc.perform(MockMvcRequestBuilders
@@ -152,4 +163,5 @@ public class RetroControllerTest extends BaseControllerTest {
         .content(objectMapper.writeValueAsString(retroDTO)))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
   }
+
 }

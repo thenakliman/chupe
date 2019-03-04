@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.dto.RetroDTO;
+import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.RetroRepository;
@@ -52,12 +53,18 @@ public class RetroServiceTest {
     long retroId = 1010L;
     long maximumVote = 3L;
     String name = "my-name";
+    UpsertRetroDTO upsertRetroDTO = UpsertRetroDTO
+        .builder()
+        .maximumVote(maximumVote)
+        .name(name)
+        .build();
+
     RetroDTO retroDTO = RetroDTO
         .builder()
-        .createdBy(username)
-        .maximumVote(maximumVote)
         .id(retroId)
+        .maximumVote(maximumVote)
         .name(name)
+        .createdBy(name)
         .build();
 
     User user = new User();
@@ -70,11 +77,11 @@ public class RetroServiceTest {
         .maximumVote(maximumVote)
         .build();
 
-    when(modelMapper.map(retroDTO, Retro.class)).thenReturn(retro);
+    when(modelMapper.map(upsertRetroDTO, Retro.class)).thenReturn(retro);
     when(retroRepository.save(retro)).thenReturn(retro);
     when(modelMapper.map(retro, RetroDTO.class)).thenReturn(retroDTO);
 
-    RetroDTO actualRetro = retroService.saveRetro(retroDTO);
+    RetroDTO actualRetro = retroService.saveRetro(upsertRetroDTO, name);
 
     verify(retroRepository).save(retro);
     assertThat(actualRetro, samePropertyValuesAs(retroDTO));
@@ -110,15 +117,13 @@ public class RetroServiceTest {
   public void shouldThrowNotFoundExceptionWhenRetroToBeUpdatedIsNotFound() throws NotFoundException {
     long retroId = 10L;
     when(retroRepository.findById(retroId)).thenReturn(Optional.empty());
-    RetroDTO retroDTO = RetroDTO
+    UpsertRetroDTO upsertRetroDTO = UpsertRetroDTO
         .builder()
-        .id(retroId)
         .name("name")
-        .createdBy("newCreatedBy")
         .maximumVote(3L)
         .build();
 
-    retroService.updateRetro(retroId, retroDTO);
+    retroService.updateRetro(retroId, upsertRetroDTO);
   }
 
   @Test
@@ -129,8 +134,13 @@ public class RetroServiceTest {
     Retro savedRetro = getRetro(retroId, retroName, username);
 
     when(retroRepository.findById(retroId)).thenReturn(Optional.of(savedRetro));
-
     String newName = "new-retro-name";
+    UpsertRetroDTO upsertRetroDTO = UpsertRetroDTO
+        .builder()
+        .name(newName)
+        .maximumVote(3L)
+        .build();
+
     RetroDTO retroDTO = RetroDTO
         .builder()
         .id(retroId)
@@ -142,7 +152,7 @@ public class RetroServiceTest {
     Retro updatedRetro = getRetro(retroId, newName, username);
     when(modelMapper.map(updatedRetro, RetroDTO.class)).thenReturn(retroDTO);
     when(retroRepository.save(updatedRetro)).thenReturn(updatedRetro);
-    RetroDTO actualRetroDTO = retroService.updateRetro(retroId, retroDTO);
+    RetroDTO actualRetroDTO = retroService.updateRetro(retroId, upsertRetroDTO);
 
     verify(retroRepository).save(updatedRetro);
     assertThat(actualRetroDTO, samePropertyValuesAs(retroDTO));
