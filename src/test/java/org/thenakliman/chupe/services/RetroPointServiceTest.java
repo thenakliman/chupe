@@ -1,6 +1,5 @@
 package org.thenakliman.chupe.services;
 
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -26,6 +25,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.RetroPointDTO;
+import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
 import org.thenakliman.chupe.models.*;
 import org.thenakliman.chupe.repositories.RetroPointRepository;
 import org.thenakliman.chupe.repositories.RetroVoteRepository;
@@ -59,13 +59,18 @@ public class RetroPointServiceTest {
     String description = "my description";
     RetroPointType retroPointType = NEED_IMPROVEMENT;
     RetroPointDTO retroPointDTO = getRetroPointDTO(username, description, retroPointType);
+    UpsertRetroPointDTO upsertRetroPointDTO = UpsertRetroPointDTO
+        .builder()
+        .description(description)
+        .type(retroPointType)
+        .build();
 
     RetroPoint retroPoint = getRetroPoint(username, retroId, retroPointType, description, null);
-    when(modelMapper.map(retroPointDTO, RetroPoint.class)).thenReturn(retroPoint);
+    when(modelMapper.map(upsertRetroPointDTO, RetroPoint.class)).thenReturn(retroPoint);
     when(retroPointRepository.save(retroPoint)).thenReturn(retroPoint);
     when(modelMapper.map(retroPoint, RetroPointDTO.class)).thenReturn(retroPointDTO);
 
-    RetroPointDTO savedRetroPoint = retroPointService.saveRetroPoint(retroPointDTO);
+    RetroPointDTO savedRetroPoint = retroPointService.saveRetroPoint(upsertRetroPointDTO, username);
 
     assertEquals(username, savedRetroPoint.getAddedBy());
     assertEquals(description, savedRetroPoint.getDescription());
@@ -129,7 +134,7 @@ public class RetroPointServiceTest {
 
     when(retroPointRepository.findById(retroId)).thenReturn(Optional.empty());
     exception.expect(NotFoundException.class);
-    retroPointService.updateRetroPoint(retroId, RetroPointDTO.builder().build());
+    retroPointService.updateRetroPoint(retroId, UpsertRetroPointDTO.builder().build());
   }
 
   @Test
@@ -137,10 +142,11 @@ public class RetroPointServiceTest {
       throws NotFoundException {
 
     long retroPointId = 101L;
+    String description = "my description";
     RetroPoint retroPoint = getRetroPoint("my username",
         retroId,
         NEED_IMPROVEMENT,
-        "my description",
+        description,
         retroPointId);
 
     when(retroPointRepository.findById(retroPointId)).thenReturn(Optional.of(retroPoint));
@@ -149,7 +155,12 @@ public class RetroPointServiceTest {
     when(retroPointRepository.save(any())).thenReturn(retroPoint);
     when(dateUtil.getTime()).thenReturn(now);
 
-    RetroPointDTO updateRetroPoint = retroPointService.updateRetroPoint(retroId, retroPointDTO);
+    UpsertRetroPointDTO upsertRetroPointDTO = UpsertRetroPointDTO
+        .builder()
+        .type(NEED_IMPROVEMENT)
+        .description(description)
+        .build();
+    RetroPointDTO updateRetroPoint = retroPointService.updateRetroPoint(retroId, upsertRetroPointDTO);
 
     assertThat(updateRetroPoint, samePropertyValuesAs(retroPointDTO));
   }

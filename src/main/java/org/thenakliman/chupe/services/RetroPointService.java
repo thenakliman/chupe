@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.RetroPointDTO;
+import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.RetroPoint;
 import org.thenakliman.chupe.models.RetroVote;
@@ -40,9 +41,9 @@ public class RetroPointService {
     this.retroVoteRepository = retroVoteRepository;
   }
 
-  public RetroPointDTO saveRetroPoint(RetroPointDTO retroPointDTO) {
-    RetroPoint retroPoint = modelMapper.map(retroPointDTO, RetroPoint.class);
-    retroPoint.setId(null);
+  public RetroPointDTO saveRetroPoint(UpsertRetroPointDTO upsertRetroPointDTO, String username) {
+    RetroPoint retroPoint = modelMapper.map(upsertRetroPointDTO, RetroPoint.class);
+    retroPoint.setAddedBy(User.builder().userName(username).build());
     RetroPoint savedRetroPoint = retroPointRepository.save(retroPoint);
     return modelMapper.map(savedRetroPoint, RetroPointDTO.class);
   }
@@ -61,13 +62,15 @@ public class RetroPointService {
   }
 
   public RetroPointDTO updateRetroPoint(Long retroPointId,
-                                        RetroPointDTO retroPointDTO) throws NotFoundException {
+                                        UpsertRetroPointDTO upsertRetroPointDTO
+                                        ) throws NotFoundException {
+
     Optional<RetroPoint> savedRetroPointOptional = retroPointRepository.findById(retroPointId);
     RetroPoint retroPoint = savedRetroPointOptional.orElseThrow(
         () -> new NotFoundException(format("Retro point not found for %d id", retroPointId)));
 
-    retroPoint.setDescription(retroPointDTO.getDescription());
-    retroPoint.setType(retroPointDTO.getType());
+    retroPoint.setDescription(upsertRetroPointDTO.getDescription());
+    retroPoint.setType(upsertRetroPointDTO.getType());
     retroPoint.setUpdatedAt(dateUtil.getTime());
     RetroPoint updatedRetroPoint = retroPointRepository.save(retroPoint);
     return modelMapper.map(updatedRetroPoint, RetroPointDTO.class);

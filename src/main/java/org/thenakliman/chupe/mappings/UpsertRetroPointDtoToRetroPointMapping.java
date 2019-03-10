@@ -6,28 +6,31 @@ import org.modelmapper.Converter;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
+import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
 import org.thenakliman.chupe.models.Retro;
+import org.thenakliman.chupe.models.RetroPoint;
 
 @Component
-public class UpsertRetroDtoToRetroMapping
-    extends ConverterConfigurerSupport<UpsertRetroDTO, Retro> {
+public class UpsertRetroPointDtoToRetroPointMapping
+    extends ConverterConfigurerSupport<UpsertRetroPointDTO, RetroPoint> {
 
   private DateUtil dateUtil;
 
-  UpsertRetroDtoToRetroMapping(DateUtil dateUtil) {
+  UpsertRetroPointDtoToRetroPointMapping(DateUtil dateUtil) {
     this.dateUtil = dateUtil;
   }
 
   @Override
-  public Converter<UpsertRetroDTO, Retro> converter() {
+  public Converter<UpsertRetroPointDTO, RetroPoint> converter() {
 
-    return new AbstractConverter<UpsertRetroDTO, Retro>() {
+    return new AbstractConverter<>() {
       @Override
-      protected Retro convert(UpsertRetroDTO source) {
-        return Retro
+      protected RetroPoint convert(UpsertRetroPointDTO source) {
+        return RetroPoint
             .builder()
-            .name(source.getName())
-            .maximumVote(source.getMaximumVote())
+            .description(source.getDescription())
+            .retro(Retro.builder().id(source.getRetroId()).build())
+            .type(source.getType())
             .createdAt(dateUtil.getTime())
             .updatedAt(dateUtil.getTime())
             .build();

@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.RetroPointDTO;
+import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.models.RetroPointType;
 import org.thenakliman.chupe.services.RetroPointService;
@@ -62,12 +63,12 @@ public class RetroPointControllerTest extends BaseControllerTest {
   private Authentication authToken;
 
   private final Long retroId = 2357L;
+  private final String username = "username";
 
   @Before()
   public void testSetup() {
     objectMapper = jacksonBuilder.build();
     this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    String username = "username";
     authToken = new UsernamePasswordAuthenticationToken(
         User.builder().username(username).build(),
         null,
@@ -79,7 +80,6 @@ public class RetroPointControllerTest extends BaseControllerTest {
     RetroPointDTO retroPointDTO = getRetroPointDTO();
     given(retroPointService.getRetroPoints(retroId)).willReturn(singletonList(retroPointDTO));
 
-    SecurityContextHolder.getContext().setAuthentication(authToken);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .get("/api/v1/retro-points?retroId=" + retroId)
         .contentType(MediaType.APPLICATION_JSON))
@@ -105,12 +105,19 @@ public class RetroPointControllerTest extends BaseControllerTest {
   @Test
   public void shouldCreateRetroPoint() throws Exception {
     RetroPointDTO retroDTO = getRetroPointDTO();
-    given(retroPointService.saveRetroPoint(retroDTO)).willReturn(retroDTO);
+    UpsertRetroPointDTO upsertRetroPointDTO = UpsertRetroPointDTO
+        .builder()
+        .description("description")
+        .retroId(1020L)
+        .type(RetroPointType.NEED_IMPROVEMENT)
+        .build();
 
+    given(retroPointService.saveRetroPoint(upsertRetroPointDTO, username)).willReturn(retroDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/retro-points")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(retroDTO)))
+        .content(objectMapper.writeValueAsString(upsertRetroPointDTO)))
         .andExpect(MockMvcResultMatchers.status().isCreated()).andReturn();
 
     RetroPointDTO result = objectMapper.readValue(
@@ -120,15 +127,22 @@ public class RetroPointControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldUpdateTask() throws Exception {
+  public void shouldUpdateRetroPoint() throws Exception {
     RetroPointDTO retroDTO = getRetroPointDTO();
     long retroPointId = 10L;
-    given(retroPointService.updateRetroPoint(retroPointId, retroDTO)).willReturn(retroDTO);
+    UpsertRetroPointDTO upsertRetroPointDTO = UpsertRetroPointDTO
+        .builder()
+        .description("description")
+        .retroId(1020L)
+        .type(RetroPointType.NEED_IMPROVEMENT)
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    given(retroPointService.updateRetroPoint(retroPointId, upsertRetroPointDTO)).willReturn(retroDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/retro-points/" + retroPointId)
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(retroDTO)))
+        .content(objectMapper.writeValueAsString(upsertRetroPointDTO)))
         .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
     RetroPointDTO result = objectMapper.readValue(
@@ -141,13 +155,19 @@ public class RetroPointControllerTest extends BaseControllerTest {
   public void shouldRaiseNotFoundWhenUpdateTask() throws Exception {
     RetroPointDTO retroDTO = getRetroPointDTO();
     long retroPointId = 10L;
-    given(retroPointService.updateRetroPoint(retroPointId, retroDTO)).willThrow(
+    UpsertRetroPointDTO upsertRetroPointDTO = UpsertRetroPointDTO
+        .builder()
+        .description("description")
+        .retroId(1020L)
+        .type(RetroPointType.NEED_IMPROVEMENT)
+        .build();
+    given(retroPointService.updateRetroPoint(retroPointId, upsertRetroPointDTO)).willThrow(
         new NotFoundException("not Found"));
 
     mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/retros/" + retroPointId)
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(retroDTO)))
+        .content(objectMapper.writeValueAsString(upsertRetroPointDTO)))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
   }
 }

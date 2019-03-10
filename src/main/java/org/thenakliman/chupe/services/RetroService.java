@@ -46,7 +46,8 @@ public class RetroService {
         .collect(toList());
   }
 
-  public RetroDTO updateRetro(Long retroId, UpsertRetroDTO upsertRetroDTO) throws NotFoundException {
+  public RetroDTO updateRetro(Long retroId, UpsertRetroDTO upsertRetroDTO)
+      throws NotFoundException {
     Optional<Retro> savedRetro = retroRepository.findById(retroId);
     if (!savedRetro.isPresent()) {
       throw new NotFoundException(format("Retro with id %d could not be found", retroId));

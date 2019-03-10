@@ -38,9 +38,7 @@ public class UpsertRetroDtoToRetroMappingTest {
 
   @Test
   public void shouldMapRetroDtoToRetro() {
-    long retroId = 7177L;
     String retroName = "added-by-user";
-    String createdBy = "createdBy-user";
     long maximumVote = 10L;
     UpsertRetroDTO upsertRetroDTO = UpsertRetroDTO
         .builder()
