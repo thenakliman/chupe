@@ -96,7 +96,7 @@ public class TaskServiceTest {
     when(modelMapper.map(taskDTO, Task.class)).thenReturn(task);
     when(modelMapper.map(task, TaskDTO.class)).thenReturn(taskDTO);
 
-    TaskDTO actualTask = taskService.saveTask(taskDTO);
+    TaskDTO actualTask = taskService.saveTask(taskDTO, username);
 
     assertThat(taskDTO, samePropertyValuesAs(actualTask));
   }

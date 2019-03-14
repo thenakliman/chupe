@@ -43,8 +43,9 @@ public class TaskController extends BaseController {
    */
   @PostMapping("/tasks")
   public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDTO) {
-
-    TaskDTO createdTask = taskService.saveTask(taskDTO);
+    User userDetails =
+        (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    TaskDTO createdTask = taskService.saveTask(taskDTO, userDetails.getUsername());
     return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
   }
 

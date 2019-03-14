@@ -113,7 +113,8 @@ public class TaskControllerTest extends BaseControllerTest {
   public void shouldCreateTask() throws  Exception {
     String description = "today's only task";
     TaskDTO taskDTO = TaskDTO.builder().description(description).build();
-    given(taskService.saveTask(taskDTO)).willReturn(taskDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    given(taskService.saveTask(taskDTO, username)).willReturn(taskDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/tasks")

@@ -45,10 +45,10 @@ public class TaskService {
         .collect(toList());
   }
 
-  public TaskDTO saveTask(TaskDTO taskDTO) {
+  public TaskDTO saveTask(TaskDTO taskDTO, String createdBy) {
     Task task = modelMapper.map(taskDTO, Task.class);
-    task.setCreatedAt(dateUtil.getTime());
-    task.setUpdatedAt(dateUtil.getTime());
+    task.setId(null);
+    task.setCreatedBy(User.builder().userName(createdBy).build());
     Task savedTask = taskRepository.save(task);
     return modelMapper.map(savedTask, TaskDTO.class);
   }
@@ -66,18 +66,32 @@ public class TaskService {
   }
 
   private void updateTaskAsPerUpdatePayload(Task existingTask, TaskDTO updatedTask) {
-    if (CREATED.equals(existingTask.getState())
-        && (IN_PROGRESS.equals(updatedTask.getState()) || DONE.equals(updatedTask.getState()))) {
-
+    if (taskStarted(existingTask, updatedTask)) {
       existingTask.setStartOn(dateUtil.getTime());
     }
 
-    if (!DONE.equals(existingTask.getState()) && DONE.equals(updatedTask.getState())) {
+    if (taskEnded(existingTask, updatedTask)) {
       existingTask.setEndedOn(dateUtil.getTime());
       existingTask.setProgress(100);
     }
 
     existingTask.setUpdatedAt(dateUtil.getTime());
     existingTask.setState(updatedTask.getState());
+  }
+
+  private boolean taskEnded(Task existingTask, TaskDTO updatedTask) {
+    return !DONE.equals(existingTask.getState()) && DONE.equals(updatedTask.getState());
+  }
+
+  private boolean taskStarted(Task existingTask, TaskDTO updatedTask) {
+    return taskInCreatedState(existingTask) && taskNextStateIsInProgressOrDone(updatedTask);
+  }
+
+  private boolean taskNextStateIsInProgressOrDone(TaskDTO updatedTask) {
+    return IN_PROGRESS.equals(updatedTask.getState()) || DONE.equals(updatedTask.getState());
+  }
+
+  private boolean taskInCreatedState(Task existingTask) {
+    return CREATED.equals(existingTask.getState());
   }
 }
