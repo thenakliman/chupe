@@ -12,7 +12,7 @@ import org.thenakliman.chupe.models.User;
 @Component
 public class AnswerDtoToAnswerMapping extends ConverterConfigurerSupport<AnswerDTO, Answer> {
 
-  private DateUtil dateUtil;
+  private final DateUtil dateUtil;
 
   AnswerDtoToAnswerMapping(DateUtil dateUtil) {
     this.dateUtil = dateUtil;

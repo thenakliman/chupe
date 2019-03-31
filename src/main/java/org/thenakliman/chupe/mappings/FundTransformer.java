@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.mappings;
 
-import static java.lang.Math.abs;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

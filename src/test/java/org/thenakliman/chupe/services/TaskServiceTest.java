@@ -1,5 +1,24 @@
 package org.thenakliman.chupe.services;
 
+import static java.util.Collections.singletonList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.thenakliman.chupe.models.TaskState.CREATED;
+import static org.thenakliman.chupe.models.TaskState.DONE;
+import static org.thenakliman.chupe.models.TaskState.IN_PROGRESS;
+import static org.thenakliman.chupe.models.TaskState.ON_HOLD;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 import javassist.NotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,21 +31,6 @@ import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.TaskRepository;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.Collections.singletonList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.thenakliman.chupe.models.TaskState.*;
-
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskServiceTest {

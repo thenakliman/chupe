@@ -14,7 +14,7 @@ import org.thenakliman.chupe.services.RetroPointService;
 
 @Controller
 public class VoteController extends BaseController {
-  private RetroPointService retroPointService;
+  private final RetroPointService retroPointService;
 
   public VoteController(RetroPointService retroPointService) {
     this.retroPointService = retroPointService;

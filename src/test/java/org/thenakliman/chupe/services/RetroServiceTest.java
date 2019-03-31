@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,14 +58,6 @@ public class RetroServiceTest {
         .name(name)
         .build();
 
-    RetroDTO retroDTO = RetroDTO
-        .builder()
-        .id(retroId)
-        .maximumVote(maximumVote)
-        .name(name)
-        .createdBy(name)
-        .build();
-
     User user = new User();
     user.setUserName(username);
 
@@ -79,6 +70,14 @@ public class RetroServiceTest {
 
     when(modelMapper.map(upsertRetroDTO, Retro.class)).thenReturn(retro);
     when(retroRepository.save(retro)).thenReturn(retro);
+    RetroDTO retroDTO = RetroDTO
+        .builder()
+        .id(retroId)
+        .maximumVote(maximumVote)
+        .name(name)
+        .createdBy(name)
+        .build();
+
     when(modelMapper.map(retro, RetroDTO.class)).thenReturn(retroDTO);
 
     RetroDTO actualRetro = retroService.saveRetro(upsertRetroDTO, name);
@@ -114,7 +113,8 @@ public class RetroServiceTest {
   }
 
   @Test(expected = NotFoundException.class)
-  public void shouldThrowNotFoundExceptionWhenRetroToBeUpdatedIsNotFound() throws NotFoundException {
+  public void shouldThrowNotFoundExceptionWhenRetroToBeUpdatedIsNotFound()
+      throws NotFoundException {
     long retroId = 10L;
     when(retroRepository.findById(retroId)).thenReturn(Optional.empty());
     UpsertRetroDTO upsertRetroDTO = UpsertRetroDTO

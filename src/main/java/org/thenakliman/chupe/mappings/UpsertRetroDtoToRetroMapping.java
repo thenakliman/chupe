@@ -12,7 +12,7 @@ import org.thenakliman.chupe.models.Retro;
 public class UpsertRetroDtoToRetroMapping
     extends ConverterConfigurerSupport<UpsertRetroDTO, Retro> {
 
-  private DateUtil dateUtil;
+  private final DateUtil dateUtil;
 
   UpsertRetroDtoToRetroMapping(DateUtil dateUtil) {
     this.dateUtil = dateUtil;

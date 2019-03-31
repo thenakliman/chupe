@@ -4,7 +4,6 @@ import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
-import static org.mockito.AdditionalMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -12,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import javassist.NotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,13 +22,13 @@ import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
 import org.thenakliman.chupe.dto.UserDTO;
+import org.thenakliman.chupe.mappings.FundTransformer;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.FundTypeRepository;
 import org.thenakliman.chupe.repositories.TeamFundRepository;
-import org.thenakliman.chupe.mappings.FundTransformer;
 
 
 @RunWith(MockitoJUnitRunner.class)

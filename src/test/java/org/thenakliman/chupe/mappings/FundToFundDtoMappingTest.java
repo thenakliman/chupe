@@ -1,5 +1,10 @@
 package org.thenakliman.chupe.mappings;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.thenakliman.chupe.models.TransactionType.CREDIT;
+
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,12 +17,6 @@ import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.models.User;
 
-import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.thenakliman.chupe.models.TransactionType.CREDIT;
-
 @RunWith(MockitoJUnitRunner.class)
 public class FundToFundDtoMappingTest {
 
@@ -25,6 +24,7 @@ public class FundToFundDtoMappingTest {
   private ModelMapper modelMapper;
 
   private Date now;
+
   @Before
   public void setUp() throws Exception {
     modelMapper.addMappings(new FundToFundDtoMapping().mapping());

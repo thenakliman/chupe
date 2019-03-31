@@ -20,7 +20,7 @@ import org.thenakliman.chupe.services.RetroService;
 
 @Controller
 public class RetroController extends BaseController {
-  private RetroService retroService;
+  private final RetroService retroService;
 
   public RetroController(RetroService retroService) {
     this.retroService = retroService;

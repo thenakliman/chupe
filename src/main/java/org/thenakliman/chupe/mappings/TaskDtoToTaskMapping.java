@@ -12,7 +12,7 @@ import org.thenakliman.chupe.models.User;
 @Component
 public class TaskDtoToTaskMapping extends ConverterConfigurerSupport<TaskDTO, Task> {
 
-  private DateUtil dateUtil;
+  private final DateUtil dateUtil;
 
   TaskDtoToTaskMapping(DateUtil dateUtil) {
     this.dateUtil = dateUtil;

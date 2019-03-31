@@ -1,5 +1,8 @@
 package org.thenakliman.chupe.mappings;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,9 +13,6 @@ import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.User;
 
-import java.util.Date;
-
-import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnswerToAnswerDtoMappingTest {

@@ -14,7 +14,7 @@ import org.thenakliman.chupe.models.User;
 public class RetroPointDtoToRetroPointMapping extends
     ConverterConfigurerSupport<RetroPointDTO, RetroPoint> {
 
-  private DateUtil dateUtil;
+  private final DateUtil dateUtil;
 
   RetroPointDtoToRetroPointMapping(DateUtil dateUtil) {
     this.dateUtil = dateUtil;

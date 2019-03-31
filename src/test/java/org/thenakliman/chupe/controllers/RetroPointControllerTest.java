@@ -137,7 +137,8 @@ public class RetroPointControllerTest extends BaseControllerTest {
         .type(RetroPointType.NEED_IMPROVEMENT)
         .build();
     SecurityContextHolder.getContext().setAuthentication(authToken);
-    given(retroPointService.updateRetroPoint(retroPointId, upsertRetroPointDTO)).willReturn(retroDTO);
+    given(retroPointService.updateRetroPoint(retroPointId, upsertRetroPointDTO))
+        .willReturn(retroDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/retro-points/" + retroPointId)

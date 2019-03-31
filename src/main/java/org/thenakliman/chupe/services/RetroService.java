@@ -19,8 +19,8 @@ import org.thenakliman.chupe.repositories.RetroRepository;
 @Service
 public class RetroService {
 
-  private ModelMapper modelMapper;
-  private RetroRepository retroRepository;
+  private final ModelMapper modelMapper;
+  private final RetroRepository retroRepository;
 
   @Autowired
   public RetroService(ModelMapper modelMapper,

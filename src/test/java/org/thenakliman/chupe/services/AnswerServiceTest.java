@@ -7,8 +7,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.BDDMockito.given;
 
-import java.util.*;
+import java.util.Date;
 
+import java.util.List;
+import java.util.Optional;
 import javassist.NotFoundException;
 import org.assertj.core.util.DateUtil;
 import org.junit.Test;
@@ -21,7 +23,6 @@ import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.AnswerRepository;
-
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnswerServiceTest {

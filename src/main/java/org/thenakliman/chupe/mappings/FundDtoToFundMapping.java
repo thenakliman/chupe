@@ -14,7 +14,7 @@ import org.thenakliman.chupe.models.User;
 @Component
 public class FundDtoToFundMapping extends ConverterConfigurerSupport<FundDTO, Fund> {
 
-  private DateUtil dateUtil;
+  private final DateUtil dateUtil;
 
   FundDtoToFundMapping(DateUtil dateUtil) {
     this.dateUtil = dateUtil;

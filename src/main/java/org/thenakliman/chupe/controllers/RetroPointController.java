@@ -21,7 +21,7 @@ import org.thenakliman.chupe.services.RetroPointService;
 
 @Controller
 public class RetroPointController extends BaseController {
-  private RetroPointService retroPointService;
+  private final RetroPointService retroPointService;
 
   @Autowired
   public RetroPointController(RetroPointService retroPointService) {

@@ -24,10 +24,10 @@ import org.thenakliman.chupe.repositories.RetroVoteRepository;
 
 @Service
 public class RetroPointService {
-  private ModelMapper modelMapper;
-  private RetroPointRepository retroPointRepository;
-  private DateUtil dateUtil;
-  private RetroVoteRepository retroVoteRepository;
+  private final ModelMapper modelMapper;
+  private final RetroPointRepository retroPointRepository;
+  private final DateUtil dateUtil;
+  private final RetroVoteRepository retroVoteRepository;
 
   @Autowired
   public RetroPointService(ModelMapper modelMapper,

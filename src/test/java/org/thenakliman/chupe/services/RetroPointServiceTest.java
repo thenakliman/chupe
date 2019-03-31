@@ -26,7 +26,11 @@ import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.RetroPointDTO;
 import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
-import org.thenakliman.chupe.models.*;
+import org.thenakliman.chupe.models.Retro;
+import org.thenakliman.chupe.models.RetroPoint;
+import org.thenakliman.chupe.models.RetroPointType;
+import org.thenakliman.chupe.models.RetroVote;
+import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.RetroPointRepository;
 import org.thenakliman.chupe.repositories.RetroVoteRepository;
 
@@ -50,8 +54,8 @@ public class RetroPointServiceTest {
   @Rule
   public ExpectedException exception = ExpectedException.none();
 
-  final private Date now = new Date();
-  final private long retroId = 101L;
+  private final Date now = new Date();
+  private final long retroId = 101L;
 
   @Test
   public void shouldSaveRetroPoint() {
@@ -160,7 +164,8 @@ public class RetroPointServiceTest {
         .type(NEED_IMPROVEMENT)
         .description(description)
         .build();
-    RetroPointDTO updateRetroPoint = retroPointService.updateRetroPoint(retroId, upsertRetroPointDTO);
+    RetroPointDTO updateRetroPoint = retroPointService
+        .updateRetroPoint(retroId, upsertRetroPointDTO);
 
     assertThat(updateRetroPoint, samePropertyValuesAs(retroPointDTO));
   }
@@ -205,7 +210,8 @@ public class RetroPointServiceTest {
 
     Long retroPointId = 1939L;
     String username = "voted by";
-    when(retroVoteRepository.findByRetroPointIdAndVotedByUserName(retroPointId, username)).thenReturn(null);
+    when(retroVoteRepository.findByRetroPointIdAndVotedByUserName(retroPointId, username))
+        .thenReturn(null);
     when(retroPointRepository.findById(retroPointId)).thenReturn(Optional.empty());
 
     exception.expect(NotFoundException.class);

@@ -5,7 +5,6 @@ import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
-import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.RetroPoint;
@@ -14,7 +13,7 @@ import org.thenakliman.chupe.models.RetroPoint;
 public class UpsertRetroPointDtoToRetroPointMapping
     extends ConverterConfigurerSupport<UpsertRetroPointDTO, RetroPoint> {
 
-  private DateUtil dateUtil;
+  private final DateUtil dateUtil;
 
   UpsertRetroPointDtoToRetroPointMapping(DateUtil dateUtil) {
     this.dateUtil = dateUtil;

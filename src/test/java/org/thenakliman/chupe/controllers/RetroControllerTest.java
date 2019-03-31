@@ -8,7 +8,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
+
 import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,29 +92,28 @@ public class RetroControllerTest extends BaseControllerTest {
         mvcResult.getResponse().getContentAsString(), ArrayList.class);
 
     assertEquals(result.size(), 1);
-//    assertThat(result, hasItems(retroDTO));
   }
 
   private RetroDTO getRetroDTO(String name) {
     return RetroDTO
-          .builder()
-          .name(name)
-          .id(10L)
-          .createdBy("username")
-          .maximumVote(10L)
-          .build();
+        .builder()
+        .name(name)
+        .id(10L)
+        .createdBy("username")
+        .maximumVote(10L)
+        .build();
   }
 
   private UpsertRetroDTO getUpsertRetroDTO(String name) {
     return UpsertRetroDTO
-          .builder()
-          .name(name)
-          .maximumVote(10L)
-          .build();
+        .builder()
+        .name(name)
+        .maximumVote(10L)
+        .build();
   }
 
   @Test
-  public void shouldCreateRetro() throws  Exception {
+  public void shouldCreateRetro() throws Exception {
     String name = "today name";
     RetroDTO retroDTO = getRetroDTO(name);
     given(retroService.saveRetro(any(), any())).willReturn(retroDTO);
@@ -131,7 +132,7 @@ public class RetroControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldUpdateTask() throws  Exception {
+  public void shouldUpdateTask() throws Exception {
     String name = "today task";
     RetroDTO retroDTO = getRetroDTO(name);
     long retroId = 10L;
@@ -150,7 +151,7 @@ public class RetroControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldRaiseNotFoundWhenUpdateTask() throws  Exception {
+  public void shouldRaiseNotFoundWhenUpdateTask() throws Exception {
     String name = "my name";
     RetroDTO retroDTO = getRetroDTO(name);
     long retroId = 10L;
@@ -163,5 +164,4 @@ public class RetroControllerTest extends BaseControllerTest {
         .content(objectMapper.writeValueAsString(retroDTO)))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
   }
-
 }
