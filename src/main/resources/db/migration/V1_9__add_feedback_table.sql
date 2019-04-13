@@ -9,6 +9,7 @@ create table feedback_session (
 
 create table feedback_point (
     id serial primary key,
+    feedback_session int not null,
     description varchar(256) not null,
     given_to varchar(256) not null,
     given_by varchar(256) not null,
@@ -16,5 +17,6 @@ create table feedback_point (
     created_at TIMESTAMP default CURRENT_TIMESTAMP not null,
     updated_at TIMESTAMP not null,
     foreign key(given_by) references users(username),
-    foreign key(given_by) references users(username)
+    foreign key(given_to) references users(username),
+    foreign key(feedback_session) references feedback_session(id)
 );

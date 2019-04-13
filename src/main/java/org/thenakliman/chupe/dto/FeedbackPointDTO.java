@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,13 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class User {
-
-  private String username;
-
-  private String email;
-
-  private String name;
-
-  private List<String> roles;
+public class FeedbackPointDTO {
+  private long sessionId;
+  private long id;
+  private String description;
+  private String givenTo;
+  private String givenBy;
 }
