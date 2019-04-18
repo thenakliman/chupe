@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class FeedbackSessionDTO {
   private long id;
   private String description;
+  private String createdBy;
 }

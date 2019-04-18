@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.dto.FeedbackSessionDTO;
 import org.thenakliman.chupe.models.FeedbackSession;
+import org.thenakliman.chupe.models.User;
 
 import java.util.Date;
 
@@ -32,15 +33,18 @@ public class FeedbackSessionToFeedbackSessionDtoMappingTest {
   public void shouldMapFeedbackSessionToFeedbackSessionDTO() {
     String description = "description";
     long feedbackSessionId = 10L;
-    FeedbackSessionDTO feedbackSessionDTO = FeedbackSessionDTO
+    String username = "user-name";
+    FeedbackSession feedbackSession = FeedbackSession
         .builder()
         .description(description)
         .id(feedbackSessionId)
+        .createdBy(User.builder().userName(username).build())
         .build();
 
-    FeedbackSession feedbackSession = modelMapper.map(feedbackSessionDTO, FeedbackSession.class);
+    FeedbackSessionDTO feedbackSessionDTO = modelMapper.map(feedbackSession, FeedbackSessionDTO.class);
 
-    assertThat(feedbackSession.getId(), is(feedbackSessionId));
-    assertThat(feedbackSession.getDescription(), is(description));
+    assertThat(feedbackSessionDTO.getId(), is(feedbackSessionId));
+    assertThat(feedbackSessionDTO.getDescription(), is(description));
+    assertThat(feedbackSessionDTO.getCreatedBy(), is(username));
   }
 }

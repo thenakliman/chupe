@@ -20,6 +20,7 @@ public class FeedbackSessionToFeedbackSessionDtoMapping
         return FeedbackSessionDTO
             .builder()
             .id(feedbackSession.getId())
+            .createdBy(feedbackSession.getCreatedBy().getUserName())
             .description(feedbackSession.getDescription())
             .build();
       }
