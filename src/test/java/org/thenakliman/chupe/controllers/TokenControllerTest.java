@@ -41,7 +41,6 @@ public class TokenControllerTest {
   private TokenAuthenticationService tokenAuthenticationService;
 
 
-
   private ObjectMapper objectMapper;
 
   /**

@@ -28,27 +28,20 @@ import org.thenakliman.chupe.services.TokenService;
 
 @WebMvcTest(controllers = VoteController.class)
 public class VoteControllerTest extends BaseControllerTest {
+  private final String username = "username";
   @Autowired
   private MockMvc mockMvc;
-
   @Autowired
   private WebApplicationContext webApplicationContext;
-
   @MockBean
   private RetroPointService retroPointService;
-
   @MockBean
   private TokenService tokenService;
-
   @MockBean
   private TokenAuthenticationService tokenAuthenticationService;
-
   @MockBean
   private ApplicationContext applicationContext;
-
   private Authentication authToken;
-
-  private final String username = "username";
 
   /**
    * Setup web application context.
@@ -74,7 +67,7 @@ public class VoteControllerTest extends BaseControllerTest {
     mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/retro-point-votes/" + retroPointId)
         .contentType(MediaType.APPLICATION_JSON)
-        .content((byte[])null))
+        .content((byte[]) null))
         .andExpect(MockMvcResultMatchers.status().isCreated()).andReturn();
 
     verify(retroPointService).castVote(retroPointId, username);
@@ -89,7 +82,7 @@ public class VoteControllerTest extends BaseControllerTest {
     mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/retro-point-votes/" + retroPointId)
         .contentType(MediaType.APPLICATION_JSON)
-        .content((byte[])null))
+        .content((byte[]) null))
         .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
 
     verify(retroPointService).castVote(retroPointId, username);
@@ -104,7 +97,7 @@ public class VoteControllerTest extends BaseControllerTest {
     mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/retro-point-votes/" + retroPointId)
         .contentType(MediaType.APPLICATION_JSON)
-        .content((byte[])null))
+        .content((byte[]) null))
         .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
 
     verify(retroPointService).castVote(retroPointId, username);

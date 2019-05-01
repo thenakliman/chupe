@@ -1,7 +1,6 @@
 package org.thenakliman.chupe.mappings;
 
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -80,7 +79,7 @@ public class FundTransformerTest {
             samePropertyValuesAs(
                 teamFund.getTeamMemberFunds().stream().filter(actualTeamMemberFund ->
                     expectedTeamMemberFund.getOwner() == actualTeamMemberFund.getOwner())
-                        .findFirst().get())));
+                    .findFirst().get())));
   }
 
   @Test
@@ -119,7 +118,7 @@ public class FundTransformerTest {
             samePropertyValuesAs(
                 teamFund.getTeamMemberFunds().stream().filter(actualTeamMemberFund ->
                     expectedTeamMemberFund.getOwner() == actualTeamMemberFund.getOwner())
-                      .findFirst().get())));
+                    .findFirst().get())));
   }
 
   @Test
@@ -166,7 +165,7 @@ public class FundTransformerTest {
             samePropertyValuesAs(
                 teamFund.getTeamMemberFunds().stream().filter(actualTeamMemberFund ->
                     expectedTeamMemberFund.getOwner().equals(actualTeamMemberFund.getOwner()))
-                        .findFirst().get())));
+                    .findFirst().get())));
   }
 
   @Test
@@ -212,7 +211,7 @@ public class FundTransformerTest {
             samePropertyValuesAs(
                 teamFund.getTeamMemberFunds().stream().filter(actualTeamMemberFund ->
                     expectedTeamMemberFund.getOwner().equals(actualTeamMemberFund.getOwner()))
-                        .findFirst().get())));
+                    .findFirst().get())));
   }
 
   @Test
@@ -245,7 +244,7 @@ public class FundTransformerTest {
             samePropertyValuesAs(
                 teamFund.getTeamMemberFunds().stream().filter(actualTeamMemberFund ->
                     expectedTeamMemberFund.getOwner().equals(actualTeamMemberFund.getOwner()))
-                        .findFirst().get())));
+                    .findFirst().get())));
   }
 
   @Test
@@ -298,6 +297,6 @@ public class FundTransformerTest {
             samePropertyValuesAs(
                 teamFund.getTeamMemberFunds().stream().filter(actualTeamMemberFund ->
                     expectedTeamMemberFund.getOwner().equals(actualTeamMemberFund.getOwner()))
-                        .findFirst().get())));
+                    .findFirst().get())));
   }
 }

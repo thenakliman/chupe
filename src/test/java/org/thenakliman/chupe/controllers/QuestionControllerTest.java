@@ -7,9 +7,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,19 +60,21 @@ public class QuestionControllerTest {
 
   private ObjectMapper objectMapper;
 
-  /** Setup web application context. */
+  /**
+   * Setup web application context.
+   */
   @Before()
   public void testSetup() {
     objectMapper = jacksonBuilder.build();
     /* NOTE(thenakliman) this approach has been used to bypass authentication
-    * layer from the test. It creates a standalone application with single
-    * controller(QuestionController).
-    * */
+     * layer from the test. It creates a standalone application with single
+     * controller(QuestionController).
+     * */
     this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
   }
 
   @Test
-  public void shouldAddQuestions() throws  Exception {
+  public void shouldAddQuestions() throws Exception {
     QuestionDTO questionDTO = new QuestionDTO();
     questionDTO.setQuestion("What is your name?");
     questionDTO.setAssignedTo("testUser1");
@@ -90,7 +93,7 @@ public class QuestionControllerTest {
         .andExpect(MockMvcResultMatchers.status().isCreated()).andReturn();
 
     QuestionDTO result = objectMapper.readValue(
-            mvcResult.getResponse().getContentAsString(), QuestionDTO.class);
+        mvcResult.getResponse().getContentAsString(), QuestionDTO.class);
 
     assertThat(questionDTO, samePropertyValuesAs(result));
   }
@@ -100,11 +103,11 @@ public class QuestionControllerTest {
     List<QuestionDTO> questionDTOs = new ArrayList<>();
     BDDMockito.given(questionService.getQuestions()).willReturn(questionDTOs);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-            .get("/api/v1/questions")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+        .get("/api/v1/questions")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
     List<QuestionDTO> result = objectMapper.readValue(
-            mvcResult.getResponse().getContentAsString(),
-            List.class);
+        mvcResult.getResponse().getContentAsString(),
+        List.class);
 
     assertEquals(result, questionDTOs);
   }
@@ -115,10 +118,11 @@ public class QuestionControllerTest {
      * BDDMockito.given(userService.getQuestions()).willThrow(Exception.class); */
 
     BDDMockito.given(questionService.getQuestions()).willAnswer(invocation -> {
-      throw new Exception(); });
+      throw new Exception();
+    });
 
     mockMvc.perform(MockMvcRequestBuilders
-            .get("/api/v1/questions")).andExpect(MockMvcResultMatchers.status().isNotFound());
+        .get("/api/v1/questions")).andExpect(MockMvcResultMatchers.status().isNotFound());
   }
 
   @Test
@@ -141,13 +145,13 @@ public class QuestionControllerTest {
     questionDTOs.add(questionDTO2);
     BDDMockito.given(questionService.getQuestions()).willReturn(questionDTOs);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-            .get("/api/v1/questions")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+        .get("/api/v1/questions")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     /* NOTE(thenakliman): Use jackson to convert response to object and then compare the objects,
      *  currently only length is being matched.
      */
     List<QuestionDTO> result = objectMapper.readValue(
-            mvcResult.getResponse().getContentAsString(),
-            new ArrayList<UserDTO>().getClass());
+        mvcResult.getResponse().getContentAsString(),
+        new ArrayList<UserDTO>().getClass());
 
     assertThat(result, samePropertyValuesAs(questionDTOs));
   }
@@ -162,10 +166,10 @@ public class QuestionControllerTest {
         QuestionPriority.LOW);
 
     mockMvc.perform(MockMvcRequestBuilders
-            .put("/api/v1/questions/" + id)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(questionDTO))
-      ).andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
+        .put("/api/v1/questions/" + id)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(questionDTO))
+    ).andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
   }
 
   @Test
@@ -181,9 +185,9 @@ public class QuestionControllerTest {
         .when(questionService).updateQuestions(anyLong(), any());
 
     mockMvc.perform(MockMvcRequestBuilders
-            .put("/api/v1/questions/" + id)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(questionDTO))
-      ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+        .put("/api/v1/questions/" + id)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(questionDTO))
+    ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
   }
 }

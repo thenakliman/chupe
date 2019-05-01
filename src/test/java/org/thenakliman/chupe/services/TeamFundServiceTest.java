@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javassist.NotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -138,11 +139,11 @@ public class TeamFundServiceTest {
     List<TeamMemberFund> teamMemberFunds = teamFundService.getTeamFund().getTeamMemberFunds();
     List<TeamMemberFund> expectedTeamMemberFunds = getTeamFund().getTeamMemberFunds();
     assertThat(expectedTeamMemberFunds.get(0),
-               samePropertyValuesAs(teamMemberFunds.get(0)));
+        samePropertyValuesAs(teamMemberFunds.get(0)));
     assertThat(expectedTeamMemberFunds.get(1),
-               samePropertyValuesAs(teamMemberFunds.get(1)));
+        samePropertyValuesAs(teamMemberFunds.get(1)));
     assertThat(expectedTeamMemberFunds.get(2),
-               samePropertyValuesAs(teamMemberFunds.get(2)));
+        samePropertyValuesAs(teamMemberFunds.get(2)));
   }
 
   @Test

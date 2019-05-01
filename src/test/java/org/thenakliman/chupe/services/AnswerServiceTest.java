@@ -8,9 +8,9 @@ import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Date;
-
 import java.util.List;
 import java.util.Optional;
+
 import javassist.NotFoundException;
 import org.assertj.core.util.DateUtil;
 import org.junit.Test;
@@ -77,7 +77,7 @@ public class AnswerServiceTest {
 
   @Test(expected = NotFoundException.class)
   public void shouldReturnNotFoundExceptionIfAnswerDoesNotExistForAQuestion()
-        throws NotFoundException {
+      throws NotFoundException {
     int questionId = 10;
     given(answerRepository.findByQuestionId(questionId)).willReturn(null);
     answerService.getAnswers(questionId);
@@ -101,7 +101,7 @@ public class AnswerServiceTest {
 
   @Test(expected = NotFoundException.class)
   public void shouldReturnNotFoundExceptionIfAnswerDoesNotExistForAQuestionWhileUpating()
-        throws NotFoundException {
+      throws NotFoundException {
     Long answerId = 10L;
     given(answerRepository.findById(answerId)).willReturn(Optional.empty());
     answerService.updateAnswer(answerId, AnswerDTO.builder().build());

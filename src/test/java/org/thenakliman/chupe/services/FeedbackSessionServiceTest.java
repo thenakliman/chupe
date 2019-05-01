@@ -1,5 +1,17 @@
 package org.thenakliman.chupe.services;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 import javassist.NotFoundException;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,32 +27,16 @@ import org.thenakliman.chupe.dto.UpsertFeedbackSessionDTO;
 import org.thenakliman.chupe.models.FeedbackSession;
 import org.thenakliman.chupe.repositories.FeedbackSessionRepository;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(MockitoJUnitRunner.class)
 public class FeedbackSessionServiceTest {
-  @Mock
-  private FeedbackSessionRepository feedbackSessionRepository;
-
-  @Mock
-  private ModelMapper modelMapper;
-
-  @Mock
-  private DateUtil dateUtil;
-
   @Rule
   public ExpectedException exception = ExpectedException.none();
-
+  @Mock
+  private FeedbackSessionRepository feedbackSessionRepository;
+  @Mock
+  private ModelMapper modelMapper;
+  @Mock
+  private DateUtil dateUtil;
   @InjectMocks
   private FeedbackSessionService feedbackSessionService;
 
@@ -105,7 +101,7 @@ public class FeedbackSessionServiceTest {
     long feedbackSessionId = 1L;
     String username = "created-by";
     when(feedbackSessionRepository.findByIdAndCreatedByUserName(feedbackSessionId, username))
-            .thenReturn(Optional.empty());
+        .thenReturn(Optional.empty());
 
     exception.expect(NotFoundException.class);
     feedbackSessionService.updateSession(

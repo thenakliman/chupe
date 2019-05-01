@@ -19,14 +19,12 @@ import org.thenakliman.chupe.properties.TokenProperty;
 @RunWith(MockitoJUnitRunner.class)
 public class UserTokenTest {
 
-  @Mock
-  private TokenProperty tokenProperty;
-
-  @InjectMocks
-  private UserToken userToken;
-
   //CHECKSTYLE.OFF: LineLength
   private final String tokenSigningKey = "testKey";
+  @Mock
+  private TokenProperty tokenProperty;
+  @InjectMocks
+  private UserToken userToken;
   private String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdWQiOiJ0ZXN0QXVkaWVuY2UiLCJzdWIiOiJ1c2VybmFtZSIsInJvbGVzIjpbIm1lbWJlciJdLCJuYW1lIjoiTGFsIFNpbmdoIiwiaXNzIjoidGVzdElzc3VlciIsImV4cCI6NjE1Mzg0MDk2MTcsImlhdCI6MTUzODQwOTY3NywiZW1haWwiOiJsYWxzaW5naEBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoibGFsX3NpbmdoIn0.koTvlIeoOOrSNmdUCcOs4gY__urR1RibPndSEDPS7Vx_f3iZmg4_Sq4VTu2ugMEchG0q2T25PZfxkL3UEBWozg";
   //CHECKSTYLE.ON: LineLength
 

@@ -1,5 +1,10 @@
 package org.thenakliman.chupe.mappings;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,11 +14,6 @@ import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.dto.FeedbackSessionDTO;
 import org.thenakliman.chupe.models.FeedbackSession;
 import org.thenakliman.chupe.models.User;
-
-import java.util.Date;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FeedbackSessionToFeedbackSessionDtoMappingTest {

@@ -29,19 +29,15 @@ import org.thenakliman.chupe.repositories.QuestionRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QuestionServiceTest {
-  @Mock
-  private QuestionRepository questionsRepository;
-
-  @Mock
-  private ModelMapper modelMapper;
-
-  @InjectMocks
-  private QuestionService questionService;
-
+  static final long id = 100;
   @Captor
   ArgumentCaptor<Question> captor;
-
-  static final long id = 100;
+  @Mock
+  private QuestionRepository questionsRepository;
+  @Mock
+  private ModelMapper modelMapper;
+  @InjectMocks
+  private QuestionService questionService;
 
   private Question getTestQuestion() {
     Question question = new Question();

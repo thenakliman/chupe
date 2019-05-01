@@ -6,8 +6,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,33 +38,24 @@ import org.thenakliman.chupe.services.TokenService;
 
 @WebMvcTest(controllers = RetroPointController.class)
 public class RetroPointControllerTest extends BaseControllerTest {
-  @Autowired
-  private MockMvc mockMvc;
-
-  @Autowired
-  private WebApplicationContext webApplicationContext;
-
-  @MockBean
-  private RetroPointService retroPointService;
-
-  @Autowired
-  private Jackson2ObjectMapperBuilder jacksonBuilder;
-
-  @MockBean
-  private TokenService tokenService;
-
-  @MockBean
-  private TokenAuthenticationService tokenAuthenticationService;
-
-  @MockBean
-  private ApplicationContext applicationContext;
-
-  private ObjectMapper objectMapper;
-
-  private Authentication authToken;
-
   private final Long retroId = 2357L;
   private final String username = "username";
+  @Autowired
+  private MockMvc mockMvc;
+  @Autowired
+  private WebApplicationContext webApplicationContext;
+  @MockBean
+  private RetroPointService retroPointService;
+  @Autowired
+  private Jackson2ObjectMapperBuilder jacksonBuilder;
+  @MockBean
+  private TokenService tokenService;
+  @MockBean
+  private TokenAuthenticationService tokenAuthenticationService;
+  @MockBean
+  private ApplicationContext applicationContext;
+  private ObjectMapper objectMapper;
+  private Authentication authToken;
 
   @Before()
   public void testSetup() {

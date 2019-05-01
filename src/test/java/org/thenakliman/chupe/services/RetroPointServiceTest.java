@@ -37,26 +37,20 @@ import org.thenakliman.chupe.repositories.RetroVoteRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RetroPointServiceTest {
-  @Mock
-  private ModelMapper modelMapper;
-
-  @Mock
-  private RetroPointRepository retroPointRepository;
-
-  @Mock
-  private RetroVoteRepository retroVoteRepository;
-
-  @Mock
-  private DateUtil dateUtil;
-
-  @InjectMocks
-  private RetroPointService retroPointService;
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   private final Date now = new Date();
   private final long retroId = 101L;
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
+  @Mock
+  private ModelMapper modelMapper;
+  @Mock
+  private RetroPointRepository retroPointRepository;
+  @Mock
+  private RetroVoteRepository retroVoteRepository;
+  @Mock
+  private DateUtil dateUtil;
+  @InjectMocks
+  private RetroPointService retroPointService;
 
   @Test
   public void shouldSaveRetroPoint() {

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.thenakliman.chupe.models.TransactionType.CREDIT;
 
 import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,8 +75,8 @@ public class FundToFundDtoMappingTest {
 
   private User getUser(String userName) {
     return User
-          .builder()
-          .userName(userName)
-          .build();
+        .builder()
+        .userName(userName)
+        .build();
   }
 }

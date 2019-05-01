@@ -1,5 +1,15 @@
 package org.thenakliman.chupe.services;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import javassist.NotFoundException;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,32 +25,18 @@ import org.thenakliman.chupe.dto.UpsertFeedbackPointDTO;
 import org.thenakliman.chupe.models.FeedbackPoint;
 import org.thenakliman.chupe.repositories.FeedbackPointRepository;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(MockitoJUnitRunner.class)
 public class FeedbackPointServiceTest {
-  @Mock
-  private FeedbackPointRepository feedbackPointRepository;
-
-  @Mock
-  private ModelMapper modelMapper;
-
-  @Mock
-  private DateUtil dateUtil;
-
-  @InjectMocks
-  private FeedbackPointService feedbackPointService;
-
   @Rule
   public ExpectedException exception = ExpectedException.none();
+  @Mock
+  private FeedbackPointRepository feedbackPointRepository;
+  @Mock
+  private ModelMapper modelMapper;
+  @Mock
+  private DateUtil dateUtil;
+  @InjectMocks
+  private FeedbackPointService feedbackPointService;
 
   @Test
   public void shouldReturnFeedbackPointsGivenToUser() {
@@ -62,7 +58,7 @@ public class FeedbackPointServiceTest {
   public void shouldReturnFeedbackGivenToUserByAUser() {
     Long sessionId = 1029L;
     String givenTo = "givenTo-username";
-    String givenBy = "givenBy-username";
+    String givenBy = "createdBy-username";
     FeedbackPoint feedbackPoint = FeedbackPoint.builder().build();
     when(feedbackPointRepository.findByGivenToUserNameAndGivenByUserNameAndFeedbackSessionId(givenTo, givenBy, sessionId))
         .thenReturn(Collections.singletonList(feedbackPoint));

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

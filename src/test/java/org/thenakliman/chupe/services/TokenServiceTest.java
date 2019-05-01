@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.impl.DefaultClaims;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.impl.DefaultClaims;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -25,25 +25,21 @@ import org.thenakliman.chupe.repositories.UserRepository;
 @RunWith(MockitoJUnitRunner.class)
 public class TokenServiceTest {
 
-  @Mock
-  RoleRepository roleRepository;
-
-  @Mock
-  UserRepository userRepository;
-
-  @Mock
-  TokenProperty tokenProperties;
-
-  @InjectMocks
-  TokenService tokenService;
-
-  private static final  String username = "username";
+  private static final String username = "username";
   private static final String email = "example@test.com";
   private static final String audience = "testAudience";
-  private static final  String issuer = "testIssuer";
-  private static final  String key = "testKey";
+  private static final String issuer = "testIssuer";
+  private static final String key = "testKey";
   private static final String aRole = "admin";
   private static final String mRole = "member";
+  @Mock
+  RoleRepository roleRepository;
+  @Mock
+  UserRepository userRepository;
+  @Mock
+  TokenProperty tokenProperties;
+  @InjectMocks
+  TokenService tokenService;
 
   private String getToken() {
     List<Role> roles = new ArrayList<Role>();
@@ -75,21 +71,21 @@ public class TokenServiceTest {
   @Test
   public void shouldCreateToken() {
     String token = getToken();
-    byte []keyBytes = key.getBytes();
+    byte[] keyBytes = key.getBytes();
     assertEquals(
-            Jwts.parser().setSigningKey(keyBytes).parseClaimsJws(token).getBody().getAudience(),
-            audience);
+        Jwts.parser().setSigningKey(keyBytes).parseClaimsJws(token).getBody().getAudience(),
+        audience);
 
     assertEquals(
-            Jwts.parser().setSigningKey(keyBytes).parseClaimsJws(token).getBody().getIssuer(),
-            issuer);
+        Jwts.parser().setSigningKey(keyBytes).parseClaimsJws(token).getBody().getIssuer(),
+        issuer);
 
     assertEquals(
-            Jwts.parser().setSigningKey(keyBytes).parseClaimsJws(token).getBody().getSubject(),
-            username);
+        Jwts.parser().setSigningKey(keyBytes).parseClaimsJws(token).getBody().getSubject(),
+        username);
 
-    DefaultClaims tokenClaims = ((DefaultClaims)Jwts.parser().setSigningKey(keyBytes)
-            .parse(token).getBody());
+    DefaultClaims tokenClaims = ((DefaultClaims) Jwts.parser().setSigningKey(keyBytes)
+        .parse(token).getBody());
 
     assertEquals("firstname lastname", tokenClaims.get("name"));
     assertEquals(username, tokenClaims.get("username"));
@@ -103,7 +99,7 @@ public class TokenServiceTest {
   @Test
   public void shouldRaiseSignatureExceptionIfInvalidToken() {
     String token = getToken();
-    token = token.substring(0,4) + 'x' + token.substring(5);
+    token = token.substring(0, 4) + 'x' + token.substring(5);
     assertFalse(tokenService.isTokenValid(token));
   }
 

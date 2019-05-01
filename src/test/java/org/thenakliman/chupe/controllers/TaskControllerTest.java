@@ -5,10 +5,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,34 +35,27 @@ import org.thenakliman.chupe.services.TokenService;
 
 @WebMvcTest(controllers = TaskController.class)
 public class TaskControllerTest extends BaseControllerTest {
+  private final String username = "username";
   @Autowired
   private MockMvc mockMvc;
-
   @Autowired
   private WebApplicationContext webApplicationContext;
-
   @MockBean
   private TaskService taskService;
-
   @Autowired
   private Jackson2ObjectMapperBuilder jacksonBuilder;
-
   @MockBean
   private TokenService tokenService;
-
   @MockBean
   private TokenAuthenticationService tokenAuthenticationService;
-
   @MockBean
   private ApplicationContext applicationContext;
-
   private ObjectMapper objectMapper;
-
   private Authentication authToken;
 
-  private final String username = "username";
-
-  /** Setup web application context. */
+  /**
+   * Setup web application context.
+   */
   @Before()
   public void testSetup() {
     objectMapper = jacksonBuilder.build();
@@ -78,7 +71,7 @@ public class TaskControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldTaskForAUser() throws  Exception {
+  public void shouldTaskForAUser() throws Exception {
     String description = "today's only task";
     TaskDTO taskDTO = TaskDTO.builder().description(description).build();
     List<TaskDTO> taskDTOs = new ArrayList<>();
@@ -99,7 +92,7 @@ public class TaskControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldGiveNotFoundWhenTaskIsNotFound() throws  Exception {
+  public void shouldGiveNotFoundWhenTaskIsNotFound() throws Exception {
     given(taskService.getAllTask(username)).willThrow(new NotFoundException("Not Found"));
 
     SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -110,7 +103,7 @@ public class TaskControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldCreateTask() throws  Exception {
+  public void shouldCreateTask() throws Exception {
     String description = "today's only task";
     TaskDTO taskDTO = TaskDTO.builder().description(description).build();
     SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -129,7 +122,7 @@ public class TaskControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldUpdateTask() throws  Exception {
+  public void shouldUpdateTask() throws Exception {
     String description = "today's only task";
     TaskDTO taskDTO = TaskDTO.builder().description(description).build();
     long taskId = 10L;
@@ -148,7 +141,7 @@ public class TaskControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldRaiseNotFoundWhenUpdateTask() throws  Exception {
+  public void shouldRaiseNotFoundWhenUpdateTask() throws Exception {
     String description = "today's only task";
     TaskDTO taskDTO = TaskDTO.builder().description(description).build();
     long taskId = 10L;

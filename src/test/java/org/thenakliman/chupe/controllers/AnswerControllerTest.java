@@ -4,9 +4,10 @@ import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,9 @@ public class AnswerControllerTest {
 
   private ObjectMapper objectMapper;
 
-  /** Setup web application context. */
+  /**
+   * Setup web application context.
+   */
   @Before()
   public void testSetup() {
     objectMapper = jacksonBuilder.build();
@@ -65,7 +68,7 @@ public class AnswerControllerTest {
   }
 
   @Test
-  public void shouldGetAnswerToGivenQuestion() throws  Exception {
+  public void shouldGetAnswerToGivenQuestion() throws Exception {
     int questionId = 100;
     AnswerDTO answer = getAnswerDTO(questionId, "user", "answer");
     answer.setId(10L);
@@ -85,11 +88,11 @@ public class AnswerControllerTest {
   }
 
   @Test
-  public void shouldReturnNotFoundStatusCodeIfQuestionNotFound() throws  Exception {
+  public void shouldReturnNotFoundStatusCodeIfQuestionNotFound() throws Exception {
     int questionId = 1000;
     BDDMockito.given(
         answerService.getAnswers(questionId))
-            .willThrow(new NotFoundException(questionId + " question not found"));
+        .willThrow(new NotFoundException(questionId + " question not found"));
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .get("/api/v1/answers?questionId=" + questionId)
@@ -98,7 +101,7 @@ public class AnswerControllerTest {
   }
 
   @Test
-  public void shouldCreateAnswer() throws  Exception {
+  public void shouldCreateAnswer() throws Exception {
     int questionId = 100;
     String user = "user";
     String answer1 = "answer";
@@ -128,7 +131,7 @@ public class AnswerControllerTest {
   }
 
   @Test
-  public void shouldReturnNotFoundStatusCodeIfAnswerNotFound() throws  Exception {
+  public void shouldReturnNotFoundStatusCodeIfAnswerNotFound() throws Exception {
     Long answerId = 1000L;
     AnswerDTO answerDTO = AnswerDTO.builder().build();
     BDDMockito.given(
@@ -143,7 +146,7 @@ public class AnswerControllerTest {
   }
 
   @Test
-  public void shouldReturnUpdatedAnswer() throws  Exception {
+  public void shouldReturnUpdatedAnswer() throws Exception {
     Long answerId = 1000L;
     AnswerDTO answer = getAnswerDTO(10, "user", "answer");
     BDDMockito.given(
