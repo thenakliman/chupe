@@ -14,11 +14,6 @@ public class TokenController {
   @Autowired
   private TokenService tokenService;
 
-  /** Provide token.
-   *
-   * @param username username of user requesting token
-   * @return
-   */
   @GetMapping("token")
   public ResponseEntity<String> getToken(@RequestParam String username) {
     // todo(thenakliman): Handle if failure occurred while processing request.

@@ -16,7 +16,6 @@ public class UserController extends BaseController {
   @Autowired
   UserService userService;
 
-  /** API for fetching all the users. */
   @GetMapping("/users")
   public ResponseEntity<List<UserDTO>> getUsers() {
     try {

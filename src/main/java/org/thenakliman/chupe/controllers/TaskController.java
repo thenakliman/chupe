@@ -21,10 +21,6 @@ public class TaskController extends BaseController {
   @Autowired
   private TaskService taskService;
 
-  /** Returns list of tasks.
-   *
-   * @return list of Tasks
-   */
   @GetMapping("/tasks")
   public ResponseEntity getTasks() {
     User userDetails =
@@ -38,9 +34,6 @@ public class TaskController extends BaseController {
     }
   }
 
-  /** API for creating task.
-   *
-   */
   @PostMapping("/tasks")
   public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDTO) {
     User userDetails =
@@ -49,9 +42,6 @@ public class TaskController extends BaseController {
     return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
   }
 
-  /** API for creating task.
-   *
-   */
   @PutMapping("/tasks/{id}")
   public ResponseEntity<TaskDTO> updateTask(@RequestBody TaskDTO taskDTO,
                                             @PathVariable(value = "id") long id) {

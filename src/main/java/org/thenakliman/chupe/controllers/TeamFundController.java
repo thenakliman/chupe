@@ -24,9 +24,6 @@ public class TeamFundController  extends BaseController {
   @Autowired
   private TeamFundService teamFundService;
 
-  /** API for fetching all type of team fund.
-   * @return list of team fund types
-   */
   @GetMapping("/team-funds/types")
   public ResponseEntity teamFundTypes(@RequestHeader HttpHeaders header) {
     List<FundType> teamFundTypes;
@@ -39,27 +36,18 @@ public class TeamFundController  extends BaseController {
     return new ResponseEntity(teamFundTypes, HttpStatus.OK);
   }
 
-  /** API for fetching a team fund.
-   * @return list of teamFund
-   */
   @GetMapping("/team-funds")
   public ResponseEntity<TeamFund> teamFund(@RequestHeader HttpHeaders header) {
     TeamFund teamFund = teamFundService.getTeamFund();
     return new ResponseEntity(teamFund, HttpStatus.OK);
   }
 
-  /** API for fetching a team fund.
-   * @return list of teamFund
-   */
   @PostMapping("/team-funds")
   public ResponseEntity<FundDTO> saveFund(@RequestHeader HttpHeaders header,
                                        @RequestBody FundDTO fund) throws NotFoundException {
     return new ResponseEntity(teamFundService.saveTeamFund(fund), HttpStatus.OK);
   }
 
-  /** API for fetching a fund for a user.
-   * @return list of fundDTOs
-   */
   @GetMapping("/funds")
   public ResponseEntity<List<FundDTO>> getFundsForGivenUser(
       @RequestParam("owner") String owner) throws NotFoundException {

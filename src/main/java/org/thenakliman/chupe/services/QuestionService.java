@@ -33,13 +33,6 @@ public class QuestionService {
         .collect(Collectors.toList());
   }
 
-  /**
-   * Update a question.
-   *
-   * @param id       question id
-   * @param question question dto containing new question details
-   * @throws NotFoundException if question does not exist, we are trying to update
-   */
   public void updateQuestions(long id, QuestionDTO question) throws NotFoundException {
     Optional<Question> savedQuestion = questionsRepository.findById(id);
 

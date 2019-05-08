@@ -22,13 +22,6 @@ public class QuestionController extends BaseController {
   @Autowired
   private QuestionService questionService;
 
-  /** API for creating a question.
-   *
-   * <p> Accepts following questions details </p>
-   * 1. Question, summary.
-   * 2. Description, of the question or additional data needed to explain question
-   * 3. Owner, user asked the question
-   * 4. AssignedTO, user responsible for answering the question */
   @PostMapping("/questions")
   public ResponseEntity<QuestionDTO> askQuestion(@RequestHeader HttpHeaders header,
                                               @RequestBody Question question) {
@@ -37,13 +30,6 @@ public class QuestionController extends BaseController {
     return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
   }
 
-  /** API for updating a question.
-   *
-   * <p> Accepts following questions details </p>
-   * 1. Question, summary.
-   * 2. Description, of the question or additional data needed to explain question
-   * 3. Owner, user asked the question
-   * 4. AssignedTO, user responsible for answering the question */
   @PutMapping("/questions/{id}")
   public ResponseEntity updateQuestion(@RequestHeader HttpHeaders header,
                                        @PathVariable(value = "id") long id,
@@ -57,10 +43,6 @@ public class QuestionController extends BaseController {
     return new ResponseEntity<>(httpStatus);
   }
 
-  /** APIs for fetching list of questions.
-   *
-   * @return list of questions
-   */
   @GetMapping("/questions")
   public ResponseEntity getQuestions() {
     try {
