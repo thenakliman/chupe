@@ -8,7 +8,7 @@ import org.thenakliman.chupe.dto.User;
 @Controller
 @RequestMapping("/api/v1")
 public class BaseController {
-  protected String getRequestUsername() {
+  String getRequestUsername() {
     User userDetails =
         (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return userDetails.getUsername();

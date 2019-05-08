@@ -4,7 +4,6 @@ import java.util.List;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
@@ -22,12 +20,16 @@ import org.thenakliman.chupe.services.MeetingService;
 
 @Controller
 public class MeetingController extends BaseController {
-  @Autowired
   private MeetingService meetingService;
+
+  @Autowired
+  public MeetingController(MeetingService meetingService) {
+    this.meetingService = meetingService;
+  }
 
   @GetMapping("/meetings")
   public ResponseEntity<List<MeetingDTO>> getMeetings() {
-    List<MeetingDTO> meetings = meetingService.getMeetings(getRequestUsername());
+    List<MeetingDTO> meetings = meetingService.getMeetings();
     return new ResponseEntity<>(meetings, HttpStatus.OK);
   }
 

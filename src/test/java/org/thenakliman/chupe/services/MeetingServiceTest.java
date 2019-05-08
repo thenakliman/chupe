@@ -87,14 +87,14 @@ public class MeetingServiceTest {
   public void shouldReturnMeetings() {
     String createdBy = "created-by";
     List<Meeting> meetings = Arrays.asList(new Meeting(), new Meeting());
-    when(meetingRepository.findByCreatedByUserName(createdBy)).thenReturn(meetings);
+    when(meetingRepository.findAll()).thenReturn(meetings);
     MeetingDTO meetingDTO1 = new MeetingDTO();
     meetingDTO1.setId(10L);
     MeetingDTO meetingDTO2 = new MeetingDTO();
     when(converterUtil.convertToListOfObjects(meetings, MeetingDTO.class))
         .thenReturn(Arrays.asList(meetingDTO1, meetingDTO2));
 
-    List<MeetingDTO> meetingsDtos = meetingService.getMeetings(createdBy);
+    List<MeetingDTO> meetingsDtos = meetingService.getMeetings();
     assertThat(meetingsDtos, hasSize(2));
     assertThat(meetingsDtos, hasItems(meetingDTO1, meetingDTO2));
   }

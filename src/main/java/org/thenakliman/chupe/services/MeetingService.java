@@ -53,8 +53,8 @@ public class MeetingService {
     return modelMapper.map(createdMeeting, MeetingDTO.class);
   }
 
-  public List<MeetingDTO> getMeetings(String createdBy) {
-    List<Meeting> meetings = meetingRepository.findByCreatedByUserName(createdBy);
+  public List<MeetingDTO> getMeetings() {
+    List<Meeting> meetings = meetingRepository.findAll();
     return converterUtil.convertToListOfObjects(meetings, MeetingDTO.class);
   }
 

@@ -105,7 +105,7 @@ public class MeetingControllerTest {
     MeetingDTO meetingDTO2 = new MeetingDTO();
     meetingDTO1.setId(102L);
     List<MeetingDTO> meetingDTOs = Arrays.asList(meetingDTO1, meetingDTO2);
-    BDDMockito.given(meetingService.getMeetings(username)).willReturn(meetingDTOs);
+    BDDMockito.given(meetingService.getMeetings()).willReturn(meetingDTOs);
     SecurityContextHolder.getContext().setAuthentication(authToken);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .get("/api/v1/meetings"))
