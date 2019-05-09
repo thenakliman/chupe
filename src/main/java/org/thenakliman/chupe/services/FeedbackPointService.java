@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javassist.NotFoundException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.ConverterUtil;
@@ -20,18 +19,15 @@ import org.thenakliman.chupe.repositories.FeedbackPointRepository;
 @Service
 public class FeedbackPointService {
   private FeedbackPointRepository feedbackPointRepository;
-  private ModelMapper modelMapper;
   private DateUtil dateUtil;
   private ConverterUtil converterUtil;
 
   @Autowired
   public FeedbackPointService(FeedbackPointRepository feedbackPointRepository,
-                              ModelMapper modelMapper,
                               DateUtil dateUtil,
                               ConverterUtil converterUtil) {
 
     this.feedbackPointRepository = feedbackPointRepository;
-    this.modelMapper = modelMapper;
     this.dateUtil = dateUtil;
     this.converterUtil = converterUtil;
   }
@@ -58,7 +54,7 @@ public class FeedbackPointService {
   }
 
   public void saveFeedbackPoint(String givenBy, UpsertFeedbackPointDTO upsertFeedbackPointDTO) {
-    FeedbackPoint feedbackPoint = modelMapper.map(upsertFeedbackPointDTO, FeedbackPoint.class);
+    FeedbackPoint feedbackPoint = converterUtil.convertToObject(upsertFeedbackPointDTO, FeedbackPoint.class);
     feedbackPoint.setGivenBy(User.builder().userName(givenBy).build());
     feedbackPointRepository.save(feedbackPoint);
   }

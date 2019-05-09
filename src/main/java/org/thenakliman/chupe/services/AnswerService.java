@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javassist.NotFoundException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.ConverterUtil;
@@ -25,9 +24,6 @@ public class AnswerService {
   private DateUtil dateUtil;
 
   @Autowired
-  private ModelMapper modelMapper;
-
-  @Autowired
   private ConverterUtil converterUtil;
 
   public AnswerService() {
@@ -43,9 +39,9 @@ public class AnswerService {
   }
 
   public AnswerDTO addAnswer(AnswerDTO answerDTO) {
-    Answer answer = modelMapper.map(answerDTO, Answer.class);
+    Answer answer = converterUtil.convertToObject(answerDTO, Answer.class);
     Answer savedAnswer = answerRepository.save(answer);
-    return modelMapper.map(savedAnswer, AnswerDTO.class);
+    return converterUtil.convertToObject(savedAnswer, AnswerDTO.class);
   }
 
   public AnswerDTO updateAnswer(Long id, AnswerDTO answer) throws NotFoundException {
@@ -60,7 +56,7 @@ public class AnswerService {
       User answeredBy = new User();
       answeredBy.setUserName(answer.getAnsweredBy());
       existingAnswer.get().setAnsweredBy(answeredBy);
-      return modelMapper.map(answerRepository.save(existingAnswer.get()), AnswerDTO.class);
+      return converterUtil.convertToObject(answerRepository.save(existingAnswer.get()), AnswerDTO.class);
     }
 
     throw new NotFoundException(format("Answer with id %d could not be found", id));

@@ -18,23 +18,20 @@ import org.thenakliman.chupe.repositories.FeedbackSessionRepository;
 @Service
 public class FeedbackSessionService {
   private FeedbackSessionRepository feedbackSessionRepository;
-  private ModelMapper modelMapper;
   private DateUtil dateUtil;
   private ConverterUtil converterUtil;
 
   @Autowired
   public FeedbackSessionService(FeedbackSessionRepository feedbackSessionRepository,
-                                ModelMapper modelMapper,
                                 DateUtil dateUtil,
                                 ConverterUtil converterUtil) {
     this.feedbackSessionRepository = feedbackSessionRepository;
-    this.modelMapper = modelMapper;
     this.dateUtil = dateUtil;
     this.converterUtil = converterUtil;
   }
 
   public void createSession(UpsertFeedbackSessionDTO upsertFeedbackSessionDTO, String createdBy) {
-    FeedbackSession feedbackSession = modelMapper.map(
+    FeedbackSession feedbackSession = converterUtil.convertToObject(
         upsertFeedbackSessionDTO,
         FeedbackSession.class);
 

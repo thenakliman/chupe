@@ -14,6 +14,7 @@ import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
@@ -39,10 +40,10 @@ public class TeamFundService {
   private FundTransformer fundTransformer;
 
   @Autowired
-  private UserService userService;
+  private ConverterUtil converterUtil;
 
   @Autowired
-  private ModelMapper modelMapper;
+  private UserService userService;
 
   public List<FundType> getAllFundTypes() throws NotFoundException {
     List<FundType> fundTypes = fundTypeRepository.findAll();
@@ -71,7 +72,7 @@ public class TeamFundService {
   }
 
   public FundDTO saveTeamFund(FundDTO fundDTO) throws NotFoundException {
-    Fund fund = modelMapper.map(fundDTO, Fund.class);
+    Fund fund = converterUtil.convertToObject(fundDTO, Fund.class);
 
     Optional<FundType> fundType = fundTypeRepository.findById(fundDTO.getType());
 
@@ -96,7 +97,7 @@ public class TeamFundService {
 
     fund.setOwner(owner);
 
-    return modelMapper.map(teamFundRepository.save(fund), FundDTO.class);
+    return converterUtil.convertToObject(teamFundRepository.save(fund), FundDTO.class);
   }
 
   public List<FundDTO> getFundForATeamMember(String username) throws NotFoundException {
@@ -109,7 +110,7 @@ public class TeamFundService {
 
     return teamMemberFunds
         .stream()
-        .map(teamMemberFund -> modelMapper.map(teamMemberFund, FundDTO.class))
+        .map(teamMemberFund -> converterUtil.convertToObject(teamMemberFund, FundDTO.class))
         .collect(toList());
   }
 }

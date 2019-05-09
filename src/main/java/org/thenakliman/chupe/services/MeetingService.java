@@ -22,7 +22,6 @@ import org.thenakliman.chupe.repositories.MeetingRepository;
 public class MeetingService {
   private MeetingRepository meetingRepository;
   private MeetingDiscussionItemRepository meetingDiscussionItemRepository;
-  private ModelMapper modelMapper;
   private DateUtil dateUtil;
   private ConverterUtil converterUtil;
 
@@ -35,7 +34,6 @@ public class MeetingService {
 
     this.meetingRepository = meetingRepository;
     this.meetingDiscussionItemRepository = meetingDiscussionItemRepository;
-    this.modelMapper = modelMapper;
     this.dateUtil = dateUtil;
     this.converterUtil = converterUtil;
   }
@@ -51,7 +49,7 @@ public class MeetingService {
         .build();
 
     Meeting createdMeeting = meetingRepository.save(meeting);
-    return modelMapper.map(createdMeeting, MeetingDTO.class);
+    return converterUtil.convertToObject(createdMeeting, MeetingDTO.class);
   }
 
   public List<MeetingDTO> getMeetings() {
@@ -67,7 +65,7 @@ public class MeetingService {
     meeting.setSubject(subject);
     meeting.setUpdatedAt(dateUtil.getTime());
     Meeting updatedMeeting = meetingRepository.save(meeting);
-    return modelMapper.map(updatedMeeting, MeetingDTO.class);
+    return converterUtil.convertToObject(updatedMeeting, MeetingDTO.class);
   }
 
   public List<MeetingDiscussionItemDTO> getMeetingDiscussionItems(Long meetingId) {
@@ -79,13 +77,13 @@ public class MeetingService {
       String createdBy,
       CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
 
-    MeetingDiscussionItem meetingDiscussionItem = modelMapper.map(
+    MeetingDiscussionItem meetingDiscussionItem = converterUtil.convertToObject(
         createMeetingDiscussionItemDTO,
         MeetingDiscussionItem.class);
 
     meetingDiscussionItem.setCreatedBy(User.builder().userName(createdBy).build());
     MeetingDiscussionItem savedDiscussionItem = meetingDiscussionItemRepository.save(meetingDiscussionItem);
-    return modelMapper.map(savedDiscussionItem, MeetingDiscussionItemDTO.class);
+    return converterUtil.convertToObject(savedDiscussionItem, MeetingDiscussionItemDTO.class);
   }
 
   public MeetingDiscussionItemDTO updateMeetingDiscussionItem(
@@ -105,7 +103,7 @@ public class MeetingService {
     discussionItem.setAssignedTo(assignedTo);
     discussionItem.setUpdatedAt(dateUtil.getTime());
     MeetingDiscussionItem savedDiscussionItem = meetingDiscussionItemRepository.save(discussionItem);
-    return modelMapper.map(savedDiscussionItem, MeetingDiscussionItemDTO.class);
+    return converterUtil.convertToObject(savedDiscussionItem, MeetingDiscussionItemDTO.class);
   }
 
   private User getUser(String username) {

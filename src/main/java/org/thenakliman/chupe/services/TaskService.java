@@ -26,9 +26,6 @@ public class TaskService {
   private TaskRepository taskRepository;
 
   @Autowired
-  private ModelMapper modelMapper;
-
-  @Autowired
   private DateUtil dateUtil;
 
   @Autowired
@@ -46,11 +43,11 @@ public class TaskService {
   }
 
   public TaskDTO saveTask(TaskDTO taskDTO, String createdBy) {
-    Task task = modelMapper.map(taskDTO, Task.class);
+    Task task = converterUtil.convertToObject(taskDTO, Task.class);
     task.setId(null);
     task.setCreatedBy(User.builder().userName(createdBy).build());
     Task savedTask = taskRepository.save(task);
-    return modelMapper.map(savedTask, TaskDTO.class);
+    return converterUtil.convertToObject(savedTask, TaskDTO.class);
   }
 
   public TaskDTO updateTask(Long id, TaskDTO taskDTO) throws NotFoundException {
@@ -62,7 +59,7 @@ public class TaskService {
     updateTaskAsPerUpdatePayload(task.get(), taskDTO);
 
     Task savedTask = taskRepository.save(task.get());
-    return modelMapper.map(savedTask, TaskDTO.class);
+    return converterUtil.convertToObject(savedTask, TaskDTO.class);
   }
 
   private void updateTaskAsPerUpdatePayload(Task existingTask, TaskDTO updatedTask) {

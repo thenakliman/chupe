@@ -20,13 +20,10 @@ public class QuestionService {
   private QuestionRepository questionsRepository;
 
   @Autowired
-  private ModelMapper modelMapper;
-
-  @Autowired
   private ConverterUtil converterUtil;
 
   public QuestionDTO addQuestion(Question question) {
-    return modelMapper.map(questionsRepository.save(question), QuestionDTO.class);
+    return converterUtil.convertToObject(questionsRepository.save(question), QuestionDTO.class);
   }
 
   public List<QuestionDTO> getQuestions() {

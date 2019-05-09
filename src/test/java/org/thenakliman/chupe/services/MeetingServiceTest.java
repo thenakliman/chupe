@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
@@ -43,8 +42,6 @@ public class MeetingServiceTest {
   private MeetingRepository meetingRepository;
   @Mock
   private MeetingDiscussionItemRepository meetingDiscussionItemRepository;
-  @Mock
-  private ModelMapper modelMapper;
   @Mock
   private DateUtil dateUtil;
   @Mock
@@ -77,7 +74,7 @@ public class MeetingServiceTest {
 
     when(meetingRepository.save(meeting)).thenReturn(savedMeeting);
     MeetingDTO savedMeetingDto = new MeetingDTO();
-    when(modelMapper.map(savedMeeting, MeetingDTO.class)).thenReturn(savedMeetingDto);
+    when(converterUtil.convertToObject(savedMeeting, MeetingDTO.class)).thenReturn(savedMeetingDto);
     MeetingDTO meetingDto = meetingService.createMeeting(subject, userName);
 
     assertThat(savedMeetingDto, is(meetingDto));
@@ -110,7 +107,7 @@ public class MeetingServiceTest {
     updatedMeeting.setUpdatedAt(now);
     when(meetingRepository.save(updatedMeeting)).thenReturn(updatedMeeting);
     MeetingDTO updatedMeetingDto = new MeetingDTO();
-    when(modelMapper.map(updatedMeeting, MeetingDTO.class)).thenReturn(updatedMeetingDto);
+    when(converterUtil.convertToObject(updatedMeeting, MeetingDTO.class)).thenReturn(updatedMeetingDto);
 
     MeetingDTO meetingDto = meetingService.updateMeeting(meetingId, newSubject, createdBy);
 
@@ -155,13 +152,13 @@ public class MeetingServiceTest {
   public void shouldCreateDiscussionItem() {
     MeetingDiscussionItem discussionItem = new MeetingDiscussionItem();
     CreateMeetingDiscussionItemDTO createDiscussionItem = new CreateMeetingDiscussionItemDTO();
-    when(modelMapper.map(createDiscussionItem, MeetingDiscussionItem.class)).thenReturn(discussionItem);
+    when(converterUtil.convertToObject(createDiscussionItem, MeetingDiscussionItem.class)).thenReturn(discussionItem);
     MeetingDiscussionItem discussionItemToBeSaved = new MeetingDiscussionItem();
     discussionItemToBeSaved.setCreatedBy(User.builder().userName("created-by").build());
     MeetingDiscussionItem savedDiscussionItem = mock(MeetingDiscussionItem.class);
     when(meetingDiscussionItemRepository.save(discussionItemToBeSaved)).thenReturn(savedDiscussionItem);
     MeetingDiscussionItemDTO savedDiscussionItemDto = mock(MeetingDiscussionItemDTO.class);
-    when(modelMapper.map(savedDiscussionItem, MeetingDiscussionItemDTO.class)).thenReturn(savedDiscussionItemDto);
+    when(converterUtil.convertToObject(savedDiscussionItem, MeetingDiscussionItemDTO.class)).thenReturn(savedDiscussionItemDto);
 
     MeetingDiscussionItemDTO discussionItemDTO = meetingService.createMeetingDiscussionItem("created-by", createDiscussionItem);
 
@@ -193,7 +190,7 @@ public class MeetingServiceTest {
     MeetingDiscussionItem savedDiscussionItem = mock(MeetingDiscussionItem.class);
     when(meetingDiscussionItemRepository.save(meetingDiscussionItem)).thenReturn(savedDiscussionItem);
     MeetingDiscussionItemDTO meetingDiscussionItemDTO = mock(MeetingDiscussionItemDTO.class);
-    when(modelMapper.map(savedDiscussionItem, MeetingDiscussionItemDTO.class)).thenReturn(meetingDiscussionItemDTO);
+    when(converterUtil.convertToObject(savedDiscussionItem, MeetingDiscussionItemDTO.class)).thenReturn(meetingDiscussionItemDTO);
 
     MeetingDiscussionItemDTO discussionItemDTO = meetingService.updateMeetingDiscussionItem(10L, createMeetingDiscussionItemDTO);
 

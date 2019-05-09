@@ -36,8 +36,6 @@ public class FeedbackSessionServiceTest {
   @Mock
   private FeedbackSessionRepository feedbackSessionRepository;
   @Mock
-  private ModelMapper modelMapper;
-  @Mock
   private DateUtil dateUtil;
   @Mock
   private ConverterUtil converterUtil;
@@ -52,7 +50,7 @@ public class FeedbackSessionServiceTest {
         .build();
 
     FeedbackSession feedbackSession = FeedbackSession.builder().build();
-    when(modelMapper.map(upsertFeedbackSessionDTO, FeedbackSession.class)).thenReturn(feedbackSession);
+    when(converterUtil.convertToObject(upsertFeedbackSessionDTO, FeedbackSession.class)).thenReturn(feedbackSession);
 
     String createdByUsername = "created - by";
     feedbackSessionService.createSession(upsertFeedbackSessionDTO, createdByUsername);

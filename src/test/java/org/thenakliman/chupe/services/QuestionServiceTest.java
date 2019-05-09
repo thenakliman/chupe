@@ -36,8 +36,6 @@ public class QuestionServiceTest {
   @Mock
   private QuestionRepository questionsRepository;
   @Mock
-  private ModelMapper modelMapper;
-  @Mock
   private ConverterUtil converterUtil;
 
   @InjectMocks
@@ -72,7 +70,7 @@ public class QuestionServiceTest {
     Question question = getTestQuestion();
     given(questionsRepository.save(question)).willReturn(question);
     QuestionDTO questionDTO = getTestQuestionDTO();
-    given(modelMapper.map(question, QuestionDTO.class)).willReturn(questionDTO);
+    given(converterUtil.convertToObject(question, QuestionDTO.class)).willReturn(questionDTO);
 
     QuestionDTO receivedQuestion = questionService.addQuestion(question);
 

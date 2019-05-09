@@ -38,9 +38,6 @@ public class RetroServiceTest {
   @Mock
   private ConverterUtil converterUtil;
 
-  @Mock
-  private ModelMapper modelMapper;
-
   @InjectMocks
   private RetroService retroService;
 
@@ -73,7 +70,7 @@ public class RetroServiceTest {
         .maximumVote(maximumVote)
         .build();
 
-    when(modelMapper.map(upsertRetroDTO, Retro.class)).thenReturn(retro);
+    when(converterUtil.convertToObject(upsertRetroDTO, Retro.class)).thenReturn(retro);
     when(retroRepository.save(retro)).thenReturn(retro);
     RetroDTO retroDTO = RetroDTO
         .builder()
@@ -83,7 +80,7 @@ public class RetroServiceTest {
         .createdBy(name)
         .build();
 
-    when(modelMapper.map(retro, RetroDTO.class)).thenReturn(retroDTO);
+    when(converterUtil.convertToObject(retro, RetroDTO.class)).thenReturn(retroDTO);
 
     RetroDTO actualRetro = retroService.saveRetro(upsertRetroDTO, name);
 
@@ -156,7 +153,7 @@ public class RetroServiceTest {
         .build();
 
     Retro updatedRetro = getRetro(retroId, newName, username);
-    when(modelMapper.map(updatedRetro, RetroDTO.class)).thenReturn(retroDTO);
+    when(converterUtil.convertToObject(updatedRetro, RetroDTO.class)).thenReturn(retroDTO);
     when(retroRepository.save(updatedRetro)).thenReturn(updatedRetro);
     RetroDTO actualRetroDTO = retroService.updateRetro(retroId, upsertRetroDTO);
 

@@ -9,9 +9,9 @@ import java.util.Optional;
 
 import javassist.NotFoundException;
 import javassist.tools.web.BadHttpRequest;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.RetroPointDTO;
 import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
@@ -24,35 +24,35 @@ import org.thenakliman.chupe.repositories.RetroVoteRepository;
 
 @Service
 public class RetroPointService {
-  private final ModelMapper modelMapper;
   private final RetroPointRepository retroPointRepository;
   private final DateUtil dateUtil;
   private final RetroVoteRepository retroVoteRepository;
+  private ConverterUtil converterUtil;
 
   @Autowired
-  public RetroPointService(ModelMapper modelMapper,
-                           RetroPointRepository retroPointRepository,
+  public RetroPointService(RetroPointRepository retroPointRepository,
                            DateUtil dateUtil,
-                           RetroVoteRepository retroVoteRepository) {
+                           RetroVoteRepository retroVoteRepository,
+                           ConverterUtil converterUtil) {
 
-    this.modelMapper = modelMapper;
     this.retroPointRepository = retroPointRepository;
     this.dateUtil = dateUtil;
     this.retroVoteRepository = retroVoteRepository;
+    this.converterUtil = converterUtil;
   }
 
   public RetroPointDTO saveRetroPoint(UpsertRetroPointDTO upsertRetroPointDTO, String username) {
-    RetroPoint retroPoint = modelMapper.map(upsertRetroPointDTO, RetroPoint.class);
+    RetroPoint retroPoint = converterUtil.convertToObject(upsertRetroPointDTO, RetroPoint.class);
     retroPoint.setAddedBy(User.builder().userName(username).build());
     RetroPoint savedRetroPoint = retroPointRepository.save(retroPoint);
-    return modelMapper.map(savedRetroPoint, RetroPointDTO.class);
+    return converterUtil.convertToObject(savedRetroPoint, RetroPointDTO.class);
   }
 
   public List<RetroPointDTO> getRetroPoints(Long retroId) {
     List<RetroPoint> retroPoints = retroPointRepository.findAllByRetroId(retroId);
     return retroPoints
         .stream()
-        .map(retroPoint -> modelMapper.map(retroPoint, RetroPointDTO.class))
+        .map(retroPoint -> converterUtil.convertToObject(retroPoint, RetroPointDTO.class))
         .peek(retroPointDTO -> retroPointDTO.setVotes(getVotes(retroPointDTO.getId())))
         .collect(toList());
   }
@@ -73,7 +73,7 @@ public class RetroPointService {
     retroPoint.setType(upsertRetroPointDTO.getType());
     retroPoint.setUpdatedAt(dateUtil.getTime());
     RetroPoint updatedRetroPoint = retroPointRepository.save(retroPoint);
-    return modelMapper.map(updatedRetroPoint, RetroPointDTO.class);
+    return converterUtil.convertToObject(updatedRetroPoint, RetroPointDTO.class);
   }
 
   RetroPoint getRetroPoint(Long id) throws NotFoundException {

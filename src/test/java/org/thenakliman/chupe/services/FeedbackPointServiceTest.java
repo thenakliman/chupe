@@ -34,8 +34,6 @@ public class FeedbackPointServiceTest {
   @Mock
   private FeedbackPointRepository feedbackPointRepository;
   @Mock
-  private ModelMapper modelMapper;
-  @Mock
   private DateUtil dateUtil;
   @Mock
   private ConverterUtil converterUtil;
@@ -81,7 +79,7 @@ public class FeedbackPointServiceTest {
   public void saveFeedbackPoint() {
     UpsertFeedbackPointDTO upsertFeedbackPointDTO = UpsertFeedbackPointDTO.builder().build();
     FeedbackPoint feedbackPoint = FeedbackPoint.builder().build();
-    when(modelMapper.map(upsertFeedbackPointDTO, FeedbackPoint.class)).thenReturn(feedbackPoint);
+    when(converterUtil.convertToObject(upsertFeedbackPointDTO, FeedbackPoint.class)).thenReturn(feedbackPoint);
     String givenBy = "given-by";
 
     feedbackPointService.saveFeedbackPoint(givenBy, upsertFeedbackPointDTO);

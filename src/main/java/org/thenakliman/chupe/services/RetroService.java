@@ -19,26 +19,23 @@ import org.thenakliman.chupe.repositories.RetroRepository;
 @Service
 public class RetroService {
 
-  private final ModelMapper modelMapper;
   private final RetroRepository retroRepository;
   private final ConverterUtil converterUtil;
 
   @Autowired
-  public RetroService(ModelMapper modelMapper,
-                      RetroRepository retroRepository,
+  public RetroService(RetroRepository retroRepository,
                       ConverterUtil converterUtil) {
 
-    this.modelMapper = modelMapper;
     this.retroRepository = retroRepository;
     this.converterUtil = converterUtil;
   }
 
   public RetroDTO saveRetro(UpsertRetroDTO upsertRetroDTO, String username) {
-    Retro retro = modelMapper.map(upsertRetroDTO, Retro.class);
+    Retro retro = converterUtil.convertToObject(upsertRetroDTO, Retro.class);
     User createdBy = User.builder().userName(username).build();
     retro.setCreatedBy(createdBy);
     Retro savedRetro = retroRepository.save(retro);
-    return modelMapper.map(savedRetro, RetroDTO.class);
+    return converterUtil.convertToObject(savedRetro, RetroDTO.class);
   }
 
   public List<RetroDTO> getRetros() {
@@ -57,6 +54,6 @@ public class RetroService {
     savedRetro.get().setMaximumVote(upsertRetroDTO.getMaximumVote());
 
     Retro updatedRetro = retroRepository.save(savedRetro.get());
-    return modelMapper.map(updatedRetro, RetroDTO.class);
+    return converterUtil.convertToObject(updatedRetro, RetroDTO.class);
   }
 }

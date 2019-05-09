@@ -30,9 +30,6 @@ import org.thenakliman.chupe.repositories.AnswerRepository;
 @RunWith(MockitoJUnitRunner.class)
 public class AnswerServiceTest {
   @Mock
-  private ModelMapper modelMapper;
-
-  @Mock
   private AnswerRepository answerRepository;
 
   @Mock
@@ -98,9 +95,9 @@ public class AnswerServiceTest {
     AnswerDTO answerDTO = getAnswerDTO(testAnswer, user, questionId, id);
     Answer answer = getAnswer(testAnswer, user, questionId, id);
 
-    given(modelMapper.map(answerDTO, Answer.class)).willReturn(answer);
+    given(converterUtil.convertToObject(answerDTO, Answer.class)).willReturn(answer);
     given(answerRepository.save(answer)).willReturn(answer);
-    given(modelMapper.map(answer, AnswerDTO.class)).willReturn(answerDTO);
+    given(converterUtil.convertToObject(answer, AnswerDTO.class)).willReturn(answerDTO);
 
     assertThat(answerService.addAnswer(answerDTO), samePropertyValuesAs(answerDTO));
   }
@@ -127,7 +124,7 @@ public class AnswerServiceTest {
     Answer answer = getAnswer(testAnswer, user, questionId, answerId);
     given(answerRepository.findById(answerId)).willReturn(Optional.of(answer));
     given(answerRepository.save(answer)).willReturn(answer);
-    given(modelMapper.map(answer, AnswerDTO.class)).willReturn(answerDTO);
+    given(converterUtil.convertToObject(answer, AnswerDTO.class)).willReturn(answerDTO);
 
     assertThat(answerDTO, samePropertyValuesAs(answerService.updateAnswer(answerId, answerDTO)));
   }
