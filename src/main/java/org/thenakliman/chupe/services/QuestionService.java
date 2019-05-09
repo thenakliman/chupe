@@ -2,12 +2,12 @@ package org.thenakliman.chupe.services;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.repositories.QuestionRepository;
@@ -22,15 +22,16 @@ public class QuestionService {
   @Autowired
   private ModelMapper modelMapper;
 
+  @Autowired
+  private ConverterUtil converterUtil;
+
   public QuestionDTO addQuestion(Question question) {
     return modelMapper.map(questionsRepository.save(question), QuestionDTO.class);
   }
 
   public List<QuestionDTO> getQuestions() {
-    return questionsRepository.findAll()
-        .stream()
-        .map(question -> modelMapper.map(question, QuestionDTO.class))
-        .collect(Collectors.toList());
+    List<Question> questions = questionsRepository.findAll();
+    return converterUtil.convertToListOfObjects(questions, QuestionDTO.class);
   }
 
   public void updateQuestions(long id, QuestionDTO question) throws NotFoundException {

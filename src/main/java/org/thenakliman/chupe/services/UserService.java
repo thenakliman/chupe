@@ -1,31 +1,32 @@
 package org.thenakliman.chupe.services;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.UserRepository;
 
 
 @Service
-public class UserService implements  UserDetailsService {
-  @Autowired
+public class UserService implements UserDetailsService {
   private UserRepository userRepository;
 
+  private ConverterUtil converterUtil;
+
   @Autowired
-  private ModelMapper modelMapper;
+  public UserService(UserRepository userRepository, ConverterUtil converterUtil) {
+    this.userRepository = userRepository;
+    this.converterUtil = converterUtil;
+  }
 
   public List<UserDTO> getAllUsers() {
-    return userRepository.findAll()
-        .stream()
-        .map(user -> modelMapper.map(user, UserDTO.class))
-        .collect(Collectors.toList());
+    List<User> users = userRepository.findAll();
+    return converterUtil.convertToListOfObjects(users, UserDTO.class);
   }
 
   @Override

@@ -1,7 +1,6 @@
 package org.thenakliman.chupe.services;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +9,7 @@ import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FeedbackPointDTO;
 import org.thenakliman.chupe.dto.UpsertFeedbackPointDTO;
@@ -22,15 +22,18 @@ public class FeedbackPointService {
   private FeedbackPointRepository feedbackPointRepository;
   private ModelMapper modelMapper;
   private DateUtil dateUtil;
+  private ConverterUtil converterUtil;
 
   @Autowired
   public FeedbackPointService(FeedbackPointRepository feedbackPointRepository,
                               ModelMapper modelMapper,
-                              DateUtil dateUtil) {
+                              DateUtil dateUtil,
+                              ConverterUtil converterUtil) {
 
     this.feedbackPointRepository = feedbackPointRepository;
     this.modelMapper = modelMapper;
     this.dateUtil = dateUtil;
+    this.converterUtil = converterUtil;
   }
 
   public List<FeedbackPointDTO> getFeedbackPointsGivenToUser(String username,
@@ -38,10 +41,7 @@ public class FeedbackPointService {
     List<FeedbackPoint> feedbackPoints = feedbackPointRepository
         .findByGivenToUserNameAndFeedbackSessionId(username, feedbackSessionId);
 
-    return feedbackPoints
-        .stream()
-        .map(feedbackPoint -> modelMapper.map(feedbackPoint, FeedbackPointDTO.class))
-        .collect(toList());
+    return converterUtil.convertToListOfObjects(feedbackPoints, FeedbackPointDTO.class);
   }
 
   public List<FeedbackPointDTO> getFeedbackGivenToUserByAUser(String givenBy,
@@ -54,10 +54,7 @@ public class FeedbackPointService {
             givenBy,
             feedbackSessionId);
 
-    return feedbackPoints
-        .stream()
-        .map(feedbackPoint -> modelMapper.map(feedbackPoint, FeedbackPointDTO.class))
-        .collect(toList());
+    return converterUtil.convertToListOfObjects(feedbackPoints, FeedbackPointDTO.class);
   }
 
   public void saveFeedbackPoint(String givenBy, UpsertFeedbackPointDTO upsertFeedbackPointDTO) {

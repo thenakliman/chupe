@@ -19,8 +19,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FeedbackPointDTO;
+import org.thenakliman.chupe.dto.FeedbackSessionDTO;
 import org.thenakliman.chupe.dto.UpsertFeedbackPointDTO;
 import org.thenakliman.chupe.models.FeedbackPoint;
 import org.thenakliman.chupe.repositories.FeedbackPointRepository;
@@ -35,6 +37,8 @@ public class FeedbackPointServiceTest {
   private ModelMapper modelMapper;
   @Mock
   private DateUtil dateUtil;
+  @Mock
+  private ConverterUtil converterUtil;
   @InjectMocks
   private FeedbackPointService feedbackPointService;
 
@@ -46,7 +50,8 @@ public class FeedbackPointServiceTest {
     when(feedbackPointRepository.findByGivenToUserNameAndFeedbackSessionId(givenTo, sessionId))
         .thenReturn(Collections.singletonList(feedbackPoint));
     FeedbackPointDTO feedbackPointDTO = FeedbackPointDTO.builder().build();
-    when(modelMapper.map(feedbackPoint, FeedbackPointDTO.class)).thenReturn(feedbackPointDTO);
+    when(converterUtil.convertToListOfObjects(Collections.singletonList(feedbackPoint), FeedbackPointDTO.class))
+        .thenReturn(Collections.singletonList(feedbackPointDTO));
 
     List<FeedbackPointDTO> feedbackPoints = feedbackPointService.getFeedbackPointsGivenToUser(givenTo, sessionId);
 
@@ -63,7 +68,8 @@ public class FeedbackPointServiceTest {
     when(feedbackPointRepository.findByGivenToUserNameAndGivenByUserNameAndFeedbackSessionId(givenTo, givenBy, sessionId))
         .thenReturn(Collections.singletonList(feedbackPoint));
     FeedbackPointDTO feedbackPointDTO = FeedbackPointDTO.builder().build();
-    when(modelMapper.map(feedbackPoint, FeedbackPointDTO.class)).thenReturn(feedbackPointDTO);
+    when(converterUtil.convertToListOfObjects(Collections.singletonList(feedbackPoint), FeedbackPointDTO.class))
+        .thenReturn(Collections.singletonList(feedbackPointDTO));
 
     List<FeedbackPointDTO> feedbackPoints = feedbackPointService.getFeedbackGivenToUserByAUser(givenBy, givenTo, sessionId);
 

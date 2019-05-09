@@ -26,6 +26,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
@@ -42,6 +43,9 @@ public class TaskServiceTest {
 
   @Mock
   private DateUtil dateUtil;
+
+  @Mock
+  private ConverterUtil converterUtil;
 
   @InjectMocks
   private TaskService taskService;
@@ -81,7 +85,8 @@ public class TaskServiceTest {
     Task task = getTask(description, username);
     when(taskRepository.findByCreatedBy(any(User.class))).thenReturn(singletonList(task));
     TaskDTO taskDTO = getTaskDTO(description, username);
-    when(modelMapper.map(task, TaskDTO.class)).thenReturn(taskDTO);
+    when(converterUtil.convertToListOfObjects(singletonList(task), TaskDTO.class))
+        .thenReturn(Collections.singletonList(taskDTO));
 
     List<TaskDTO> taskDTOList = taskService.getAllTask(username);
 

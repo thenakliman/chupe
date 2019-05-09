@@ -54,10 +54,6 @@ public class TeamFundService {
 
   public TeamFund getTeamFund() {
     List<Fund> funds = teamFundRepository.findAll();
-    if (isNull(funds)) {
-      funds = emptyList();
-    }
-
     TeamFund teamFund = fundTransformer.transformToTeamFund(funds);
     List<UserDTO> allUsers = userService.getAllUsers();
     Set<String> teamMembers = new HashSet<>();

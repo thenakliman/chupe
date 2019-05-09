@@ -2,12 +2,12 @@ package org.thenakliman.chupe.services;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FeedbackSessionDTO;
 import org.thenakliman.chupe.dto.UpsertFeedbackSessionDTO;
@@ -20,14 +20,17 @@ public class FeedbackSessionService {
   private FeedbackSessionRepository feedbackSessionRepository;
   private ModelMapper modelMapper;
   private DateUtil dateUtil;
+  private ConverterUtil converterUtil;
 
   @Autowired
   public FeedbackSessionService(FeedbackSessionRepository feedbackSessionRepository,
                                 ModelMapper modelMapper,
-                                DateUtil dateUtil) {
+                                DateUtil dateUtil,
+                                ConverterUtil converterUtil) {
     this.feedbackSessionRepository = feedbackSessionRepository;
     this.modelMapper = modelMapper;
     this.dateUtil = dateUtil;
+    this.converterUtil = converterUtil;
   }
 
   public void createSession(UpsertFeedbackSessionDTO upsertFeedbackSessionDTO, String createdBy) {
@@ -43,10 +46,7 @@ public class FeedbackSessionService {
     List<FeedbackSession> feedbackSessions = feedbackSessionRepository
         .findAllByCreatedByUserName(username);
 
-    return feedbackSessions
-        .stream()
-        .map(feedbackSession -> modelMapper.map(feedbackSession, FeedbackSessionDTO.class))
-        .collect(Collectors.toList());
+    return converterUtil.convertToListOfObjects(feedbackSessions, FeedbackSessionDTO.class);
   }
 
   public void updateSession(long feedbackSessionId,

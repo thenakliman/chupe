@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.dto.RetroDTO;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.models.Retro;
@@ -33,6 +34,9 @@ import org.thenakliman.chupe.repositories.RetroRepository;
 public class RetroServiceTest {
   @Mock
   private RetroRepository retroRepository;
+
+  @Mock
+  private ConverterUtil converterUtil;
 
   @Mock
   private ModelMapper modelMapper;
@@ -102,9 +106,10 @@ public class RetroServiceTest {
     Retro retro1 = getRetro(101L, "name - 1", "username - 1");
     Retro retro2 = getRetro(102L, "name - 2", "username - 2");
 
-    when(retroRepository.findAll()).thenReturn(asList(retro1, retro2));
-    when(modelMapper.map(retro1, RetroDTO.class)).thenReturn(getRetroDTO(retro1));
-    when(modelMapper.map(retro2, RetroDTO.class)).thenReturn(getRetroDTO(retro2));
+    List<Retro> retros = asList(retro1, retro2);
+    when(retroRepository.findAll()).thenReturn(retros);
+    when(converterUtil.convertToListOfObjects(retros, RetroDTO.class))
+        .thenReturn(asList(getRetroDTO(retro1), getRetroDTO(retro2)));
 
     List<RetroDTO> retroDTOs = retroService.getRetros();
 

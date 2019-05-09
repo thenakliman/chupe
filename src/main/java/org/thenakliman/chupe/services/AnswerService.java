@@ -1,8 +1,6 @@
 package org.thenakliman.chupe.services;
 
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +9,7 @@ import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
@@ -28,17 +27,19 @@ public class AnswerService {
   @Autowired
   private ModelMapper modelMapper;
 
+  @Autowired
+  private ConverterUtil converterUtil;
+
+  public AnswerService() {
+  }
+
   public List<AnswerDTO> getAnswers(long questionId) throws NotFoundException {
     List<Answer> answers = answerRepository.findByQuestionId(questionId);
-
-    if (isNull(answers)) {
+    if (answers.isEmpty()) {
       throw new NotFoundException(format("Answer does not exist for question id %d", questionId));
     }
 
-    return answers
-        .stream()
-        .map(answer -> modelMapper.map(answer, AnswerDTO.class))
-        .collect(toList());
+    return converterUtil.convertToListOfObjects(answers, AnswerDTO.class);
   }
 
   public AnswerDTO addAnswer(AnswerDTO answerDTO) {

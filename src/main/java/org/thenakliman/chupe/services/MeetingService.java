@@ -30,7 +30,8 @@ public class MeetingService {
   public MeetingService(MeetingRepository meetingRepository,
                         MeetingDiscussionItemRepository meetingDiscussionItemRepository,
                         ModelMapper modelMapper,
-                        DateUtil dateUtil, ConverterUtil converterUtil) {
+                        DateUtil dateUtil,
+                        ConverterUtil converterUtil) {
 
     this.meetingRepository = meetingRepository;
     this.meetingDiscussionItemRepository = meetingDiscussionItemRepository;

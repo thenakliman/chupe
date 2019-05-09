@@ -1,5 +1,6 @@
 package org.thenakliman.chupe.services;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.hasItems;
@@ -15,8 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.UserRepository;
@@ -28,11 +29,11 @@ public class UserServiceTest {
   @Mock
   private UserRepository userRepository;
 
-  @Mock
-  private ModelMapper modelMapper;
-
   @InjectMocks
   private UserService userService;
+
+  @Mock
+  private ConverterUtil converterUtil;
 
   @Test
   public void shouldReturnEmptyUser() {
@@ -72,8 +73,8 @@ public class UserServiceTest {
         "user1_email");
 
     given(userRepository.findAll()).willReturn(repoUser);
-    given(modelMapper.map(testUser1, UserDTO.class)).willReturn(expectedUserDTO1);
-    given(modelMapper.map(testUser2, UserDTO.class)).willReturn(expectedUserDTO2);
+    given(converterUtil.convertToListOfObjects(repoUser, UserDTO.class))
+        .willReturn(asList(expectedUserDTO1, expectedUserDTO2));
 
     List<UserDTO> users = userService.getAllUsers();
 

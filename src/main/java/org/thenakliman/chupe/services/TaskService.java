@@ -1,7 +1,6 @@
 package org.thenakliman.chupe.services;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 import static org.thenakliman.chupe.models.TaskState.CREATED;
 import static org.thenakliman.chupe.models.TaskState.DONE;
 import static org.thenakliman.chupe.models.TaskState.IN_PROGRESS;
@@ -13,6 +12,7 @@ import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
@@ -31,6 +31,9 @@ public class TaskService {
   @Autowired
   private DateUtil dateUtil;
 
+  @Autowired
+  private ConverterUtil converterUtil;
+
   public List<TaskDTO> getAllTask(String username) throws NotFoundException {
     User user = new User();
     user.setUserName(username);
@@ -39,10 +42,7 @@ public class TaskService {
       throw new NotFoundException("Tasks not found");
     }
 
-    return tasks
-        .stream()
-        .map(task -> modelMapper.map(task, TaskDTO.class))
-        .collect(toList());
+    return converterUtil.convertToListOfObjects(tasks, TaskDTO.class);
   }
 
   public TaskDTO saveTask(TaskDTO taskDTO, String createdBy) {

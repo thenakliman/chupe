@@ -21,6 +21,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
+import org.springframework.util.CollectionUtils;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FeedbackSessionDTO;
 import org.thenakliman.chupe.dto.UpsertFeedbackSessionDTO;
@@ -37,6 +39,8 @@ public class FeedbackSessionServiceTest {
   private ModelMapper modelMapper;
   @Mock
   private DateUtil dateUtil;
+  @Mock
+  private ConverterUtil converterUtil;
   @InjectMocks
   private FeedbackSessionService feedbackSessionService;
 
@@ -65,7 +69,9 @@ public class FeedbackSessionServiceTest {
         .build();
 
     FeedbackSession feedbackSession = FeedbackSession.builder().build();
-    when(modelMapper.map(feedbackSession, FeedbackSessionDTO.class)).thenReturn(feedbackSessionDTO);
+    when(converterUtil.convertToListOfObjects(
+        Collections.singletonList(feedbackSession), FeedbackSessionDTO.class))
+        .thenReturn(Collections.singletonList(feedbackSessionDTO));
 
     String username = "created-by";
     when(feedbackSessionRepository.findAllByCreatedByUserName(username))

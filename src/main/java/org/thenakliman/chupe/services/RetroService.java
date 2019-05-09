@@ -1,7 +1,6 @@
 package org.thenakliman.chupe.services;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +9,7 @@ import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.dto.RetroDTO;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.models.Retro;
@@ -21,13 +21,16 @@ public class RetroService {
 
   private final ModelMapper modelMapper;
   private final RetroRepository retroRepository;
+  private final ConverterUtil converterUtil;
 
   @Autowired
   public RetroService(ModelMapper modelMapper,
-                      RetroRepository retroRepository) {
+                      RetroRepository retroRepository,
+                      ConverterUtil converterUtil) {
 
     this.modelMapper = modelMapper;
     this.retroRepository = retroRepository;
+    this.converterUtil = converterUtil;
   }
 
   public RetroDTO saveRetro(UpsertRetroDTO upsertRetroDTO, String username) {
@@ -40,10 +43,7 @@ public class RetroService {
 
   public List<RetroDTO> getRetros() {
     List<Retro> retros = retroRepository.findAll();
-    return retros
-        .stream()
-        .map(retro -> modelMapper.map(retro, RetroDTO.class))
-        .collect(toList());
+    return converterUtil.convertToListOfObjects(retros, RetroDTO.class);
   }
 
   public RetroDTO updateRetro(Long retroId, UpsertRetroDTO upsertRetroDTO)

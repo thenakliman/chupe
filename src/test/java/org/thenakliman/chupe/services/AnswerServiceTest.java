@@ -1,5 +1,6 @@
 package org.thenakliman.chupe.services;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -7,6 +8,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.BDDMockito.given;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
+import org.thenakliman.chupe.common.utils.ConverterUtil;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.User;
@@ -34,6 +37,9 @@ public class AnswerServiceTest {
 
   @Mock
   private org.thenakliman.chupe.common.utils.DateUtil dateUtil;
+
+  @Mock
+  private ConverterUtil converterUtil;
 
   @InjectMocks
   private AnswerService answerService;
@@ -67,8 +73,8 @@ public class AnswerServiceTest {
     Answer answer = getAnswer(username, testAnswer, questionId, answerId);
     given(answerRepository.findByQuestionId(questionId)).willReturn(singletonList(answer));
     AnswerDTO answerDTO = getAnswerDTO(username, testAnswer, questionId, answerId);
-    given(modelMapper.map(answer, AnswerDTO.class)).willReturn(answerDTO);
-
+    given(converterUtil.convertToListOfObjects(Collections.singletonList(answer), AnswerDTO.class))
+        .willReturn(Collections.singletonList(answerDTO));
     List<AnswerDTO> receivedAnswer = answerService.getAnswers(questionId);
 
     assertThat(receivedAnswer, hasSize(1));
@@ -79,7 +85,7 @@ public class AnswerServiceTest {
   public void shouldReturnNotFoundExceptionIfAnswerDoesNotExistForAQuestion()
       throws NotFoundException {
     int questionId = 10;
-    given(answerRepository.findByQuestionId(questionId)).willReturn(null);
+    given(answerRepository.findByQuestionId(questionId)).willReturn(emptyList());
     answerService.getAnswers(questionId);
   }
 
