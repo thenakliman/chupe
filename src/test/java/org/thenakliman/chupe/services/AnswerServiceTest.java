@@ -20,8 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.User;
@@ -36,7 +35,7 @@ public class AnswerServiceTest {
   private org.thenakliman.chupe.common.utils.DateUtil dateUtil;
 
   @Mock
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   @InjectMocks
   private AnswerService answerService;
@@ -70,7 +69,7 @@ public class AnswerServiceTest {
     Answer answer = getAnswer(username, testAnswer, questionId, answerId);
     given(answerRepository.findByQuestionId(questionId)).willReturn(singletonList(answer));
     AnswerDTO answerDTO = getAnswerDTO(username, testAnswer, questionId, answerId);
-    given(converterUtil.convertToListOfObjects(Collections.singletonList(answer), AnswerDTO.class))
+    given(converter.convertToListOfObjects(Collections.singletonList(answer), AnswerDTO.class))
         .willReturn(Collections.singletonList(answerDTO));
     List<AnswerDTO> receivedAnswer = answerService.getAnswers(questionId);
 
@@ -95,9 +94,9 @@ public class AnswerServiceTest {
     AnswerDTO answerDTO = getAnswerDTO(testAnswer, user, questionId, id);
     Answer answer = getAnswer(testAnswer, user, questionId, id);
 
-    given(converterUtil.convertToObject(answerDTO, Answer.class)).willReturn(answer);
+    given(converter.convertToObject(answerDTO, Answer.class)).willReturn(answer);
     given(answerRepository.save(answer)).willReturn(answer);
-    given(converterUtil.convertToObject(answer, AnswerDTO.class)).willReturn(answerDTO);
+    given(converter.convertToObject(answer, AnswerDTO.class)).willReturn(answerDTO);
 
     assertThat(answerService.addAnswer(answerDTO), samePropertyValuesAs(answerDTO));
   }
@@ -106,8 +105,9 @@ public class AnswerServiceTest {
   public void shouldReturnNotFoundExceptionIfAnswerDoesNotExistForAQuestionWhileUpating()
       throws NotFoundException {
     Long answerId = 10L;
-    given(answerRepository.findById(answerId)).willReturn(Optional.empty());
-    answerService.updateAnswer(answerId, AnswerDTO.builder().build());
+    String createdBy = "jai hind";
+    given(answerRepository.findByIdAndAnsweredByUserName(answerId, createdBy)).willReturn(Optional.empty());
+    answerService.updateAnswer(answerId, AnswerDTO.builder().build(), createdBy);
   }
 
   @Test
@@ -122,10 +122,11 @@ public class AnswerServiceTest {
     given(dateUtil.getTime()).willReturn(date);
     AnswerDTO answerDTO = getAnswerDTO(testAnswer, user, questionId, answerId);
     Answer answer = getAnswer(testAnswer, user, questionId, answerId);
-    given(answerRepository.findById(answerId)).willReturn(Optional.of(answer));
+    String createdBy = "created - By";
+    given(answerRepository.findByIdAndAnsweredByUserName(answerId, createdBy)).willReturn(Optional.of(answer));
     given(answerRepository.save(answer)).willReturn(answer);
-    given(converterUtil.convertToObject(answer, AnswerDTO.class)).willReturn(answerDTO);
+    given(converter.convertToObject(answer, AnswerDTO.class)).willReturn(answerDTO);
 
-    assertThat(answerDTO, samePropertyValuesAs(answerService.updateAnswer(answerId, answerDTO)));
+    assertThat(answerDTO, samePropertyValuesAs(answerService.updateAnswer(answerId, answerDTO, createdBy)));
   }
 }

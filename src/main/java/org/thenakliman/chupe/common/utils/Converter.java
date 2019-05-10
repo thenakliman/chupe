@@ -7,21 +7,21 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConverterUtil {
+public class Converter {
   private ModelMapper modelMapper;
 
-  public ConverterUtil(ModelMapper modelMapper) {
+  public Converter(ModelMapper modelMapper) {
     this.modelMapper = modelMapper;
   }
 
-  public <S, D> List<D> convertToListOfObjects(List<S> items, Class<D> destinationType) {
-    return items
+  public <S, D> List<D> convertToListOfObjects(List<S> sources, Class<D> destinationType) {
+    return sources
         .stream()
         .map(item -> modelMapper.map(item, destinationType))
         .collect(Collectors.toList());
   }
 
-  public <S, D> D convertToObject(S item, Class<D> destinationType) {
-    return modelMapper.map(item, destinationType);
+  public <S, D> D convertToObject(S source, Class<D> destinationType) {
+    return modelMapper.map(source, destinationType);
   }
 }

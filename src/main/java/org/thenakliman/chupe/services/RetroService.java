@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 import javassist.NotFoundException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.RetroDTO;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.models.Retro;
@@ -20,27 +19,27 @@ import org.thenakliman.chupe.repositories.RetroRepository;
 public class RetroService {
 
   private final RetroRepository retroRepository;
-  private final ConverterUtil converterUtil;
+  private final Converter converter;
 
   @Autowired
   public RetroService(RetroRepository retroRepository,
-                      ConverterUtil converterUtil) {
+                      Converter converter) {
 
     this.retroRepository = retroRepository;
-    this.converterUtil = converterUtil;
+    this.converter = converter;
   }
 
   public RetroDTO saveRetro(UpsertRetroDTO upsertRetroDTO, String username) {
-    Retro retro = converterUtil.convertToObject(upsertRetroDTO, Retro.class);
+    Retro retro = converter.convertToObject(upsertRetroDTO, Retro.class);
     User createdBy = User.builder().userName(username).build();
     retro.setCreatedBy(createdBy);
     Retro savedRetro = retroRepository.save(retro);
-    return converterUtil.convertToObject(savedRetro, RetroDTO.class);
+    return converter.convertToObject(savedRetro, RetroDTO.class);
   }
 
   public List<RetroDTO> getRetros() {
     List<Retro> retros = retroRepository.findAll();
-    return converterUtil.convertToListOfObjects(retros, RetroDTO.class);
+    return converter.convertToListOfObjects(retros, RetroDTO.class);
   }
 
   public RetroDTO updateRetro(Long retroId, UpsertRetroDTO upsertRetroDTO)
@@ -54,6 +53,6 @@ public class RetroService {
     savedRetro.get().setMaximumVote(upsertRetroDTO.getMaximumVote());
 
     Retro updatedRetro = retroRepository.save(savedRetro.get());
-    return converterUtil.convertToObject(updatedRetro, RetroDTO.class);
+    return converter.convertToObject(updatedRetro, RetroDTO.class);
   }
 }

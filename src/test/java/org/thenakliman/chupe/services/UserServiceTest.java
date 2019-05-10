@@ -17,7 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.UserRepository;
@@ -33,7 +33,7 @@ public class UserServiceTest {
   private UserService userService;
 
   @Mock
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   @Test
   public void shouldReturnEmptyUser() {
@@ -73,7 +73,7 @@ public class UserServiceTest {
         "user1_email");
 
     given(userRepository.findAll()).willReturn(repoUser);
-    given(converterUtil.convertToListOfObjects(repoUser, UserDTO.class))
+    given(converter.convertToListOfObjects(repoUser, UserDTO.class))
         .willReturn(asList(expectedUserDTO1, expectedUserDTO2));
 
     List<UserDTO> users = userService.getAllUsers();

@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.RetroPointDTO;
 import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
@@ -42,7 +42,7 @@ public class RetroPointServiceTest {
   @Rule
   public ExpectedException exception = ExpectedException.none();
   @Mock
-  private ConverterUtil converterUtil;
+  private Converter converter;
   @Mock
   private RetroPointRepository retroPointRepository;
   @Mock
@@ -65,9 +65,9 @@ public class RetroPointServiceTest {
         .build();
 
     RetroPoint retroPoint = getRetroPoint(username, retroId, retroPointType, description, null);
-    when(converterUtil.convertToObject(upsertRetroPointDTO, RetroPoint.class)).thenReturn(retroPoint);
+    when(converter.convertToObject(upsertRetroPointDTO, RetroPoint.class)).thenReturn(retroPoint);
     when(retroPointRepository.save(retroPoint)).thenReturn(retroPoint);
-    when(converterUtil.convertToObject(retroPoint, RetroPointDTO.class)).thenReturn(retroPointDTO);
+    when(converter.convertToObject(retroPoint, RetroPointDTO.class)).thenReturn(retroPointDTO);
 
     RetroPointDTO savedRetroPoint = retroPointService.saveRetroPoint(upsertRetroPointDTO, username);
 
@@ -86,7 +86,7 @@ public class RetroPointServiceTest {
         Collections.singletonList(retroPoint1));
 
     RetroPointDTO retroPointDTO = RetroPointDTO.builder().id(retroPointId).build();
-    when(converterUtil.convertToObject(any(RetroPoint.class), eq(RetroPointDTO.class)))
+    when(converter.convertToObject(any(RetroPoint.class), eq(RetroPointDTO.class)))
         .thenReturn(retroPointDTO);
     when(retroVoteRepository.countByRetroPointId(retroPointId)).thenReturn(2L);
 
@@ -150,7 +150,7 @@ public class RetroPointServiceTest {
 
     when(retroPointRepository.findById(retroPointId)).thenReturn(Optional.of(retroPoint));
     RetroPointDTO retroPointDTO = RetroPointDTO.builder().id(retroPointId).build();
-    when(converterUtil.convertToObject(any(), eq(RetroPointDTO.class))).thenReturn(retroPointDTO);
+    when(converter.convertToObject(any(), eq(RetroPointDTO.class))).thenReturn(retroPointDTO);
     when(retroPointRepository.save(any())).thenReturn(retroPoint);
     when(dateUtil.getTime()).thenReturn(now);
 

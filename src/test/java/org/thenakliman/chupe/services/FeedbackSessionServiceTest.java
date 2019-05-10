@@ -20,9 +20,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
-import org.springframework.util.CollectionUtils;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FeedbackSessionDTO;
 import org.thenakliman.chupe.dto.UpsertFeedbackSessionDTO;
@@ -38,7 +36,7 @@ public class FeedbackSessionServiceTest {
   @Mock
   private DateUtil dateUtil;
   @Mock
-  private ConverterUtil converterUtil;
+  private Converter converter;
   @InjectMocks
   private FeedbackSessionService feedbackSessionService;
 
@@ -50,7 +48,7 @@ public class FeedbackSessionServiceTest {
         .build();
 
     FeedbackSession feedbackSession = FeedbackSession.builder().build();
-    when(converterUtil.convertToObject(upsertFeedbackSessionDTO, FeedbackSession.class)).thenReturn(feedbackSession);
+    when(converter.convertToObject(upsertFeedbackSessionDTO, FeedbackSession.class)).thenReturn(feedbackSession);
 
     String createdByUsername = "created - by";
     feedbackSessionService.createSession(upsertFeedbackSessionDTO, createdByUsername);
@@ -67,7 +65,7 @@ public class FeedbackSessionServiceTest {
         .build();
 
     FeedbackSession feedbackSession = FeedbackSession.builder().build();
-    when(converterUtil.convertToListOfObjects(
+    when(converter.convertToListOfObjects(
         Collections.singletonList(feedbackSession), FeedbackSessionDTO.class))
         .thenReturn(Collections.singletonList(feedbackSessionDTO));
 

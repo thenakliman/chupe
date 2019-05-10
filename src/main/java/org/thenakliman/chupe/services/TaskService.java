@@ -9,10 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 import javassist.NotFoundException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
@@ -29,7 +28,7 @@ public class TaskService {
   private DateUtil dateUtil;
 
   @Autowired
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   public List<TaskDTO> getAllTask(String username) throws NotFoundException {
     User user = new User();
@@ -39,15 +38,15 @@ public class TaskService {
       throw new NotFoundException("Tasks not found");
     }
 
-    return converterUtil.convertToListOfObjects(tasks, TaskDTO.class);
+    return converter.convertToListOfObjects(tasks, TaskDTO.class);
   }
 
   public TaskDTO saveTask(TaskDTO taskDTO, String createdBy) {
-    Task task = converterUtil.convertToObject(taskDTO, Task.class);
+    Task task = converter.convertToObject(taskDTO, Task.class);
     task.setId(null);
     task.setCreatedBy(User.builder().userName(createdBy).build());
     Task savedTask = taskRepository.save(task);
-    return converterUtil.convertToObject(savedTask, TaskDTO.class);
+    return converter.convertToObject(savedTask, TaskDTO.class);
   }
 
   public TaskDTO updateTask(Long id, TaskDTO taskDTO) throws NotFoundException {
@@ -59,7 +58,7 @@ public class TaskService {
     updateTaskAsPerUpdatePayload(task.get(), taskDTO);
 
     Task savedTask = taskRepository.save(task.get());
-    return converterUtil.convertToObject(savedTask, TaskDTO.class);
+    return converter.convertToObject(savedTask, TaskDTO.class);
   }
 
   private void updateTaskAsPerUpdatePayload(Task existingTask, TaskDTO updatedTask) {

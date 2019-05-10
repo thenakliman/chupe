@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.models.Task;
@@ -41,7 +41,7 @@ public class TaskServiceTest {
   private DateUtil dateUtil;
 
   @Mock
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   @InjectMocks
   private TaskService taskService;
@@ -81,7 +81,7 @@ public class TaskServiceTest {
     Task task = getTask(description, username);
     when(taskRepository.findByCreatedBy(any(User.class))).thenReturn(singletonList(task));
     TaskDTO taskDTO = getTaskDTO(description, username);
-    when(converterUtil.convertToListOfObjects(singletonList(task), TaskDTO.class))
+    when(converter.convertToListOfObjects(singletonList(task), TaskDTO.class))
         .thenReturn(Collections.singletonList(taskDTO));
 
     List<TaskDTO> taskDTOList = taskService.getAllTask(username);
@@ -98,8 +98,8 @@ public class TaskServiceTest {
     when(taskRepository.save(task)).thenReturn(task);
 
     TaskDTO taskDTO = getTaskDTO(description, username);
-    when(converterUtil.convertToObject(taskDTO, Task.class)).thenReturn(task);
-    when(converterUtil.convertToObject(task, TaskDTO.class)).thenReturn(taskDTO);
+    when(converter.convertToObject(taskDTO, Task.class)).thenReturn(task);
+    when(converter.convertToObject(task, TaskDTO.class)).thenReturn(taskDTO);
 
     TaskDTO actualTask = taskService.saveTask(taskDTO, username);
 
@@ -132,14 +132,14 @@ public class TaskServiceTest {
 
     TaskDTO updatedTaskDTO = getTaskDTO(description, username);
     updatedTaskDTO.setState(IN_PROGRESS);
-    when(converterUtil.convertToObject(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
+    when(converter.convertToObject(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
 
     TaskDTO receivedTaskDTO = taskService.updateTask(id, taskDTO);
 
     assertThat(receivedTaskDTO, samePropertyValuesAs(updatedTaskDTO));
     verify(taskRepository).findById(id);
     verify(taskRepository).save(any());
-    verify(converterUtil).convertToObject(updatedTask, TaskDTO.class);
+    verify(converter).convertToObject(updatedTask, TaskDTO.class);
     verify(dateUtil, times(2)).getTime();
   }
 
@@ -161,14 +161,14 @@ public class TaskServiceTest {
 
     TaskDTO updatedTaskDTO = getTaskDTO(description, username);
     updatedTaskDTO.setState(DONE);
-    when(converterUtil.convertToObject(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
+    when(converter.convertToObject(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
 
     TaskDTO receivedTaskDTO = taskService.updateTask(id, taskDTO);
 
     assertThat(receivedTaskDTO, samePropertyValuesAs(updatedTaskDTO));
     verify(taskRepository).findById(id);
     verify(taskRepository).save(any());
-    verify(converterUtil).convertToObject(updatedTask, TaskDTO.class);
+    verify(converter).convertToObject(updatedTask, TaskDTO.class);
     verify(dateUtil, times(3)).getTime();
   }
 
@@ -191,14 +191,14 @@ public class TaskServiceTest {
 
     TaskDTO updatedTaskDTO = getTaskDTO(description, username);
     updatedTaskDTO.setState(ON_HOLD);
-    when(converterUtil.convertToObject(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
+    when(converter.convertToObject(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
 
     TaskDTO receivedTaskDTO = taskService.updateTask(id, taskDTO);
 
     assertThat(receivedTaskDTO, samePropertyValuesAs(updatedTaskDTO));
     verify(taskRepository).findById(id);
     verify(taskRepository).save(any());
-    verify(converterUtil).convertToObject(updatedTask, TaskDTO.class);
+    verify(converter).convertToObject(updatedTask, TaskDTO.class);
     verify(dateUtil, times(1)).getTime();
   }
 }

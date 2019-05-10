@@ -19,8 +19,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.QuestionPriority;
@@ -36,7 +35,7 @@ public class QuestionServiceTest {
   @Mock
   private QuestionRepository questionsRepository;
   @Mock
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   @InjectMocks
   private QuestionService questionService;
@@ -70,7 +69,7 @@ public class QuestionServiceTest {
     Question question = getTestQuestion();
     given(questionsRepository.save(question)).willReturn(question);
     QuestionDTO questionDTO = getTestQuestionDTO();
-    given(converterUtil.convertToObject(question, QuestionDTO.class)).willReturn(questionDTO);
+    given(converter.convertToObject(question, QuestionDTO.class)).willReturn(questionDTO);
 
     QuestionDTO receivedQuestion = questionService.addQuestion(question);
 
@@ -100,7 +99,7 @@ public class QuestionServiceTest {
     QuestionDTO questionDTO = getTestQuestionDTO();
     List<QuestionDTO> questionDTOs = new ArrayList<>();
     questionDTOs.add(questionDTO);
-    given(converterUtil.convertToListOfObjects(questions, QuestionDTO.class)).willReturn(questionDTOs);
+    given(converter.convertToListOfObjects(questions, QuestionDTO.class)).willReturn(questionDTOs);
 
     List<QuestionDTO> receivedQuestion = questionService.getQuestions();
 

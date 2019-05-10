@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
@@ -47,7 +47,7 @@ public class TeamFundServiceTest {
   private UserService userService;
 
   @Mock
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   @InjectMocks
   private TeamFundService teamFundService;
@@ -173,7 +173,7 @@ public class TeamFundServiceTest {
   public void shouldReturnNotFoundExceptionWhenInvalidType() throws NotFoundException {
     Fund fund = getFund();
     FundDTO fundDTO = getFundDTO();
-    given(converterUtil.convertToObject(fundDTO, Fund.class)).willReturn(fund);
+    given(converter.convertToObject(fundDTO, Fund.class)).willReturn(fund);
     given(fundTypeRepository.findById(1111L)).willReturn(Optional.empty());
 
     teamFundService.saveTeamFund(fundDTO);
@@ -183,7 +183,7 @@ public class TeamFundServiceTest {
   public void shouldReturnNotFoundExceptionInvalidOwner() throws NotFoundException {
     Fund fund = getFund();
     FundDTO fundDTO = getFundDTO();
-    given(converterUtil.convertToObject(fundDTO, Fund.class)).willReturn(fund);
+    given(converter.convertToObject(fundDTO, Fund.class)).willReturn(fund);
     given(fundTypeRepository.findById(1111L)).willReturn(Optional.of(getFundType()));
     given(userService.findByUserName("James")).willReturn(null);
 
@@ -194,7 +194,7 @@ public class TeamFundServiceTest {
   public void shouldReturnNotFoundExceptionInvalidAddedBy() throws NotFoundException {
     Fund fund = getFund();
     FundDTO fundDTO = getFundDTO();
-    given(converterUtil.convertToObject(fundDTO, Fund.class)).willReturn(fund);
+    given(converter.convertToObject(fundDTO, Fund.class)).willReturn(fund);
     given(fundTypeRepository.findById(1111L)).willReturn(Optional.of(getFundType()));
     given(userService.findByUserName("James")).willReturn(getUser("James"));
     given(userService.findByUserName("Lucky")).willReturn(null);
@@ -206,9 +206,9 @@ public class TeamFundServiceTest {
   public void shouldReturnUserDTOOnSave() throws NotFoundException {
     Fund fund = getFund();
     FundDTO fundDTO = getFundDTO();
-    given(converterUtil.convertToObject(fundDTO, Fund.class)).willReturn(fund);
+    given(converter.convertToObject(fundDTO, Fund.class)).willReturn(fund);
     given(teamFundRepository.save(fund)).willReturn(fund);
-    given(converterUtil.convertToObject(fund, FundDTO.class)).willReturn(fundDTO);
+    given(converter.convertToObject(fund, FundDTO.class)).willReturn(fundDTO);
     given(fundTypeRepository.findById(1111L)).willReturn(Optional.of(getFundType()));
     given(userService.findByUserName("James")).willReturn(getUser("James"));
     given(userService.findByUserName("Lucky")).willReturn(getUser("Lucky"));

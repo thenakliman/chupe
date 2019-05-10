@@ -18,13 +18,16 @@ import org.thenakliman.chupe.services.AnswerService;
 
 @Controller
 public class AnswerController extends BaseController {
+  private AnswerService answerService;
 
   @Autowired
-  private AnswerService answerService;
+  public AnswerController(AnswerService answerService) {
+    this.answerService = answerService;
+  }
 
   @GetMapping("/answers")
   public ResponseEntity<List<AnswerDTO>> getAnswerOfGivenQuestion(
-          @RequestParam("questionId") long id) throws NotFoundException {
+      @RequestParam("questionId") long id) throws NotFoundException {
     try {
       return new ResponseEntity<>(answerService.getAnswers(id), HttpStatus.OK);
     } catch (NotFoundException ex) {
@@ -40,9 +43,10 @@ public class AnswerController extends BaseController {
 
   @PutMapping("/answers/{id}")
   public ResponseEntity<AnswerDTO> updateAnswer(@PathVariable(value = "id") Long id,
-                                              @RequestBody AnswerDTO answerDTO) {
+                                                @RequestBody AnswerDTO answerDTO) {
     try {
-      return new ResponseEntity<>(answerService.updateAnswer(id, answerDTO), HttpStatus.OK);
+      AnswerDTO updatedAnswer = answerService.updateAnswer(id, answerDTO, getRequestUsername());
+      return new ResponseEntity<>(updatedAnswer, HttpStatus.OK);
     } catch (NotFoundException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

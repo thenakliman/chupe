@@ -8,7 +8,7 @@ import java.util.Optional;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
@@ -24,7 +24,7 @@ public class AnswerService {
   private DateUtil dateUtil;
 
   @Autowired
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   public AnswerService() {
   }
@@ -35,30 +35,30 @@ public class AnswerService {
       throw new NotFoundException(format("Answer does not exist for question id %d", questionId));
     }
 
-    return converterUtil.convertToListOfObjects(answers, AnswerDTO.class);
+    return converter.convertToListOfObjects(answers, AnswerDTO.class);
   }
 
   public AnswerDTO addAnswer(AnswerDTO answerDTO) {
-    Answer answer = converterUtil.convertToObject(answerDTO, Answer.class);
+    Answer answer = converter.convertToObject(answerDTO, Answer.class);
     Answer savedAnswer = answerRepository.save(answer);
-    return converterUtil.convertToObject(savedAnswer, AnswerDTO.class);
+    return converter.convertToObject(savedAnswer, AnswerDTO.class);
   }
 
-  public AnswerDTO updateAnswer(Long id, AnswerDTO answer) throws NotFoundException {
+  public AnswerDTO updateAnswer(Long id, AnswerDTO answer, String createdBy) throws NotFoundException {
 
-    Optional<Answer> existingAnswer = answerRepository.findById(id);
-    if (existingAnswer.isPresent()) {
-      existingAnswer.get().setUpdatedAt(dateUtil.getTime());
-      existingAnswer.get().setId(id);
-      existingAnswer.get().setAnswer(answer.getAnswer());
-      existingAnswer.get().setQuestionId(answer.getQuestionId());
+    Optional<Answer> savedAnswerOptional = answerRepository.findByIdAndAnsweredByUserName(id, createdBy);
+    Answer savedAnswer = savedAnswerOptional.orElseThrow(
+        () -> new NotFoundException(
+            format("Either you don't have permission to edit or answer %s does not exist", id)));
 
-      User answeredBy = new User();
-      answeredBy.setUserName(answer.getAnsweredBy());
-      existingAnswer.get().setAnsweredBy(answeredBy);
-      return converterUtil.convertToObject(answerRepository.save(existingAnswer.get()), AnswerDTO.class);
-    }
+    savedAnswer.setUpdatedAt(dateUtil.getTime());
+    savedAnswer.setId(id);
+    savedAnswer.setAnswer(answer.getAnswer());
+    savedAnswer.setQuestionId(answer.getQuestionId());
 
-    throw new NotFoundException(format("Answer with id %d could not be found", id));
+    User answeredBy = new User();
+    answeredBy.setUserName(answer.getAnsweredBy());
+    savedAnswer.setAnsweredBy(answeredBy);
+    return converter.convertToObject(answerRepository.save(savedAnswer), AnswerDTO.class);
   }
 }

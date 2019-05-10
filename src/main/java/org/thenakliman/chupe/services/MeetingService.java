@@ -7,7 +7,7 @@ import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
@@ -23,19 +23,19 @@ public class MeetingService {
   private MeetingRepository meetingRepository;
   private MeetingDiscussionItemRepository meetingDiscussionItemRepository;
   private DateUtil dateUtil;
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   @Autowired
   public MeetingService(MeetingRepository meetingRepository,
                         MeetingDiscussionItemRepository meetingDiscussionItemRepository,
                         ModelMapper modelMapper,
                         DateUtil dateUtil,
-                        ConverterUtil converterUtil) {
+                        Converter converter) {
 
     this.meetingRepository = meetingRepository;
     this.meetingDiscussionItemRepository = meetingDiscussionItemRepository;
     this.dateUtil = dateUtil;
-    this.converterUtil = converterUtil;
+    this.converter = converter;
   }
 
   public MeetingDTO createMeeting(String subject, String createdBy) {
@@ -49,12 +49,12 @@ public class MeetingService {
         .build();
 
     Meeting createdMeeting = meetingRepository.save(meeting);
-    return converterUtil.convertToObject(createdMeeting, MeetingDTO.class);
+    return converter.convertToObject(createdMeeting, MeetingDTO.class);
   }
 
   public List<MeetingDTO> getMeetings() {
     List<Meeting> meetings = meetingRepository.findAll();
-    return converterUtil.convertToListOfObjects(meetings, MeetingDTO.class);
+    return converter.convertToListOfObjects(meetings, MeetingDTO.class);
   }
 
   public MeetingDTO updateMeeting(Long meetingId, String subject, String createdBy) throws NotFoundException {
@@ -65,25 +65,25 @@ public class MeetingService {
     meeting.setSubject(subject);
     meeting.setUpdatedAt(dateUtil.getTime());
     Meeting updatedMeeting = meetingRepository.save(meeting);
-    return converterUtil.convertToObject(updatedMeeting, MeetingDTO.class);
+    return converter.convertToObject(updatedMeeting, MeetingDTO.class);
   }
 
   public List<MeetingDiscussionItemDTO> getMeetingDiscussionItems(Long meetingId) {
     List<MeetingDiscussionItem> meetingDiscussionItems = meetingDiscussionItemRepository.findByMeetingId(meetingId);
-    return converterUtil.convertToListOfObjects(meetingDiscussionItems, MeetingDiscussionItemDTO.class);
+    return converter.convertToListOfObjects(meetingDiscussionItems, MeetingDiscussionItemDTO.class);
   }
 
   public MeetingDiscussionItemDTO createMeetingDiscussionItem(
       String createdBy,
       CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
 
-    MeetingDiscussionItem meetingDiscussionItem = converterUtil.convertToObject(
+    MeetingDiscussionItem meetingDiscussionItem = converter.convertToObject(
         createMeetingDiscussionItemDTO,
         MeetingDiscussionItem.class);
 
     meetingDiscussionItem.setCreatedBy(User.builder().userName(createdBy).build());
     MeetingDiscussionItem savedDiscussionItem = meetingDiscussionItemRepository.save(meetingDiscussionItem);
-    return converterUtil.convertToObject(savedDiscussionItem, MeetingDiscussionItemDTO.class);
+    return converter.convertToObject(savedDiscussionItem, MeetingDiscussionItemDTO.class);
   }
 
   public MeetingDiscussionItemDTO updateMeetingDiscussionItem(
@@ -103,7 +103,7 @@ public class MeetingService {
     discussionItem.setAssignedTo(assignedTo);
     discussionItem.setUpdatedAt(dateUtil.getTime());
     MeetingDiscussionItem savedDiscussionItem = meetingDiscussionItemRepository.save(discussionItem);
-    return converterUtil.convertToObject(savedDiscussionItem, MeetingDiscussionItemDTO.class);
+    return converter.convertToObject(savedDiscussionItem, MeetingDiscussionItemDTO.class);
   }
 
   private User getUser(String username) {

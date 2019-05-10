@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import javassist.NotFoundException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.repositories.QuestionRepository;
@@ -20,15 +19,15 @@ public class QuestionService {
   private QuestionRepository questionsRepository;
 
   @Autowired
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   public QuestionDTO addQuestion(Question question) {
-    return converterUtil.convertToObject(questionsRepository.save(question), QuestionDTO.class);
+    return converter.convertToObject(questionsRepository.save(question), QuestionDTO.class);
   }
 
   public List<QuestionDTO> getQuestions() {
     List<Question> questions = questionsRepository.findAll();
-    return converterUtil.convertToListOfObjects(questions, QuestionDTO.class);
+    return converter.convertToListOfObjects(questions, QuestionDTO.class);
   }
 
   public void updateQuestions(long id, QuestionDTO question) throws NotFoundException {

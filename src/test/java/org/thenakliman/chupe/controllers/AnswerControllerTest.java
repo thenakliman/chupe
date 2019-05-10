@@ -18,6 +18,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -27,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.AnswerDTO;
+import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.services.AnswerService;
 import org.thenakliman.chupe.services.TokenService;
@@ -54,6 +58,10 @@ public class AnswerControllerTest {
 
   private ObjectMapper objectMapper;
 
+  private Authentication authToken;
+
+  private String username = "user-name";
+
   /**
    * Setup web application context.
    */
@@ -65,6 +73,10 @@ public class AnswerControllerTest {
      * controller(QuestionController).
      * */
     this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    authToken = new UsernamePasswordAuthenticationToken(
+        User.builder().username(username).build(),
+        null,
+        null);
   }
 
   @Test
@@ -134,8 +146,10 @@ public class AnswerControllerTest {
   public void shouldReturnNotFoundStatusCodeIfAnswerNotFound() throws Exception {
     Long answerId = 1000L;
     AnswerDTO answerDTO = AnswerDTO.builder().build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
     BDDMockito.given(
-        answerService.updateAnswer(answerId, answerDTO))
+        answerService.updateAnswer(answerId, answerDTO, username))
         .willThrow(new NotFoundException(answerId + " question not found"));
 
     mockMvc.perform(MockMvcRequestBuilders
@@ -149,8 +163,10 @@ public class AnswerControllerTest {
   public void shouldReturnUpdatedAnswer() throws Exception {
     Long answerId = 1000L;
     AnswerDTO answer = getAnswerDTO(10, "user", "answer");
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
     BDDMockito.given(
-        answerService.updateAnswer(answerId, answer))
+        answerService.updateAnswer(answerId, answer, username))
         .willReturn(answer);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders

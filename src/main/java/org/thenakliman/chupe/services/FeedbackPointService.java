@@ -8,7 +8,7 @@ import java.util.Optional;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FeedbackPointDTO;
 import org.thenakliman.chupe.dto.UpsertFeedbackPointDTO;
@@ -20,16 +20,16 @@ import org.thenakliman.chupe.repositories.FeedbackPointRepository;
 public class FeedbackPointService {
   private FeedbackPointRepository feedbackPointRepository;
   private DateUtil dateUtil;
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   @Autowired
   public FeedbackPointService(FeedbackPointRepository feedbackPointRepository,
                               DateUtil dateUtil,
-                              ConverterUtil converterUtil) {
+                              Converter converter) {
 
     this.feedbackPointRepository = feedbackPointRepository;
     this.dateUtil = dateUtil;
-    this.converterUtil = converterUtil;
+    this.converter = converter;
   }
 
   public List<FeedbackPointDTO> getFeedbackPointsGivenToUser(String username,
@@ -37,7 +37,7 @@ public class FeedbackPointService {
     List<FeedbackPoint> feedbackPoints = feedbackPointRepository
         .findByGivenToUserNameAndFeedbackSessionId(username, feedbackSessionId);
 
-    return converterUtil.convertToListOfObjects(feedbackPoints, FeedbackPointDTO.class);
+    return converter.convertToListOfObjects(feedbackPoints, FeedbackPointDTO.class);
   }
 
   public List<FeedbackPointDTO> getFeedbackGivenToUserByAUser(String givenBy,
@@ -50,11 +50,11 @@ public class FeedbackPointService {
             givenBy,
             feedbackSessionId);
 
-    return converterUtil.convertToListOfObjects(feedbackPoints, FeedbackPointDTO.class);
+    return converter.convertToListOfObjects(feedbackPoints, FeedbackPointDTO.class);
   }
 
   public void saveFeedbackPoint(String givenBy, UpsertFeedbackPointDTO upsertFeedbackPointDTO) {
-    FeedbackPoint feedbackPoint = converterUtil.convertToObject(upsertFeedbackPointDTO, FeedbackPoint.class);
+    FeedbackPoint feedbackPoint = converter.convertToObject(upsertFeedbackPointDTO, FeedbackPoint.class);
     feedbackPoint.setGivenBy(User.builder().userName(givenBy).build());
     feedbackPointRepository.save(feedbackPoint);
   }

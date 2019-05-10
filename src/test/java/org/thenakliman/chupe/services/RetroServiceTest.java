@@ -21,8 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
-import org.thenakliman.chupe.common.utils.ConverterUtil;
+import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.RetroDTO;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.models.Retro;
@@ -36,7 +35,7 @@ public class RetroServiceTest {
   private RetroRepository retroRepository;
 
   @Mock
-  private ConverterUtil converterUtil;
+  private Converter converter;
 
   @InjectMocks
   private RetroService retroService;
@@ -70,7 +69,7 @@ public class RetroServiceTest {
         .maximumVote(maximumVote)
         .build();
 
-    when(converterUtil.convertToObject(upsertRetroDTO, Retro.class)).thenReturn(retro);
+    when(converter.convertToObject(upsertRetroDTO, Retro.class)).thenReturn(retro);
     when(retroRepository.save(retro)).thenReturn(retro);
     RetroDTO retroDTO = RetroDTO
         .builder()
@@ -80,7 +79,7 @@ public class RetroServiceTest {
         .createdBy(name)
         .build();
 
-    when(converterUtil.convertToObject(retro, RetroDTO.class)).thenReturn(retroDTO);
+    when(converter.convertToObject(retro, RetroDTO.class)).thenReturn(retroDTO);
 
     RetroDTO actualRetro = retroService.saveRetro(upsertRetroDTO, name);
 
@@ -105,7 +104,7 @@ public class RetroServiceTest {
 
     List<Retro> retros = asList(retro1, retro2);
     when(retroRepository.findAll()).thenReturn(retros);
-    when(converterUtil.convertToListOfObjects(retros, RetroDTO.class))
+    when(converter.convertToListOfObjects(retros, RetroDTO.class))
         .thenReturn(asList(getRetroDTO(retro1), getRetroDTO(retro2)));
 
     List<RetroDTO> retroDTOs = retroService.getRetros();
@@ -153,7 +152,7 @@ public class RetroServiceTest {
         .build();
 
     Retro updatedRetro = getRetro(retroId, newName, username);
-    when(converterUtil.convertToObject(updatedRetro, RetroDTO.class)).thenReturn(retroDTO);
+    when(converter.convertToObject(updatedRetro, RetroDTO.class)).thenReturn(retroDTO);
     when(retroRepository.save(updatedRetro)).thenReturn(updatedRetro);
     RetroDTO actualRetroDTO = retroService.updateRetro(retroId, upsertRetroDTO);
 
