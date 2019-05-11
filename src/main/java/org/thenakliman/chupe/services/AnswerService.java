@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.AnswerDTO;
+import org.thenakliman.chupe.dto.UpsertAnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
@@ -40,26 +41,25 @@ public class AnswerService {
     return converter.convertToListOfObjects(answers, AnswerDTO.class);
   }
 
-  public AnswerDTO addAnswer(AnswerDTO answerDTO) {
-    Answer answer = converter.convertToObject(answerDTO, Answer.class);
+  public AnswerDTO addAnswer(UpsertAnswerDTO upsertAnswerDTO, String answeredBy) {
+    Answer answer = converter.convertToObject(upsertAnswerDTO, Answer.class);
+    answer.setAnsweredBy(User.builder().userName(answeredBy).build());
     Answer savedAnswer = answerRepository.save(answer);
     return converter.convertToObject(savedAnswer, AnswerDTO.class);
   }
 
-  public AnswerDTO updateAnswer(Long id, AnswerDTO answer, String createdBy) throws NotFoundException {
+  public AnswerDTO updateAnswer(Long id, UpsertAnswerDTO upsertAnswerDTO, String answeredBy) throws NotFoundException {
 
-    Optional<Answer> savedAnswerOptional = answerRepository.findByIdAndAnsweredByUserName(id, createdBy);
+    Optional<Answer> savedAnswerOptional = answerRepository.findByIdAndAnsweredByUserName(id, answeredBy);
     Answer savedAnswer = savedAnswerOptional.orElseThrow(
         () -> new NotFoundException(
             format("Either you don't have permission to edit or answer %s does not exist", id)));
 
     savedAnswer.setUpdatedAt(dateUtil.getTime());
     savedAnswer.setId(id);
-    savedAnswer.setAnswer(answer.getAnswer());
-    savedAnswer.setQuestion(Question.builder().id(answer.getQuestionId()).build());
-    User answeredBy = new User();
-    answeredBy.setUserName(answer.getAnsweredBy());
-    savedAnswer.setAnsweredBy(answeredBy);
+    savedAnswer.setAnswer(upsertAnswerDTO.getAnswer());
+    savedAnswer.setQuestion(Question.builder().id(upsertAnswerDTO.getQuestionId()).build());
+    savedAnswer.setAnsweredBy(User.builder().userName(answeredBy).build());
     return converter.convertToObject(answerRepository.save(savedAnswer), AnswerDTO.class);
   }
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thenakliman.chupe.dto.AnswerDTO;
+import org.thenakliman.chupe.dto.UpsertAnswerDTO;
 import org.thenakliman.chupe.services.AnswerService;
 
 @Controller
@@ -36,16 +37,16 @@ public class AnswerController extends BaseController {
   }
 
   @PostMapping("/answers")
-  public ResponseEntity<AnswerDTO> addAnswer(@RequestBody AnswerDTO answerDTO) {
-    AnswerDTO createdAnswer = answerService.addAnswer(answerDTO);
+  public ResponseEntity<AnswerDTO> addAnswer(@RequestBody UpsertAnswerDTO upsertAnswerDTO) {
+    AnswerDTO createdAnswer = answerService.addAnswer(upsertAnswerDTO, getRequestUsername());
     return new ResponseEntity<>(createdAnswer, HttpStatus.OK);
   }
 
   @PutMapping("/answers/{id}")
   public ResponseEntity<AnswerDTO> updateAnswer(@PathVariable(value = "id") Long id,
-                                                @RequestBody AnswerDTO answerDTO) {
+                                                @RequestBody UpsertAnswerDTO upsertAnswerDTO) {
     try {
-      AnswerDTO updatedAnswer = answerService.updateAnswer(id, answerDTO, getRequestUsername());
+      AnswerDTO updatedAnswer = answerService.updateAnswer(id, upsertAnswerDTO, getRequestUsername());
       return new ResponseEntity<>(updatedAnswer, HttpStatus.OK);
     } catch (NotFoundException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -14,14 +14,14 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.common.utils.DateUtil;
-import org.thenakliman.chupe.dto.AnswerDTO;
+import org.thenakliman.chupe.dto.UpsertAnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class AnswerDtoToAnswerMappingTest {
+public class UpsertAnswerDtoToAnswerMappingTest {
 
   @Mock
   private DateUtil dateUtil;
@@ -32,39 +32,32 @@ public class AnswerDtoToAnswerMappingTest {
   private Date now;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     now = new Date();
     modelMapper.addConverter(new AnswerDtoToAnswerMapping(dateUtil).converter());
     when(dateUtil.getTime()).thenReturn(now);
   }
 
   @Test
-  public void shouldMapAnswerToAnswerDTO() {
+  public void shouldMapAnswerToUpsertAnswerDTO() {
     String userName = "user-name";
     long answerId = 1001L;
     long questionId = 10L;
     String testAnswer = "test-Answer";
 
-    AnswerDTO answerDTO = AnswerDTO
+    UpsertAnswerDTO answerDTO = UpsertAnswerDTO
         .builder()
         .questionId(questionId)
-        .id(answerId)
-        .answeredBy(userName)
         .answer(testAnswer)
         .build();
 
     Answer answer = modelMapper.map(answerDTO, Answer.class);
 
-    User user = User
-        .builder()
-        .userName(userName)
-        .build();
-
     Answer expectedAnswer = Answer
         .builder()
         .answer(testAnswer)
-        .answeredBy(user)
-        .id(answerId)
+        .answeredBy(null)
+        .id(null)
         .question(Question.builder().id(questionId).build())
         .createdAt(now)
         .updatedAt(now)

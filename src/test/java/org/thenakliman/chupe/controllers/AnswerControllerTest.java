@@ -3,6 +3,7 @@ package org.thenakliman.chupe.controllers;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.AnswerDTO;
+import org.thenakliman.chupe.dto.UpsertAnswerDTO;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.services.AnswerService;
@@ -121,7 +123,8 @@ public class AnswerControllerTest {
     AnswerDTO expectedAnswer = getAnswerDTO(questionId, user, answer1);
     AnswerDTO answer = getAnswerDTO(questionId, user, answer1);
 
-    BDDMockito.given(answerService.addAnswer(any())).willReturn(expectedAnswer);
+    BDDMockito.given(answerService.addAnswer(any(), anyString())).willReturn(expectedAnswer);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/answers")
@@ -145,16 +148,15 @@ public class AnswerControllerTest {
   @Test
   public void shouldReturnNotFoundStatusCodeIfAnswerNotFound() throws Exception {
     Long answerId = 1000L;
-    AnswerDTO answerDTO = AnswerDTO.builder().build();
     SecurityContextHolder.getContext().setAuthentication(authToken);
 
     BDDMockito.given(
-        answerService.updateAnswer(answerId, answerDTO, username))
+        answerService.updateAnswer(answerId, UpsertAnswerDTO.builder().build(), username))
         .willThrow(new NotFoundException(answerId + " question not found"));
 
     mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/answers/" + answerId)
-        .content(objectMapper.writeValueAsString(answerDTO))
+        .content(objectMapper.writeValueAsString(AnswerDTO.builder().build()))
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
   }
@@ -163,10 +165,11 @@ public class AnswerControllerTest {
   public void shouldReturnUpdatedAnswer() throws Exception {
     Long answerId = 1000L;
     AnswerDTO answer = getAnswerDTO(10, "user", "answer");
+    UpsertAnswerDTO upsertAnswerDTO = UpsertAnswerDTO.builder().questionId(10).answer("answer").build();
     SecurityContextHolder.getContext().setAuthentication(authToken);
 
     BDDMockito.given(
-        answerService.updateAnswer(answerId, answer, username))
+        answerService.updateAnswer(answerId, upsertAnswerDTO, username))
         .willReturn(answer);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders

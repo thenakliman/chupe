@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.AnswerDTO;
+import org.thenakliman.chupe.dto.UpsertAnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
@@ -92,14 +93,15 @@ public class AnswerServiceTest {
     Long id = 1011L;
     String testAnswer = "test answer";
     String user = "user";
-    AnswerDTO answerDTO = getAnswerDTO(testAnswer, user, questionId, id);
+    UpsertAnswerDTO upsertAnswerDTO = UpsertAnswerDTO.builder().answer(testAnswer).questionId(questionId).build();
     Answer answer = getAnswer(testAnswer, user, questionId, id);
 
-    given(converter.convertToObject(answerDTO, Answer.class)).willReturn(answer);
+    given(converter.convertToObject(upsertAnswerDTO, Answer.class)).willReturn(answer);
     given(answerRepository.save(answer)).willReturn(answer);
+    AnswerDTO answerDTO = getAnswerDTO(testAnswer, user, questionId, id);
     given(converter.convertToObject(answer, AnswerDTO.class)).willReturn(answerDTO);
 
-    assertThat(answerService.addAnswer(answerDTO), samePropertyValuesAs(answerDTO));
+    assertThat(answerService.addAnswer(upsertAnswerDTO, user), samePropertyValuesAs(answerDTO));
   }
 
   @Test(expected = NotFoundException.class)
@@ -108,7 +110,7 @@ public class AnswerServiceTest {
     Long answerId = 10L;
     String createdBy = "jai hind";
     given(answerRepository.findByIdAndAnsweredByUserName(answerId, createdBy)).willReturn(Optional.empty());
-    answerService.updateAnswer(answerId, AnswerDTO.builder().build(), createdBy);
+    answerService.updateAnswer(answerId, UpsertAnswerDTO.builder().build(), createdBy);
   }
 
   @Test
@@ -128,6 +130,7 @@ public class AnswerServiceTest {
     given(answerRepository.save(answer)).willReturn(answer);
     given(converter.convertToObject(answer, AnswerDTO.class)).willReturn(answerDTO);
 
-    assertThat(answerDTO, samePropertyValuesAs(answerService.updateAnswer(answerId, answerDTO, createdBy)));
+    UpsertAnswerDTO upsertAnswerDTO = UpsertAnswerDTO.builder().answer(testAnswer).questionId(questionId).build();
+    assertThat(answerDTO, samePropertyValuesAs(answerService.updateAnswer(answerId, upsertAnswerDTO, createdBy)));
   }
 }

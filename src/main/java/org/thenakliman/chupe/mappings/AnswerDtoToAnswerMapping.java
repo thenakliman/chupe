@@ -6,12 +6,13 @@ import org.modelmapper.Converter;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.AnswerDTO;
+import org.thenakliman.chupe.dto.UpsertAnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
 
 @Component
-public class AnswerDtoToAnswerMapping extends ConverterConfigurerSupport<AnswerDTO, Answer> {
+public class AnswerDtoToAnswerMapping extends ConverterConfigurerSupport<UpsertAnswerDTO, Answer> {
 
   private final DateUtil dateUtil;
 
@@ -20,21 +21,14 @@ public class AnswerDtoToAnswerMapping extends ConverterConfigurerSupport<AnswerD
   }
 
   @Override
-  public Converter<AnswerDTO, Answer> converter() {
+  public Converter<UpsertAnswerDTO, Answer> converter() {
 
-    return new AbstractConverter<AnswerDTO, Answer>() {
+    return new AbstractConverter<UpsertAnswerDTO, Answer>() {
       @Override
-      protected Answer convert(AnswerDTO source) {
-        User answeredBy = User
-            .builder()
-            .userName(source.getAnsweredBy())
-            .build();
-
+      protected Answer convert(UpsertAnswerDTO source) {
         return Answer
             .builder()
-            .answeredBy(answeredBy)
             .answer(source.getAnswer())
-            .id(source.getId())
             .question(Question.builder().id(source.getQuestionId()).build())
             .createdAt(dateUtil.getTime())
             .updatedAt(dateUtil.getTime())

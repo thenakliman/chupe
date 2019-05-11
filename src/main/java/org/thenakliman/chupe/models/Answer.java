@@ -27,7 +27,7 @@ public class Answer {
   @Id
   @Column(name = "id", nullable = false, unique = true)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   @Column(name = "answer", nullable = false)
   private String answer;
