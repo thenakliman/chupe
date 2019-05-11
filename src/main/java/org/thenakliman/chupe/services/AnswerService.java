@@ -12,21 +12,23 @@ import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
+import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.AnswerRepository;
 
 @Service
 public class AnswerService {
-  @Autowired
   private AnswerRepository answerRepository;
 
-  @Autowired
   private DateUtil dateUtil;
 
-  @Autowired
   private Converter converter;
 
-  public AnswerService() {
+  @Autowired
+  public AnswerService(AnswerRepository answerRepository, DateUtil dateUtil, Converter converter) {
+    this.answerRepository = answerRepository;
+    this.dateUtil = dateUtil;
+    this.converter = converter;
   }
 
   public List<AnswerDTO> getAnswers(long questionId) throws NotFoundException {
@@ -54,8 +56,7 @@ public class AnswerService {
     savedAnswer.setUpdatedAt(dateUtil.getTime());
     savedAnswer.setId(id);
     savedAnswer.setAnswer(answer.getAnswer());
-    savedAnswer.setQuestionId(answer.getQuestionId());
-
+    savedAnswer.setQuestion(Question.builder().id(answer.getQuestionId()).build());
     User answeredBy = new User();
     answeredBy.setUserName(answer.getAnsweredBy());
     savedAnswer.setAnsweredBy(answeredBy);

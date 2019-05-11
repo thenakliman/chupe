@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
+import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
 
 @Component
@@ -34,7 +35,7 @@ public class AnswerDtoToAnswerMapping extends ConverterConfigurerSupport<AnswerD
             .answeredBy(answeredBy)
             .answer(source.getAnswer())
             .id(source.getId())
-            .questionId(source.getQuestionId())
+            .question(Question.builder().id(source.getQuestionId()).build())
             .createdAt(dateUtil.getTime())
             .updatedAt(dateUtil.getTime())
             .build();

@@ -12,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
+import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
 
 
@@ -42,7 +43,7 @@ public class AnswerToAnswerDtoMappingTest {
         .answer(testAnswer)
         .answeredBy(user)
         .id(answerId)
-        .questionId(questionId)
+        .question(Question.builder().id(questionId).build())
         .createdAt(new Date())
         .updatedAt(new Date())
         .build();

@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
+import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
 
 
@@ -64,7 +65,7 @@ public class AnswerDtoToAnswerMappingTest {
         .answer(testAnswer)
         .answeredBy(user)
         .id(answerId)
-        .questionId(questionId)
+        .question(Question.builder().id(questionId).build())
         .createdAt(now)
         .updatedAt(now)
         .build();

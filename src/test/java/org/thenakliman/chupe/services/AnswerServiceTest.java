@@ -23,6 +23,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.models.Answer;
+import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.AnswerRepository;
 
@@ -56,7 +57,7 @@ public class AnswerServiceTest {
     user.setUserName(username);
     answerModel.setAnsweredBy(user);
     answerModel.setId(id);
-    answerModel.setQuestionId(questionId);
+    answerModel.setQuestion(Question.builder().id(questionId).build());
     return answerModel;
   }
 

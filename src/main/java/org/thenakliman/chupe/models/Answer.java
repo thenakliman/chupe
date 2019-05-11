@@ -36,8 +36,9 @@ public class Answer {
   @JoinColumn(name = "answered_by", referencedColumnName = "username")
   private User answeredBy;
 
-  @Column(name = "question_id", nullable = false)
-  private long questionId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "question_id", referencedColumnName = "id")
+  private Question question;
 
   @Column(name = "created_at")
   private Date createdAt;
