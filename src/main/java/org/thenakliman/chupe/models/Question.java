@@ -6,9 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -34,11 +37,13 @@ public class Question {
   @Column(name = "description", nullable = false)
   private String description;
 
-  @Column(name = "owner", nullable = false)
-  private String owner;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "owner", referencedColumnName = "username")
+  private User owner;
 
-  @Column(name = "assigned_to", nullable = false)
-  private String assignedTo;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "assigned_to", referencedColumnName = "username")
+  private User assignedTo;
 
   @Column(name = "created_at")
   private Date createdAt;

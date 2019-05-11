@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.thenakliman.chupe.dto.QuestionDTO;
-import org.thenakliman.chupe.models.Question;
+import org.thenakliman.chupe.dto.UpsertQuestionDTO;
 import org.thenakliman.chupe.services.QuestionService;
 
 
@@ -24,23 +24,23 @@ public class QuestionController extends BaseController {
 
   @PostMapping("/questions")
   public ResponseEntity<QuestionDTO> askQuestion(@RequestHeader HttpHeaders header,
-                                              @RequestBody Question question) {
+                                                 @RequestBody UpsertQuestionDTO question) {
 
-    QuestionDTO createdQuestion = questionService.addQuestion(question);
+    QuestionDTO createdQuestion = questionService.addQuestion(question, getRequestUsername());
     return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
   }
 
   @PutMapping("/questions/{id}")
   public ResponseEntity updateQuestion(@RequestHeader HttpHeaders header,
                                        @PathVariable(value = "id") long id,
-                                       @RequestBody QuestionDTO questionDTO) {
+                                       @RequestBody UpsertQuestionDTO questionDTO) {
     HttpStatus httpStatus = HttpStatus.NO_CONTENT;
     try {
-      questionService.updateQuestions(id, questionDTO);
+      QuestionDTO updatedQuestion = questionService.updateQuestions(id, questionDTO, getRequestUsername());
+      return new ResponseEntity<>(updatedQuestion, httpStatus);
     } catch (NotFoundException ex) {
-      httpStatus = HttpStatus.NOT_FOUND;
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    return new ResponseEntity<>(httpStatus);
   }
 
   @GetMapping("/questions")

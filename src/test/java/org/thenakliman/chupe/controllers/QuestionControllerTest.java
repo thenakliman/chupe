@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -30,6 +34,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.QuestionDTO;
+import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.QuestionPriority;
 import org.thenakliman.chupe.models.QuestionStatus;
@@ -60,6 +65,10 @@ public class QuestionControllerTest {
 
   private ObjectMapper objectMapper;
 
+  private Authentication authToken;
+
+  private String username = "username";
+
   /**
    * Setup web application context.
    */
@@ -71,6 +80,10 @@ public class QuestionControllerTest {
      * controller(QuestionController).
      * */
     this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    authToken = new UsernamePasswordAuthenticationToken(
+        User.builder().username(username).build(),
+        null,
+        null);
   }
 
   @Test
@@ -83,8 +96,8 @@ public class QuestionControllerTest {
     questionDTO.setId(19);
     questionDTO.setPriority(QuestionPriority.LOW);
     questionDTO.setStatus(QuestionStatus.OPEN);
-
-    BDDMockito.given(questionService.addQuestion(any())).willReturn(questionDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    BDDMockito.given(questionService.addQuestion(any(), anyString())).willReturn(questionDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/questions")
@@ -116,7 +129,7 @@ public class QuestionControllerTest {
   public void shouldReturnInternalServerErrorIfThereIsAnException() throws Exception {
     /* NOTE(thenakliman): Fix willAnswer to willThrow, it is throwing errors
      * BDDMockito.given(userService.getQuestions()).willThrow(Exception.class); */
-
+    SecurityContextHolder.getContext().setAuthentication(authToken);
     BDDMockito.given(questionService.getQuestions()).willAnswer(invocation -> {
       throw new Exception();
     });
@@ -164,7 +177,7 @@ public class QuestionControllerTest {
         "desc1", "user1",
         "user2", QuestionStatus.OPEN,
         QuestionPriority.LOW);
-
+    SecurityContextHolder.getContext().setAuthentication(authToken);
     mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/questions/" + id)
         .contentType(MediaType.APPLICATION_JSON)
@@ -180,9 +193,9 @@ public class QuestionControllerTest {
         "desc1", "user1",
         "user2", QuestionStatus.OPEN,
         QuestionPriority.LOW);
-
+    SecurityContextHolder.getContext().setAuthentication(authToken);
     doThrow(new NotFoundException("Question not found"))
-        .when(questionService).updateQuestions(anyLong(), any());
+        .when(questionService).updateQuestions(anyLong(), any(), anyString());
 
     mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/questions/" + id)
