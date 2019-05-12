@@ -3,40 +3,39 @@ package org.thenakliman.chupe.mappings;
 import com.github.jmnarloch.spring.boot.modelmapper.ConverterConfigurerSupport;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
-import org.thenakliman.chupe.dto.FundDTO;
+import org.thenakliman.chupe.dto.UpsertFundDTO;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.models.User;
 
 
 @Component
-public class FundDtoToFundMapping extends ConverterConfigurerSupport<FundDTO, Fund> {
+public class UpsertFundDtoToFundMapping extends ConverterConfigurerSupport<UpsertFundDTO, Fund> {
 
   private final DateUtil dateUtil;
 
-  FundDtoToFundMapping(DateUtil dateUtil) {
+  @Autowired
+  UpsertFundDtoToFundMapping(DateUtil dateUtil) {
     this.dateUtil = dateUtil;
   }
 
   @Override
-  public Converter<FundDTO, Fund> converter() {
+  public Converter<UpsertFundDTO, Fund> converter() {
 
-    return new AbstractConverter<FundDTO, Fund>() {
+    return new AbstractConverter<>() {
       @Override
-      protected Fund convert(FundDTO source) {
+      protected Fund convert(UpsertFundDTO source) {
         return Fund
             .builder()
             .transactionType(source.getTransactionType())
-            .addedBy(getUser(source.getAddedBy()))
-            .amount(source.getAmount())
-            .createdAt(source.getCreatedAt())
-            .id(source.getId())
-            .isApproved(source.isApproved())
+            .amount(Math.abs(source.getAmount()))
             .owner(getUser(source.getOwner()))
             .type(getFundType(source.getType()))
             .updatedAt(dateUtil.getTime())
+            .createdAt(dateUtil.getTime())
             .build();
       }
     };

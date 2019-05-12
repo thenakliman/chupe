@@ -15,23 +15,20 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
+import org.thenakliman.chupe.dto.UpsertFundDTO;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.services.TeamFundService;
 
 
 @Controller
-public class TeamFundController  extends BaseController {
+public class TeamFundController extends BaseController {
   @Autowired
   private TeamFundService teamFundService;
 
   @GetMapping("/team-funds/types")
   public ResponseEntity teamFundTypes(@RequestHeader HttpHeaders header) {
     List<FundType> teamFundTypes;
-    try {
-      teamFundTypes = teamFundService.getAllFundTypes();
-    } catch (NotFoundException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    teamFundTypes = teamFundService.getAllFundTypes();
 
     return new ResponseEntity(teamFundTypes, HttpStatus.OK);
   }
@@ -44,18 +41,14 @@ public class TeamFundController  extends BaseController {
 
   @PostMapping("/team-funds")
   public ResponseEntity<FundDTO> saveFund(@RequestHeader HttpHeaders header,
-                                       @RequestBody FundDTO fund) throws NotFoundException {
-    return new ResponseEntity(teamFundService.saveTeamFund(fund), HttpStatus.OK);
+                                          @RequestBody UpsertFundDTO fund) throws NotFoundException {
+    return new ResponseEntity(teamFundService.saveTeamFund(fund, getRequestUsername()), HttpStatus.OK);
   }
 
   @GetMapping("/funds")
   public ResponseEntity<List<FundDTO>> getFundsForGivenUser(
       @RequestParam("owner") String owner) throws NotFoundException {
-    try {
-      return new ResponseEntity<>(teamFundService.getFundForATeamMember(owner), HttpStatus.OK);
-    } catch (NotFoundException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    return new ResponseEntity<>(teamFundService.getFundForATeamMember(owner), HttpStatus.OK);
   }
 
 }

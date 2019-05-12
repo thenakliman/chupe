@@ -4,7 +4,7 @@ import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
@@ -18,10 +18,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
+import org.thenakliman.chupe.dto.UpsertFundDTO;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.mappings.FundTransformer;
 import org.thenakliman.chupe.models.Fund;
@@ -64,7 +66,7 @@ public class TeamFundServiceTest {
 
   private Fund getFund() {
     Fund fund = new Fund();
-    fund.setId(1);
+    fund.setId(1L);
     fund.setAmount(10);
     return fund;
   }
@@ -88,11 +90,20 @@ public class TeamFundServiceTest {
     return fundDTO;
   }
 
+  private UpsertFundDTO getUpsertFundDTO() {
+    UpsertFundDTO fundDTO = new UpsertFundDTO();
+    fundDTO.setAmount(1000);
+    fundDTO.setOwner("Lucky");
+    fundDTO.setTransactionType(TransactionType.CREDIT);
+    fundDTO.setType(1111);
+    return fundDTO;
+  }
+
   private TeamFund getTeamFund() {
     List teamMemberFunds = new ArrayList();
-    teamMemberFunds.add(new TeamMemberFund(0, "user1", TransactionType.DEBIT, false));
-    teamMemberFunds.add(new TeamMemberFund(0, "user2", TransactionType.DEBIT, false));
-    teamMemberFunds.add(new TeamMemberFund(10, null, null, false));
+    teamMemberFunds.add(new TeamMemberFund(0, "user1"));
+    teamMemberFunds.add(new TeamMemberFund(0, "user2"));
+    teamMemberFunds.add(new TeamMemberFund(10, null));
     TeamFund teamFund = new TeamFund();
     teamFund.setTeamMemberFunds(teamMemberFunds);
     return teamFund;
@@ -110,20 +121,11 @@ public class TeamFundServiceTest {
     User user = new User();
     String username = "test-username";
     user.setUserName(username);
-    when(teamFundRepository.findByOwner(any())).thenReturn(emptyList());
+    when(teamFundRepository.findByOwnerUserName(anyString())).thenReturn(emptyList());
 
     List<FundDTO> fundsForAUser = teamFundService.getFundForATeamMember(username);
 
     assertThat(fundsForAUser, hasSize(0));
-  }
-
-  @Test(expected = NotFoundException.class)
-  public void shouldReturnNotFoundExceptionWhenUserIsNotFound() throws NotFoundException {
-    User user = new User();
-    String username = "test-username";
-    user.setUserName(username);
-    when(teamFundRepository.findByOwner(any())).thenReturn(null);
-    teamFundService.getFundForATeamMember(username);
   }
 
   @Test
@@ -134,7 +136,6 @@ public class TeamFundServiceTest {
     List<UserDTO> users = new ArrayList<>();
     users.add(getUserDTO("user1"));
     users.add(getUserDTO("user2"));
-    when(userService.getAllUsers()).thenReturn(users);
     when(fundTransformer.transformToTeamFund(funds)).thenReturn(getTeamFund());
     List<TeamMemberFund> teamMemberFunds = teamFundService.getTeamFund().getTeamMemberFunds();
     List<TeamMemberFund> expectedTeamMemberFunds = getTeamFund().getTeamMemberFunds();
@@ -146,76 +147,40 @@ public class TeamFundServiceTest {
         samePropertyValuesAs(teamMemberFunds.get(2)));
   }
 
-  @Test
-  public void shouldReturnAllUsersWithZeroAmountWhenNotFundIsPresent() throws NotFoundException {
-    List<UserDTO> users = new ArrayList<>();
-    String username = "user1";
-    users.add(getUserDTO(username));
-    when(userService.getAllUsers()).thenReturn(users);
-    when(teamFundRepository.findAll()).thenReturn(null);
-    TeamFund teamFund1 = new TeamFund();
-    teamFund1.setTeamMemberFunds(new ArrayList<>());
-    when(fundTransformer.transformToTeamFund(any())).thenReturn(teamFund1);
-
-    TeamFund teamFund = teamFundService.getTeamFund();
-
-    TeamMemberFund teamMemberFund = new TeamMemberFund(0, username, TransactionType.DEBIT, false);
-    assertThat(teamMemberFund, samePropertyValuesAs(teamFund.getTeamMemberFunds().get(0)));
-  }
-
-  @Test(expected = NotFoundException.class)
-  public void shouldRaiseExceptionWhenFundTypeNotFound() throws NotFoundException {
-    when(fundTypeRepository.findAll()).thenReturn(emptyList());
-    teamFundService.getAllFundTypes();
-  }
-
   @Test(expected = NotFoundException.class)
   public void shouldReturnNotFoundExceptionWhenInvalidType() throws NotFoundException {
     Fund fund = getFund();
-    FundDTO fundDTO = getFundDTO();
+    UpsertFundDTO fundDTO = getUpsertFundDTO();
     given(converter.convertToObject(fundDTO, Fund.class)).willReturn(fund);
     given(fundTypeRepository.findById(1111L)).willReturn(Optional.empty());
 
-    teamFundService.saveTeamFund(fundDTO);
+    teamFundService.saveTeamFund(fundDTO, "user22");
   }
 
-  @Test(expected = NotFoundException.class)
+  @Test(expected = UsernameNotFoundException.class)
   public void shouldReturnNotFoundExceptionInvalidOwner() throws NotFoundException {
     Fund fund = getFund();
-    FundDTO fundDTO = getFundDTO();
+    UpsertFundDTO fundDTO = getUpsertFundDTO();
+    given(userService.findByUserName(fundDTO.getOwner())).willThrow(new UsernameNotFoundException(""));
     given(converter.convertToObject(fundDTO, Fund.class)).willReturn(fund);
     given(fundTypeRepository.findById(1111L)).willReturn(Optional.of(getFundType()));
-    given(userService.findByUserName("James")).willReturn(null);
 
-    teamFundService.saveTeamFund(fundDTO);
-  }
-
-  @Test(expected = NotFoundException.class)
-  public void shouldReturnNotFoundExceptionInvalidAddedBy() throws NotFoundException {
-    Fund fund = getFund();
-    FundDTO fundDTO = getFundDTO();
-    given(converter.convertToObject(fundDTO, Fund.class)).willReturn(fund);
-    given(fundTypeRepository.findById(1111L)).willReturn(Optional.of(getFundType()));
-    given(userService.findByUserName("James")).willReturn(getUser("James"));
-    given(userService.findByUserName("Lucky")).willReturn(null);
-
-    teamFundService.saveTeamFund(fundDTO);
+    teamFundService.saveTeamFund(fundDTO, "user1");
   }
 
   @Test
   public void shouldReturnUserDTOOnSave() throws NotFoundException {
     Fund fund = getFund();
-    FundDTO fundDTO = getFundDTO();
-    given(converter.convertToObject(fundDTO, Fund.class)).willReturn(fund);
+    UpsertFundDTO upsertFundDTO = getUpsertFundDTO();
+    FundDTO FundDTO = getFundDTO();
+    given(converter.convertToObject(upsertFundDTO, Fund.class)).willReturn(fund);
     given(teamFundRepository.save(fund)).willReturn(fund);
-    given(converter.convertToObject(fund, FundDTO.class)).willReturn(fundDTO);
+    given(converter.convertToObject(fund, FundDTO.class)).willReturn(FundDTO);
     given(fundTypeRepository.findById(1111L)).willReturn(Optional.of(getFundType()));
-    given(userService.findByUserName("James")).willReturn(getUser("James"));
-    given(userService.findByUserName("Lucky")).willReturn(getUser("Lucky"));
 
-    FundDTO actualFundDTO = teamFundService.saveTeamFund(fundDTO);
+    FundDTO actualFundDTO = teamFundService.saveTeamFund(upsertFundDTO, "user4");
 
-    assertThat(fundDTO, samePropertyValuesAs(actualFundDTO));
+    assertThat(FundDTO, samePropertyValuesAs(actualFundDTO));
   }
 
   private User getUser(String username) {

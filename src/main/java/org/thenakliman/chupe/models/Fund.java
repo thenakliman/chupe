@@ -29,7 +29,7 @@ public class Fund {
   @Id
   @Column(name = "id", nullable = false, unique = true)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "type", referencedColumnName = "id")

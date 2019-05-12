@@ -19,6 +19,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,6 +32,8 @@ import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
+import org.thenakliman.chupe.dto.UpsertFundDTO;
+import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.services.TeamFundService;
@@ -57,6 +62,10 @@ public class TeamFundControllerTest extends BaseControllerTest {
 
   private ObjectMapper objectMapper;
 
+  private Authentication authToken;
+
+  private final String username = "username";
+
   /**
    * Setup web application context.
    */
@@ -68,6 +77,10 @@ public class TeamFundControllerTest extends BaseControllerTest {
      * controller(QuestionController).
      * */
     this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    authToken = new UsernamePasswordAuthenticationToken(
+        User.builder().username(username).build(),
+        null,
+        null);
   }
 
   @Test
@@ -97,23 +110,12 @@ public class TeamFundControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturnEmptyFundTypes() throws Exception {
-    when(teamFundService.getAllFundTypes()).thenThrow(new NotFoundException("No funds found"));
-    mockMvc.perform(MockMvcRequestBuilders
-        .get("/api/v1/team-funds/types")
-        .contentType(MediaType.APPLICATION_JSON)
-    ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
-  }
-
-  @Test
   public void shouldReturnAllFundController() throws Exception {
     TeamFund teamFund = new TeamFund();
     List<TeamMemberFund> teamMemberFunds = new ArrayList<>();
     TeamMemberFund teamMemberFund = new TeamMemberFund(
         10,
-        "fund-owner",
-        TransactionType.DEBIT,
-        false);
+        "fund-owner");
 
     teamFund.setTeamMemberFunds(teamMemberFunds);
 
@@ -134,13 +136,15 @@ public class TeamFundControllerTest extends BaseControllerTest {
 
   @Test
   public void shouldSaveTeamFundController() throws Exception {
-    FundDTO fund = new FundDTO();
-    fund.setId(10);
+    UpsertFundDTO fund = new UpsertFundDTO();
     fund.setTransactionType(TransactionType.CREDIT);
-    fund.setApproved(false);
     fund.setAmount(1000);
 
-    when(teamFundService.saveTeamFund(fund)).thenReturn(fund);
+    FundDTO fundDTO = new FundDTO();
+    fundDTO.setTransactionType(TransactionType.CREDIT);
+    fundDTO.setAmount(1000);
+    when(teamFundService.saveTeamFund(fund, username)).thenReturn(fundDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/team-funds")
@@ -152,34 +156,21 @@ public class TeamFundControllerTest extends BaseControllerTest {
         mvcResult.getResponse().getContentAsString(),
         FundDTO.class);
 
-    assertEquals(fund, actualFund);
+    assertEquals(fundDTO, actualFund);
   }
 
   @Test
   public void shouldReturnBadRequestWhenDataIsInvalid() throws Exception {
-    FundDTO fund = new FundDTO();
-    fund.setId(10);
+    UpsertFundDTO fund = new UpsertFundDTO();
     fund.setTransactionType(TransactionType.CREDIT);
-    fund.setApproved(false);
     fund.setAmount(1000);
 
-    when(teamFundService.saveTeamFund(fund)).thenThrow(new NotFoundException("Not Found"));
+    when(teamFundService.saveTeamFund(fund, "user2")).thenThrow(new NotFoundException("Not Found"));
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/team-funds")
         .contentType(MediaType.APPLICATION_JSON)
     ).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
-  }
-
-  @Test
-  public void shouldReturnBadRequestWhenUsernameIsNotFound() throws Exception {
-    when(teamFundService.getFundForATeamMember(anyString())).thenThrow(
-        new NotFoundException("Not Found"));
-
-    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-        .get("/api/v1/funds?owner=fakeUser")
-        .contentType(MediaType.APPLICATION_JSON)
-    ).andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
   }
 
   @Test

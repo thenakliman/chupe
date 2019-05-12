@@ -10,5 +10,5 @@ import org.thenakliman.chupe.models.User;
 
 @Repository
 public interface TeamFundRepository extends JpaRepository<Fund, Long> {
-  List<Fund> findByOwner(User user);
+  List<Fund> findByOwnerUserName(String user);
 }
