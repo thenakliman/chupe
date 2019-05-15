@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.FundDTO;
+import org.thenakliman.chupe.dto.FundTypeDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
 import org.thenakliman.chupe.dto.UpsertFundDTO;
@@ -85,12 +86,12 @@ public class TeamFundControllerTest extends BaseControllerTest {
 
   @Test
   public void shouldReturnAllFundTypes() throws Exception {
-    FundType fundType = new FundType();
+    FundTypeDTO fundType = new FundTypeDTO();
     fundType.setType("BIRTHDAY");
     fundType.setId(10);
     fundType.setDefaultAmount(100);
 
-    List<FundType> fundTypes = new ArrayList<>();
+    List<FundTypeDTO> fundTypes = new ArrayList<>();
     fundTypes.add(fundType);
 
     when(teamFundService.getAllFundTypes()).thenReturn(fundTypes);
@@ -103,7 +104,7 @@ public class TeamFundControllerTest extends BaseControllerTest {
 
     List<FundType> actualFundTypes = objectMapper.readValue(
         mvcResult.getResponse().getContentAsString(),
-        new ArrayList<FundType>().getClass());
+        new ArrayList<FundTypeDTO>().getClass());
 
     assertEquals(actualFundTypes.size(), 1);
     assertThat(actualFundTypes, samePropertyValuesAs(fundTypes));

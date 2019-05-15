@@ -1,11 +1,16 @@
 package org.thenakliman.chupe.services;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -21,6 +26,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.FundDTO;
+import org.thenakliman.chupe.dto.FundTypeDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
 import org.thenakliman.chupe.dto.UpsertFundDTO;
@@ -62,6 +68,14 @@ public class TeamFundServiceTest {
     List fundTypes = new ArrayList();
     fundTypes.add(fundType);
     return fundTypes;
+  }
+
+  private FundTypeDTO getFundTypeDTO() {
+    FundTypeDTO fundType = new FundTypeDTO();
+    fundType.setId(1);
+    fundType.setDescription("description");
+    fundType.setType("BIRTHDAY");
+    return fundType;
   }
 
   private Fund getFund() {
@@ -110,14 +124,16 @@ public class TeamFundServiceTest {
   }
 
   @Test
-  public void shouldReturnAllTeamFundType() throws NotFoundException {
+  public void shouldReturnAllTeamFundType() {
     when(fundTypeRepository.findAll()).thenReturn(getFundTypes());
-    List<FundType> fundTypes = teamFundService.getAllFundTypes();
-    assertThat(getFundTypes(), samePropertyValuesAs(fundTypes));
+    List<FundTypeDTO> mockedListOfFundDtos = mock(List.class);
+    when(converter.convertToListOfObjects(anyList(), eq(FundTypeDTO.class))).thenReturn(mockedListOfFundDtos);
+    List<FundTypeDTO> fundTypes = teamFundService.getAllFundTypes();
+    assertThat(fundTypes, is(mockedListOfFundDtos));
   }
 
   @Test
-  public void shouldReturnAllFundForAUser() throws NotFoundException {
+  public void shouldReturnAllFundForAUser() {
     User user = new User();
     String username = "test-username";
     user.setUserName(username);

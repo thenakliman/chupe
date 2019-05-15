@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.FundDTO;
+import org.thenakliman.chupe.dto.FundTypeDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.UpsertFundDTO;
 import org.thenakliman.chupe.mappings.FundTransformer;
@@ -42,8 +43,8 @@ public class TeamFundService {
     this.userService = userService;
   }
 
-  public List<FundType> getAllFundTypes() {
-    return fundTypeRepository.findAll();
+  public List<FundTypeDTO> getAllFundTypes() {
+    return converter.convertToListOfObjects(fundTypeRepository.findAll(), FundTypeDTO.class);
   }
 
   public TeamFund getTeamFund() {
