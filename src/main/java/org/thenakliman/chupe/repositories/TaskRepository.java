@@ -6,12 +6,11 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.thenakliman.chupe.models.Task;
-import org.thenakliman.chupe.models.User;
 
 
 @Repository
-public interface TaskRepository  extends JpaRepository<Task, Long> {
-  Optional<Task> findById(Long id);
+public interface TaskRepository extends JpaRepository<Task, Long> {
+  Optional<Task> findByIdAndCreatedByUserName(Long id, String username);
 
-  List<Task> findByCreatedBy(User user);
+  List<Task> findByCreatedByUserName(String username);
 }

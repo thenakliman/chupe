@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.TaskDTO;
+import org.thenakliman.chupe.dto.UpsertTaskDTO;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.services.TaskService;
@@ -107,12 +108,13 @@ public class TaskControllerTest extends BaseControllerTest {
     String description = "today's only task";
     TaskDTO taskDTO = TaskDTO.builder().description(description).build();
     SecurityContextHolder.getContext().setAuthentication(authToken);
-    given(taskService.saveTask(taskDTO, username)).willReturn(taskDTO);
+    UpsertTaskDTO upsertTaskDTO = UpsertTaskDTO.builder().description(description).build();
+    given(taskService.saveTask(upsertTaskDTO, username)).willReturn(taskDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/tasks")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(taskDTO)))
+        .content(objectMapper.writeValueAsString(upsertTaskDTO)))
         .andExpect(MockMvcResultMatchers.status().isCreated()).andReturn();
 
     TaskDTO result = objectMapper.readValue(
@@ -125,13 +127,15 @@ public class TaskControllerTest extends BaseControllerTest {
   public void shouldUpdateTask() throws Exception {
     String description = "today's only task";
     TaskDTO taskDTO = TaskDTO.builder().description(description).build();
+    UpsertTaskDTO upsertTaskDTO = UpsertTaskDTO.builder().description(description).build();
     long taskId = 10L;
-    given(taskService.updateTask(taskId, taskDTO)).willReturn(taskDTO);
+    given(taskService.updateTask(taskId, upsertTaskDTO, username)).willReturn(taskDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/tasks/" + taskId)
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(taskDTO)))
+        .content(objectMapper.writeValueAsString(upsertTaskDTO)))
         .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
     TaskDTO result = objectMapper.readValue(
@@ -144,13 +148,15 @@ public class TaskControllerTest extends BaseControllerTest {
   public void shouldRaiseNotFoundWhenUpdateTask() throws Exception {
     String description = "today's only task";
     TaskDTO taskDTO = TaskDTO.builder().description(description).build();
+    UpsertTaskDTO upsertTaskDTO = UpsertTaskDTO.builder().description(description).build();
     long taskId = 10L;
-    given(taskService.updateTask(taskId, taskDTO)).willThrow(new NotFoundException("not Found"));
+    given(taskService.updateTask(taskId, upsertTaskDTO, username)).willThrow(new NotFoundException("not Found"));
+    SecurityContextHolder.getContext().setAuthentication(authToken);
 
     mockMvc.perform(MockMvcRequestBuilders
         .put("/api/v1/tasks/" + taskId)
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(taskDTO)))
+        .content(objectMapper.writeValueAsString(upsertTaskDTO)))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
   }
 }

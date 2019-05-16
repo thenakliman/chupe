@@ -151,7 +151,7 @@ public class TeamFundControllerTest extends BaseControllerTest {
         .post("/api/v1/team-funds")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(fund))
-    ).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+    ).andExpect(MockMvcResultMatchers.status().isCreated()).andReturn();
 
     FundDTO actualFund = objectMapper.readValue(
         mvcResult.getResponse().getContentAsString(),

@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import static org.thenakliman.chupe.models.TaskState.CREATED;
 import static org.thenakliman.chupe.models.TaskState.DONE;
 import static org.thenakliman.chupe.models.TaskState.IN_PROGRESS;
-import static org.thenakliman.chupe.models.TaskState.ON_HOLD;
 
 import java.util.Collections;
 import java.util.Date;
@@ -27,6 +26,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.TaskDTO;
+import org.thenakliman.chupe.dto.UpsertTaskDTO;
+import org.thenakliman.chupe.exceptions.BadRequestException;
 import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Task;
 import org.thenakliman.chupe.models.User;
@@ -65,21 +66,19 @@ public class TaskServiceTest {
         .state(CREATED).build();
   }
 
-  @Test(expected = NotFoundException.class)
-  public void shouldThrowErrorWhenTaskDoesNotExist()  {
-    User user = new User();
-    user.setUserName("username");
-
-    when(taskRepository.findByCreatedBy(any(User.class))).thenReturn(Collections.emptyList());
-    taskService.getAllTask("username");
+  private UpsertTaskDTO getUpsertTaskDTO(String description) {
+    return UpsertTaskDTO.builder()
+        .description(description)
+        .state(CREATED)
+        .build();
   }
 
   @Test
-  public void shouldFetchAllTasks() throws NotFoundException {
+  public void shouldFetchAllTasks() {
     String description = "description";
     String username = "username";
     Task task = getTask(description, username);
-    when(taskRepository.findByCreatedBy(any(User.class))).thenReturn(singletonList(task));
+    when(taskRepository.findByCreatedByUserName(username)).thenReturn(singletonList(task));
     TaskDTO taskDTO = getTaskDTO(description, username);
     when(converter.convertToListOfObjects(singletonList(task), TaskDTO.class))
         .thenReturn(Collections.singletonList(taskDTO));
@@ -98,10 +97,10 @@ public class TaskServiceTest {
     when(taskRepository.save(task)).thenReturn(task);
 
     TaskDTO taskDTO = getTaskDTO(description, username);
-    when(converter.convertToObject(taskDTO, Task.class)).thenReturn(task);
+    when(converter.convertToObject(getUpsertTaskDTO(description), Task.class)).thenReturn(task);
     when(converter.convertToObject(task, TaskDTO.class)).thenReturn(taskDTO);
 
-    TaskDTO actualTask = taskService.saveTask(taskDTO, username);
+    TaskDTO actualTask = taskService.saveTask(getUpsertTaskDTO(description), username);
 
     assertThat(taskDTO, samePropertyValuesAs(actualTask));
   }
@@ -109,8 +108,20 @@ public class TaskServiceTest {
   @Test(expected = NotFoundException.class)
   public void shouldReturnNotFoundExceptionWhenIdDoesNotExist() {
     Long id = 101L;
-    when(taskRepository.findById(id)).thenReturn(Optional.empty());
-    taskService.updateTask(id, getTaskDTO("description", "username"));
+    String username = "user-name";
+    when(taskRepository.findByIdAndCreatedByUserName(id, username)).thenReturn(Optional.empty());
+    taskService.updateTask(id, getUpsertTaskDTO("description"), username);
+  }
+
+  @Test(expected = BadRequestException.class)
+  public void updateTask_shouldThrowBadRequest_whenChangeStateFromCreatedToDone() {
+    Long id = 101L;
+    String username = "user-name";
+    Task existingTask = getTask("desc", username);
+    when(taskRepository.findByIdAndCreatedByUserName(id, username)).thenReturn(Optional.of(existingTask));
+    UpsertTaskDTO upsertTaskDTO = getUpsertTaskDTO("description");
+    upsertTaskDTO.setState(DONE);
+    taskService.updateTask(id, upsertTaskDTO, username);
   }
 
   @Test
@@ -121,10 +132,12 @@ public class TaskServiceTest {
     Task existingTask = getTask(description, username);
     Date date = new Date(1000);
     when(dateUtil.getTime()).thenReturn(date);
-    when(taskRepository.findById(id)).thenReturn(Optional.of(existingTask));
+    when(taskRepository.findByIdAndCreatedByUserName(id, username)).thenReturn(Optional.of(existingTask));
 
     TaskDTO taskDTO = getTaskDTO(description, username);
+    UpsertTaskDTO upsertTaskDTO = getUpsertTaskDTO(description);
     taskDTO.setState(IN_PROGRESS);
+    upsertTaskDTO.setState(IN_PROGRESS);
 
     Task updatedTask = getTask(description, username);
     updatedTask.setState(IN_PROGRESS);
@@ -134,26 +147,27 @@ public class TaskServiceTest {
     updatedTaskDTO.setState(IN_PROGRESS);
     when(converter.convertToObject(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
 
-    TaskDTO receivedTaskDTO = taskService.updateTask(id, taskDTO);
+    TaskDTO receivedTaskDTO = taskService.updateTask(id, upsertTaskDTO, username);
 
     assertThat(receivedTaskDTO, samePropertyValuesAs(updatedTaskDTO));
-    verify(taskRepository).findById(id);
+    verify(taskRepository).findByIdAndCreatedByUserName(id, username);
     verify(taskRepository).save(any());
     verify(converter).convertToObject(updatedTask, TaskDTO.class);
     verify(dateUtil, times(2)).getTime();
   }
 
   @Test
-  public void shouldReturnSetStartedOnWhenStateChangedToDone() {
+  public void shouldReturnSetEndedOnWhenStateChangedToDone() {
     Long id = 101L;
     String description = "description";
     String username = "username";
     Task existingTask = getTask(description, username);
+    existingTask.setState(IN_PROGRESS);
     Date date = new Date(1000);
     when(dateUtil.getTime()).thenReturn(date);
-    when(taskRepository.findById(id)).thenReturn(Optional.of(existingTask));
-    TaskDTO taskDTO = getTaskDTO(description, username);
-    taskDTO.setState(DONE);
+    when(taskRepository.findByIdAndCreatedByUserName(id, username)).thenReturn(Optional.of(existingTask));
+    UpsertTaskDTO upsertTaskDTO = getUpsertTaskDTO(description);
+    upsertTaskDTO.setState(DONE);
 
     Task updatedTask = getTask(description, username);
     updatedTask.setState(DONE);
@@ -163,42 +177,12 @@ public class TaskServiceTest {
     updatedTaskDTO.setState(DONE);
     when(converter.convertToObject(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
 
-    TaskDTO receivedTaskDTO = taskService.updateTask(id, taskDTO);
+    TaskDTO receivedTaskDTO = taskService.updateTask(id, upsertTaskDTO, username);
 
     assertThat(receivedTaskDTO, samePropertyValuesAs(updatedTaskDTO));
-    verify(taskRepository).findById(id);
+    verify(taskRepository).findByIdAndCreatedByUserName(id, username);
     verify(taskRepository).save(any());
     verify(converter).convertToObject(updatedTask, TaskDTO.class);
-    verify(dateUtil, times(3)).getTime();
-  }
-
-  @Test
-  public void shouldReturnSetStartedOnWhenStateChangedToOnHold() {
-    Long id = 101L;
-    String description = "description";
-    String username = "username";
-    Task existingTask = getTask(description, username);
-    Date date = new Date(1000);
-    when(dateUtil.getTime()).thenReturn(date);
-    when(taskRepository.findById(id)).thenReturn(Optional.of(existingTask));
-
-    TaskDTO taskDTO = getTaskDTO(description, username);
-    taskDTO.setState(ON_HOLD);
-
-    Task updatedTask = getTask(description, username);
-    updatedTask.setState(ON_HOLD);
-    when(taskRepository.save(any())).thenReturn(updatedTask);
-
-    TaskDTO updatedTaskDTO = getTaskDTO(description, username);
-    updatedTaskDTO.setState(ON_HOLD);
-    when(converter.convertToObject(updatedTask, TaskDTO.class)).thenReturn(updatedTaskDTO);
-
-    TaskDTO receivedTaskDTO = taskService.updateTask(id, taskDTO);
-
-    assertThat(receivedTaskDTO, samePropertyValuesAs(updatedTaskDTO));
-    verify(taskRepository).findById(id);
-    verify(taskRepository).save(any());
-    verify(converter).convertToObject(updatedTask, TaskDTO.class);
-    verify(dateUtil, times(1)).getTime();
+    verify(dateUtil, times(2)).getTime();
   }
 }

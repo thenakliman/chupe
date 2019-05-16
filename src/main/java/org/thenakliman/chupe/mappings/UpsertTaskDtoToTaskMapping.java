@@ -5,37 +5,29 @@ import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
-import org.thenakliman.chupe.dto.TaskDTO;
+import org.thenakliman.chupe.dto.UpsertTaskDTO;
 import org.thenakliman.chupe.models.Task;
-import org.thenakliman.chupe.models.User;
 
 @Component
-public class TaskDtoToTaskMapping extends ConverterConfigurerSupport<TaskDTO, Task> {
+public class UpsertTaskDtoToTaskMapping extends ConverterConfigurerSupport<UpsertTaskDTO, Task> {
 
   private final DateUtil dateUtil;
 
-  TaskDtoToTaskMapping(DateUtil dateUtil) {
+  UpsertTaskDtoToTaskMapping(DateUtil dateUtil) {
     this.dateUtil = dateUtil;
   }
 
   @Override
-  public Converter<TaskDTO, Task> converter() {
+  public Converter<UpsertTaskDTO, Task> converter() {
 
-    return new AbstractConverter<TaskDTO, Task>() {
+    return new AbstractConverter<UpsertTaskDTO, Task>() {
       @Override
-      protected Task convert(TaskDTO source) {
-        User answeredBy = User
-            .builder()
-            .userName(source.getCreatedBy())
-            .build();
-
+      protected Task convert(UpsertTaskDTO source) {
         return Task
             .builder()
-            .id(source.getId())
             .description(source.getDescription())
             .state(source.getState())
             .progress(source.getProgress())
-            .createdBy(answeredBy)
             .startOn(source.getStartedOn())
             .endedOn(source.getEndedOn())
             .createdAt(dateUtil.getTime())

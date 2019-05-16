@@ -26,15 +26,14 @@ public class AnswerController extends BaseController {
   }
 
   @GetMapping("/answers")
-  public ResponseEntity<List<AnswerDTO>> getAnswerOfGivenQuestion(
-      @RequestParam("questionId") long id) {
+  public ResponseEntity<List<AnswerDTO>> getAnswerOfGivenQuestion(@RequestParam("questionId") long id) {
     return new ResponseEntity<>(answerService.getAnswers(id), HttpStatus.OK);
   }
 
   @PostMapping("/answers")
   public ResponseEntity<AnswerDTO> addAnswer(@RequestBody UpsertAnswerDTO upsertAnswerDTO) {
     AnswerDTO createdAnswer = answerService.addAnswer(upsertAnswerDTO, getRequestUsername());
-    return new ResponseEntity<>(createdAnswer, HttpStatus.OK);
+    return new ResponseEntity<>(createdAnswer, HttpStatus.CREATED);
   }
 
   @PutMapping("/answers/{id}")

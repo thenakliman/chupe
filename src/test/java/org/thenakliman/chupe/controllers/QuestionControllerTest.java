@@ -182,7 +182,7 @@ public class QuestionControllerTest {
         .put("/api/v1/questions/" + id)
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(questionDTO))
-    ).andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
+    ).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
   }
 
   @Test

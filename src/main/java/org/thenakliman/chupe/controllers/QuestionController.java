@@ -18,13 +18,15 @@ import org.thenakliman.chupe.services.QuestionService;
 
 @Controller
 public class QuestionController extends BaseController {
-  @Autowired
   private QuestionService questionService;
 
-  @PostMapping("/questions")
-  public ResponseEntity<QuestionDTO> askQuestion(@RequestHeader HttpHeaders header,
-                                                 @RequestBody UpsertQuestionDTO question) {
+  @Autowired
+  public QuestionController(QuestionService questionService) {
+    this.questionService = questionService;
+  }
 
+  @PostMapping("/questions")
+  public ResponseEntity<QuestionDTO> askQuestion(@RequestBody UpsertQuestionDTO question) {
     QuestionDTO createdQuestion = questionService.addQuestion(question, getRequestUsername());
     return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
   }
@@ -33,9 +35,8 @@ public class QuestionController extends BaseController {
   public ResponseEntity updateQuestion(@RequestHeader HttpHeaders header,
                                        @PathVariable(value = "id") long id,
                                        @RequestBody UpsertQuestionDTO questionDTO) {
-    HttpStatus httpStatus = HttpStatus.NO_CONTENT;
     QuestionDTO updatedQuestion = questionService.updateQuestions(id, questionDTO, getRequestUsername());
-    return new ResponseEntity<>(updatedQuestion, httpStatus);
+    return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
   }
 
   @GetMapping("/questions")

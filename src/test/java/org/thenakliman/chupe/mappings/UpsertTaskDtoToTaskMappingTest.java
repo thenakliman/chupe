@@ -15,12 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.common.utils.DateUtil;
-import org.thenakliman.chupe.dto.TaskDTO;
+import org.thenakliman.chupe.dto.UpsertTaskDTO;
 import org.thenakliman.chupe.models.Task;
-import org.thenakliman.chupe.models.User;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TaskDtoToTaskMappingTest {
+public class UpsertTaskDtoToTaskMappingTest {
 
   @Mock
   private DateUtil dateUtil;
@@ -33,21 +32,17 @@ public class TaskDtoToTaskMappingTest {
   @Before
   public void setUp() throws Exception {
     now = new Date();
-    modelMapper.addConverter(new TaskDtoToTaskMapping(dateUtil).converter());
+    modelMapper.addConverter(new UpsertTaskDtoToTaskMapping(dateUtil).converter());
     when(dateUtil.getTime()).thenReturn(now);
   }
 
   @Test
   public void shouldMapTaskDtoToTask() {
-    String userName = "user-name";
-    long taskId = 1001L;
     String description = "description";
-    TaskDTO taskDTO = TaskDTO
+    UpsertTaskDTO taskDTO = UpsertTaskDTO
         .builder()
         .description(description)
-        .createdBy(userName)
         .endedOn(now)
-        .id(taskId)
         .progress(10)
         .startedOn(now)
         .state(IN_PROGRESS)
@@ -55,17 +50,10 @@ public class TaskDtoToTaskMappingTest {
 
     Task mappedTask = modelMapper.map(taskDTO, Task.class);
 
-    User user = User
-        .builder()
-        .userName(userName)
-        .build();
-
     Task task = Task
         .builder()
         .description(description)
-        .createdBy(user)
         .endedOn(now)
-        .id(taskId)
         .progress(10)
         .startOn(now)
         .state(IN_PROGRESS)

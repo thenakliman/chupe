@@ -130,7 +130,7 @@ public class AnswerControllerTest {
         .post("/api/v1/answers")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(answer)))
-        .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+        .andExpect(MockMvcResultMatchers.status().isCreated()).andReturn();
 
     AnswerDTO result = objectMapper.readValue(
         mvcResult.getResponse().getContentAsString(), AnswerDTO.class);
