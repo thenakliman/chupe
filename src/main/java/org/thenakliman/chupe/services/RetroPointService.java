@@ -7,14 +7,14 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
-import javassist.tools.web.BadHttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.RetroPointDTO;
 import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
+import org.thenakliman.chupe.exceptions.BadRequestException;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.RetroPoint;
 import org.thenakliman.chupe.models.RetroVote;
@@ -62,8 +62,7 @@ public class RetroPointService {
   }
 
   public RetroPointDTO updateRetroPoint(Long retroPointId,
-                                        UpsertRetroPointDTO upsertRetroPointDTO
-                                        ) throws NotFoundException {
+                                        UpsertRetroPointDTO upsertRetroPointDTO) {
 
     Optional<RetroPoint> savedRetroPointOptional = retroPointRepository.findById(retroPointId);
     RetroPoint retroPoint = savedRetroPointOptional.orElseThrow(
@@ -76,14 +75,13 @@ public class RetroPointService {
     return converter.convertToObject(updatedRetroPoint, RetroPointDTO.class);
   }
 
-  RetroPoint getRetroPoint(Long id) throws NotFoundException {
+  RetroPoint getRetroPoint(Long id) {
     Optional<RetroPoint> retroPoint = retroPointRepository.findById(id);
     return retroPoint.orElseThrow(
         () -> new NotFoundException("Retro point not found for id " + id));
   }
 
-  public void castVote(Long retroPointId, String username)
-      throws BadHttpRequest, NotFoundException {
+  public void castVote(Long retroPointId, String username) {
 
     RetroVote alreadyCastedVote = retroVoteRepository.findByRetroPointIdAndVotedByUserName(
         retroPointId,
@@ -96,22 +94,21 @@ public class RetroPointService {
     }
   }
 
-  private void saveVote(Long retroPointId, String username)
-      throws BadHttpRequest, NotFoundException {
-
+  private void saveVote(Long retroPointId, String username) {
     Retro retro = getRetro(retroPointId);
     long votesByUser = retroVoteRepository.countByVotedByUserNameAndRetroPointRetroId(
         username,
         retro.getId());
 
     if (votesByUser >= retro.getMaximumVote()) {
-      throw new BadHttpRequest();
+      throw new BadRequestException(
+          String.format("Maximum vote by a user for this retro is %s", retro.getMaximumVote()));
     }
 
     retroVoteRepository.save(getRetroVote(username, retroPointId));
   }
 
-  private Retro getRetro(Long retroPointId) throws NotFoundException {
+  private Retro getRetro(Long retroPointId) {
     Optional<RetroPoint> retroPointOptional = retroPointRepository.findById(retroPointId);
     RetroPoint retroPoint = retroPointOptional.orElseThrow(
         () -> new NotFoundException("Retro poing not found for id " + retroPointId));

@@ -2,7 +2,6 @@ package org.thenakliman.chupe.controllers;
 
 import java.util.List;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +40,7 @@ public class MeetingController extends BaseController {
 
   @PutMapping("/meetings/{meetingId}")
   public ResponseEntity<MeetingDTO> updateMeeting(@PathVariable Long meetingId,
-                                                  @RequestBody String subject) throws NotFoundException {
+                                                  @RequestBody String subject) {
 
     MeetingDTO updatedMeeting = meetingService.updateMeeting(meetingId, subject, getRequestUsername());
     return new ResponseEntity<>(updatedMeeting, HttpStatus.OK);
@@ -67,7 +66,7 @@ public class MeetingController extends BaseController {
   @PutMapping("/meeting-discussion-items/{meetingDiscussionItemId}")
   public ResponseEntity<MeetingDiscussionItemDTO> updateMeetingDiscussionItem(
       @PathVariable Long meetingDiscussionItemId,
-      @RequestBody CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) throws NotFoundException {
+      @RequestBody CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
 
     MeetingDiscussionItemDTO updatedMeeting = meetingService.updateMeetingDiscussionItem(
         meetingDiscussionItemId,

@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -28,6 +27,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.TaskDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Task;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.TaskRepository;
@@ -66,7 +66,7 @@ public class TaskServiceTest {
   }
 
   @Test(expected = NotFoundException.class)
-  public void shouldThrowErrorWhenTaskDoesNotExist() throws NotFoundException {
+  public void shouldThrowErrorWhenTaskDoesNotExist()  {
     User user = new User();
     user.setUserName("username");
 
@@ -107,14 +107,14 @@ public class TaskServiceTest {
   }
 
   @Test(expected = NotFoundException.class)
-  public void shouldReturnNotFoundExceptionWhenIdDoesNotExist() throws NotFoundException {
+  public void shouldReturnNotFoundExceptionWhenIdDoesNotExist() {
     Long id = 101L;
     when(taskRepository.findById(id)).thenReturn(Optional.empty());
     taskService.updateTask(id, getTaskDTO("description", "username"));
   }
 
   @Test
-  public void shouldReturnSetStartedOnWhenStateChangeToInProgress() throws NotFoundException {
+  public void shouldReturnSetStartedOnWhenStateChangeToInProgress() {
     Long id = 101L;
     String description = "description";
     String username = "username";
@@ -144,7 +144,7 @@ public class TaskServiceTest {
   }
 
   @Test
-  public void shouldReturnSetStartedOnWhenStateChangedToDone() throws NotFoundException {
+  public void shouldReturnSetStartedOnWhenStateChangedToDone() {
     Long id = 101L;
     String description = "description";
     String username = "username";
@@ -173,7 +173,7 @@ public class TaskServiceTest {
   }
 
   @Test
-  public void shouldReturnSetStartedOnWhenStateChangedToOnHold() throws NotFoundException {
+  public void shouldReturnSetStartedOnWhenStateChangedToOnHold() {
     Long id = 101L;
     String description = "description";
     String username = "username";

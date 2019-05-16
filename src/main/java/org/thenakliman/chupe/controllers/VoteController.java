@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.controllers;
 
-import javassist.NotFoundException;
-import javassist.tools.web.BadHttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,14 +23,7 @@ public class VoteController extends BaseController {
     User userDetails =
         (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    try {
-      retroPointService.castVote(id, userDetails.getUsername());
-    } catch (NotFoundException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } catch (BadHttpRequest ex) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
+    retroPointService.castVote(id, userDetails.getUsername());
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 }

@@ -5,12 +5,12 @@ import static java.lang.String.format;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.RetroDTO;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.RetroRepository;
@@ -42,8 +42,7 @@ public class RetroService {
     return converter.convertToListOfObjects(retros, RetroDTO.class);
   }
 
-  public RetroDTO updateRetro(Long retroId, UpsertRetroDTO upsertRetroDTO)
-      throws NotFoundException {
+  public RetroDTO updateRetro(Long retroId, UpsertRetroDTO upsertRetroDTO) {
     Optional<Retro> savedRetro = retroRepository.findById(retroId);
     if (!savedRetro.isPresent()) {
       throw new NotFoundException(format("Retro with id %d could not be found", retroId));

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.TaskDTO;
 import org.thenakliman.chupe.dto.User;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.services.TaskService;
 import org.thenakliman.chupe.services.TokenService;
 

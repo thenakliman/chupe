@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
-import javassist.tools.web.BadHttpRequest;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -27,6 +25,8 @@ import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.RetroPointDTO;
 import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
+import org.thenakliman.chupe.exceptions.BadRequestException;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.RetroPoint;
 import org.thenakliman.chupe.models.RetroPointType;
@@ -128,8 +128,7 @@ public class RetroPointServiceTest {
   }
 
   @Test
-  public void shouldRaisedNotFoundExceptionWhenRetroDoesNotExistForUpdate()
-      throws NotFoundException {
+  public void shouldRaisedNotFoundExceptionWhenRetroDoesNotExistForUpdate() {
 
     when(retroPointRepository.findById(retroId)).thenReturn(Optional.empty());
     exception.expect(NotFoundException.class);
@@ -137,8 +136,7 @@ public class RetroPointServiceTest {
   }
 
   @Test
-  public void shouldUpdateRetroPointWhenRetroDoesNotExistForUpdate()
-      throws NotFoundException {
+  public void shouldUpdateRetroPointWhenRetroDoesNotExistForUpdate() {
 
     long retroPointId = 101L;
     String description = "my description";
@@ -166,7 +164,7 @@ public class RetroPointServiceTest {
   }
 
   @Test
-  public void shouldThrowNotFoundExceptionWhenRetroPointDoesNotExist() throws NotFoundException {
+  public void shouldThrowNotFoundExceptionWhenRetroPointDoesNotExist() {
     Long retroId = 1939L;
     when(retroPointRepository.findById(retroId)).thenReturn(Optional.empty());
 
@@ -175,7 +173,7 @@ public class RetroPointServiceTest {
   }
 
   @Test
-  public void shouldReturnRetroPoint() throws NotFoundException {
+  public void shouldReturnRetroPoint() {
     Long retroId = 1939L;
     RetroPoint retroPoint = RetroPoint.builder().build();
     when(retroPointRepository.findById(retroId)).thenReturn(Optional.of(retroPoint));
@@ -186,7 +184,7 @@ public class RetroPointServiceTest {
   }
 
   @Test
-  public void shouldDeleteVoteIfAlreadyCasted() throws NotFoundException, BadHttpRequest {
+  public void shouldDeleteVoteIfAlreadyCasted() {
     Long retroPointId = 1939L;
     String username = "voted by";
     RetroVote retroVote = RetroVote.builder().build();
@@ -200,8 +198,7 @@ public class RetroPointServiceTest {
   }
 
   @Test
-  public void shouldRaiseNotFoundWhenRetroPointDoesNotExistForTheVote()
-      throws NotFoundException, BadHttpRequest {
+  public void shouldRaiseNotFoundWhenRetroPointDoesNotExistForTheVote() {
 
     Long retroPointId = 1939L;
     String username = "voted by";
@@ -214,8 +211,7 @@ public class RetroPointServiceTest {
   }
 
   @Test
-  public void shouldRaiseBadRequestExceptionWhenVotesForARetroIsMoreThanMaximumVotes()
-      throws NotFoundException, BadHttpRequest {
+  public void shouldRaiseBadRequestExceptionWhenVotesForARetroIsMoreThanMaximumVotes() {
 
     Long retroPointId = 1939L;
     Long retroId = 10L;
@@ -232,12 +228,12 @@ public class RetroPointServiceTest {
 
     when(retroPointRepository.findById(retroPointId)).thenReturn(Optional.of(retroPoint));
 
-    exception.expect(BadHttpRequest.class);
+    exception.expect(BadRequestException.class);
     retroPointService.castVote(retroPointId, username);
   }
 
   @Test
-  public void shouldCastVote() throws NotFoundException, BadHttpRequest {
+  public void shouldCastVote() {
     Long retroPointId = 1939L;
     Long retroId = 10L;
     String username = "voted by";

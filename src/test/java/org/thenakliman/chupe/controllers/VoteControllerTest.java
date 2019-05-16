@@ -3,8 +3,6 @@ package org.thenakliman.chupe.controllers;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-import javassist.NotFoundException;
-import javassist.tools.web.BadHttpRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.User;
+import org.thenakliman.chupe.exceptions.BadRequestException;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.services.RetroPointService;
 import org.thenakliman.chupe.services.TokenService;
 
@@ -93,7 +93,7 @@ public class VoteControllerTest extends BaseControllerTest {
     SecurityContextHolder.getContext().setAuthentication(authToken);
     Long retroPointId = 9484L;
 
-    doThrow(new BadHttpRequest()).when(retroPointService).castVote(retroPointId, username);
+    doThrow(new BadRequestException("")).when(retroPointService).castVote(retroPointId, username);
     mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/retro-point-votes/" + retroPointId)
         .contentType(MediaType.APPLICATION_JSON)

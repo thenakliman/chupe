@@ -5,7 +5,6 @@ import static java.lang.String.format;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
@@ -13,6 +12,7 @@ import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.FundTypeDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.UpsertFundDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.mappings.FundTransformer;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
@@ -52,7 +52,7 @@ public class TeamFundService {
     return fundTransformer.transformToTeamFund(funds);
   }
 
-  public FundDTO saveTeamFund(UpsertFundDTO fundDTO, String addedByUsername) throws NotFoundException {
+  public FundDTO saveTeamFund(UpsertFundDTO fundDTO, String addedByUsername) {
     Fund fund = converter.convertToObject(fundDTO, Fund.class);
 
     Optional<FundType> fundType = fundTypeRepository.findById(fundDTO.getType());

@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -24,6 +23,7 @@ import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FeedbackSessionDTO;
 import org.thenakliman.chupe.dto.UpsertFeedbackSessionDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.FeedbackSession;
 import org.thenakliman.chupe.repositories.FeedbackSessionRepository;
 
@@ -80,7 +80,7 @@ public class FeedbackSessionServiceTest {
   }
 
   @Test
-  public void shouldUpdateFeedbackSession() throws NotFoundException {
+  public void shouldUpdateFeedbackSession() {
     FeedbackSession feedbackSession = FeedbackSession.builder().build();
     String username = "created-by";
     long feedbackSessionId = 1L;
@@ -99,7 +99,7 @@ public class FeedbackSessionServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenFeedbackSessionToBeUpdatedNotFound() throws NotFoundException {
+  public void shouldThrowExceptionWhenFeedbackSessionToBeUpdatedNotFound() {
     long feedbackSessionId = 1L;
     String username = "created-by";
     when(feedbackSessionRepository.findByIdAndCreatedByUserName(feedbackSessionId, username))

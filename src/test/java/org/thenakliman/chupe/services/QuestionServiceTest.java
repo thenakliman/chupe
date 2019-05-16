@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,6 +20,7 @@ import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.UpsertQuestionDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.QuestionPriority;
 import org.thenakliman.chupe.models.QuestionStatus;
@@ -121,7 +121,7 @@ public class QuestionServiceTest {
   }
 
   @Test
-  public void shouldUpdateQuestions() throws NotFoundException {
+  public void shouldUpdateQuestions() {
     Question question = getTestQuestion();
     QuestionDTO questionDTO = getTestQuestionDTO();
     question.setDescription(questionDTO.getDescription());
@@ -142,7 +142,7 @@ public class QuestionServiceTest {
   }
 
   @Test(expected = NotFoundException.class)
-  public void shouldRaiseNotFoundException() throws NotFoundException {
+  public void shouldRaiseNotFoundException() {
     when(questionsRepository.findByIdAndOwnerUserName(id, "testUser2")).thenReturn(Optional.empty());
     questionService.updateQuestions(id, getTestUpsertQuestionDto(), "testUser2");
   }

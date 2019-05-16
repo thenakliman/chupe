@@ -1,6 +1,5 @@
 package org.thenakliman.chupe.controllers;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,20 +34,12 @@ public class QuestionController extends BaseController {
                                        @PathVariable(value = "id") long id,
                                        @RequestBody UpsertQuestionDTO questionDTO) {
     HttpStatus httpStatus = HttpStatus.NO_CONTENT;
-    try {
-      QuestionDTO updatedQuestion = questionService.updateQuestions(id, questionDTO, getRequestUsername());
-      return new ResponseEntity<>(updatedQuestion, httpStatus);
-    } catch (NotFoundException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    QuestionDTO updatedQuestion = questionService.updateQuestions(id, questionDTO, getRequestUsername());
+    return new ResponseEntity<>(updatedQuestion, httpStatus);
   }
 
   @GetMapping("/questions")
   public ResponseEntity getQuestions() {
-    try {
-      return new ResponseEntity<>(questionService.getQuestions(), HttpStatus.OK);
-    } catch (Exception ex) {
-      return new ResponseEntity(HttpStatus.NOT_FOUND);
-    }
+    return new ResponseEntity<>(questionService.getQuestions(), HttpStatus.OK);
   }
 }

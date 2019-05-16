@@ -2,7 +2,6 @@ package org.thenakliman.chupe.controllers;
 
 import java.util.List;
 
-import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,14 +42,8 @@ public class RetroController extends BaseController {
 
   @PutMapping("/retros/{id}")
   public ResponseEntity<RetroDTO> updateRetro(@RequestBody UpsertRetroDTO upsertRetroDTO,
-                                            @PathVariable(value = "id") long id) {
-    RetroDTO updatedRetro;
-
-    try {
-      updatedRetro = retroService.updateRetro(id, upsertRetroDTO);
-    } catch (NotFoundException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+                                              @PathVariable(value = "id") long id) {
+    RetroDTO updatedRetro = retroService.updateRetro(id, upsertRetroDTO);
     return new ResponseEntity<>(updatedRetro, HttpStatus.OK);
   }
 }

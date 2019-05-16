@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +35,7 @@ import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.dto.UserDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.QuestionPriority;
 import org.thenakliman.chupe.models.QuestionStatus;
 import org.thenakliman.chupe.services.QuestionService;
@@ -131,7 +131,7 @@ public class QuestionControllerTest {
      * BDDMockito.given(userService.getQuestions()).willThrow(Exception.class); */
     SecurityContextHolder.getContext().setAuthentication(authToken);
     BDDMockito.given(questionService.getQuestions()).willAnswer(invocation -> {
-      throw new Exception();
+      throw new NotFoundException("");
     });
 
     mockMvc.perform(MockMvcRequestBuilders

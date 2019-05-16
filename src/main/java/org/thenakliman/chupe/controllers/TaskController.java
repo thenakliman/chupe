@@ -1,6 +1,5 @@
 package org.thenakliman.chupe.controllers;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,20 +23,16 @@ public class TaskController extends BaseController {
   @GetMapping("/tasks")
   public ResponseEntity getTasks() {
     User userDetails =
-        (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    try {
-      return new ResponseEntity<>(
-          taskService.getAllTask(userDetails.getUsername()),
-          HttpStatus.OK);
-    } catch (NotFoundException ex) {
-      return new ResponseEntity(HttpStatus.NOT_FOUND);
-    }
+        (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return new ResponseEntity<>(
+        taskService.getAllTask(userDetails.getUsername()),
+        HttpStatus.OK);
   }
 
   @PostMapping("/tasks")
   public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDTO) {
     User userDetails =
-        (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     TaskDTO createdTask = taskService.saveTask(taskDTO, userDetails.getUsername());
     return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
   }
@@ -45,13 +40,7 @@ public class TaskController extends BaseController {
   @PutMapping("/tasks/{id}")
   public ResponseEntity<TaskDTO> updateTask(@RequestBody TaskDTO taskDTO,
                                             @PathVariable(value = "id") long id) {
-    TaskDTO createdTask;
-
-    try {
-      createdTask = taskService.updateTask(id, taskDTO);
-    } catch (NotFoundException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    TaskDTO createdTask = taskService.updateTask(id, taskDTO);
     return new ResponseEntity<>(createdTask, HttpStatus.OK);
   }
 }

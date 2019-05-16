@@ -9,7 +9,6 @@ import static org.mockito.BDDMockito.given;
 import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,7 @@ import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.RetroPointDTO;
 import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
 import org.thenakliman.chupe.dto.User;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.RetroPointType;
 import org.thenakliman.chupe.services.RetroPointService;
 import org.thenakliman.chupe.services.TokenService;

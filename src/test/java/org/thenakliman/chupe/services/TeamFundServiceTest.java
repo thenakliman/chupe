@@ -1,7 +1,6 @@
 package org.thenakliman.chupe.services;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,6 +29,7 @@ import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.TeamMemberFund;
 import org.thenakliman.chupe.dto.UpsertFundDTO;
 import org.thenakliman.chupe.dto.UserDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.mappings.FundTransformer;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.FundType;
@@ -145,7 +144,7 @@ public class TeamFundServiceTest {
   }
 
   @Test
-  public void shouldReturnTeamFund() throws NotFoundException {
+  public void shouldReturnTeamFund() {
     List<Fund> funds = getFunds();
     when(teamFundRepository.findAll()).thenReturn(funds);
 
@@ -164,7 +163,7 @@ public class TeamFundServiceTest {
   }
 
   @Test(expected = NotFoundException.class)
-  public void shouldReturnNotFoundExceptionWhenInvalidType() throws NotFoundException {
+  public void shouldReturnNotFoundExceptionWhenInvalidType() {
     Fund fund = getFund();
     UpsertFundDTO fundDTO = getUpsertFundDTO();
     given(converter.convertToObject(fundDTO, Fund.class)).willReturn(fund);
@@ -174,7 +173,7 @@ public class TeamFundServiceTest {
   }
 
   @Test(expected = UsernameNotFoundException.class)
-  public void shouldReturnNotFoundExceptionInvalidOwner() throws NotFoundException {
+  public void shouldReturnNotFoundExceptionInvalidOwner() {
     Fund fund = getFund();
     UpsertFundDTO fundDTO = getUpsertFundDTO();
     given(userService.findByUserName(fundDTO.getOwner())).willThrow(new UsernameNotFoundException(""));
@@ -185,7 +184,7 @@ public class TeamFundServiceTest {
   }
 
   @Test
-  public void shouldReturnUserDTOOnSave() throws NotFoundException {
+  public void shouldReturnUserDTOOnSave() {
     Fund fund = getFund();
     UpsertFundDTO upsertFundDTO = getUpsertFundDTO();
     FundDTO FundDTO = getFundDTO();

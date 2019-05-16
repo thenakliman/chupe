@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +23,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.RetroDTO;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.RetroRepository;
@@ -115,8 +115,7 @@ public class RetroServiceTest {
   }
 
   @Test(expected = NotFoundException.class)
-  public void shouldThrowNotFoundExceptionWhenRetroToBeUpdatedIsNotFound()
-      throws NotFoundException {
+  public void shouldThrowNotFoundExceptionWhenRetroToBeUpdatedIsNotFound() {
     long retroId = 10L;
     when(retroRepository.findById(retroId)).thenReturn(Optional.empty());
     UpsertRetroDTO upsertRetroDTO = UpsertRetroDTO

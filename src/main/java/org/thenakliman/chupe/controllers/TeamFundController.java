@@ -2,7 +2,6 @@ package org.thenakliman.chupe.controllers;
 
 import java.util.List;
 
-import javassist.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,13 +41,13 @@ public class TeamFundController extends BaseController {
 
   @PostMapping("/team-funds")
   public ResponseEntity<FundDTO> saveFund(@RequestHeader HttpHeaders header,
-                                          @RequestBody UpsertFundDTO fund) throws NotFoundException {
+                                          @RequestBody UpsertFundDTO fund) {
     return new ResponseEntity<>(teamFundService.saveTeamFund(fund, getRequestUsername()), HttpStatus.OK);
   }
 
   @GetMapping("/funds")
   public ResponseEntity<List<FundDTO>> getFundsForGivenUser(
-      @RequestParam("owner") String owner) throws NotFoundException {
+      @RequestParam("owner") String owner) {
     return new ResponseEntity<>(teamFundService.getFundForATeamMember(owner), HttpStatus.OK);
   }
 }

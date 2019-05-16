@@ -2,7 +2,6 @@ package org.thenakliman.chupe.controllers;
 
 import java.util.List;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +27,8 @@ public class AnswerController extends BaseController {
 
   @GetMapping("/answers")
   public ResponseEntity<List<AnswerDTO>> getAnswerOfGivenQuestion(
-      @RequestParam("questionId") long id) throws NotFoundException {
-    try {
-      return new ResponseEntity<>(answerService.getAnswers(id), HttpStatus.OK);
-    } catch (NotFoundException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+      @RequestParam("questionId") long id) {
+    return new ResponseEntity<>(answerService.getAnswers(id), HttpStatus.OK);
   }
 
   @PostMapping("/answers")
@@ -45,11 +40,7 @@ public class AnswerController extends BaseController {
   @PutMapping("/answers/{id}")
   public ResponseEntity<AnswerDTO> updateAnswer(@PathVariable(value = "id") Long id,
                                                 @RequestBody UpsertAnswerDTO upsertAnswerDTO) {
-    try {
-      AnswerDTO updatedAnswer = answerService.updateAnswer(id, upsertAnswerDTO, getRequestUsername());
-      return new ResponseEntity<>(updatedAnswer, HttpStatus.OK);
-    } catch (NotFoundException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    AnswerDTO updatedAnswer = answerService.updateAnswer(id, upsertAnswerDTO, getRequestUsername());
+    return new ResponseEntity<>(updatedAnswer, HttpStatus.OK);
   }
 }

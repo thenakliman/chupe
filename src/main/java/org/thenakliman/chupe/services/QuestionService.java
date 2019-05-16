@@ -3,13 +3,13 @@ package org.thenakliman.chupe.services;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.UpsertQuestionDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.QuestionRepository;
@@ -40,7 +40,7 @@ public class QuestionService {
     return converter.convertToListOfObjects(questions, QuestionDTO.class);
   }
 
-  public QuestionDTO updateQuestions(long id, UpsertQuestionDTO question, String owner) throws NotFoundException {
+  public QuestionDTO updateQuestions(long id, UpsertQuestionDTO question, String owner) {
     Optional<Question> savedQuestionOptional = questionsRepository.findByIdAndOwnerUserName(id, owner);
 
     Question savedQuestion = savedQuestionOptional.orElseThrow(

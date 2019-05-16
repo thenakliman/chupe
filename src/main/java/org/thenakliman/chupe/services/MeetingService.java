@@ -3,7 +3,6 @@ package org.thenakliman.chupe.services;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +11,7 @@ import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
 import org.thenakliman.chupe.dto.MeetingDiscussionItemDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Meeting;
 import org.thenakliman.chupe.models.MeetingDiscussionItem;
 import org.thenakliman.chupe.models.User;
@@ -57,7 +57,7 @@ public class MeetingService {
     return converter.convertToListOfObjects(meetings, MeetingDTO.class);
   }
 
-  public MeetingDTO updateMeeting(Long meetingId, String subject, String createdBy) throws NotFoundException {
+  public MeetingDTO updateMeeting(Long meetingId, String subject, String createdBy) {
     Optional<Meeting> meetingOptional = meetingRepository.findByIdAndCreatedByUserName(meetingId, createdBy);
     Meeting meeting = meetingOptional.orElseThrow(() -> new NotFoundException(
         String.format("Meeting with id %s does not exist", meetingId)));
@@ -88,7 +88,7 @@ public class MeetingService {
 
   public MeetingDiscussionItemDTO updateMeetingDiscussionItem(
       Long discussionItemId,
-      CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) throws NotFoundException {
+      CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
 
     Optional<MeetingDiscussionItem> discussionItemOptional = meetingDiscussionItemRepository.findByIdAndMeetingId(
         discussionItemId,

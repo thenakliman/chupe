@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,6 +26,7 @@ import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
 import org.thenakliman.chupe.dto.MeetingDiscussionItemDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.DiscussionItemType;
 import org.thenakliman.chupe.models.Meeting;
 import org.thenakliman.chupe.models.MeetingDiscussionItem;
@@ -97,7 +97,7 @@ public class MeetingServiceTest {
   }
 
   @Test
-  public void shouldUpdateMeeting() throws NotFoundException {
+  public void shouldUpdateMeeting() {
     String createdBy = "created-by";
     Meeting meeting = getMeeting("subject", createdBy);
     long meetingId = 10L;
@@ -116,7 +116,7 @@ public class MeetingServiceTest {
   }
 
   @Test
-  public void shouldThrowNotFoundExceptionWhenMeetingIdDoesNotExist() throws NotFoundException {
+  public void shouldThrowNotFoundExceptionWhenMeetingIdDoesNotExist() {
     long meetingId = 10L;
     String createdBy = "created-by";
     when(meetingRepository.findByIdAndCreatedByUserName(meetingId, createdBy)).thenReturn(Optional.empty());
@@ -167,13 +167,13 @@ public class MeetingServiceTest {
   }
 
   @Test
-  public void shouldThrowNotFoundExceptionIfDiscussionItemDoesNotExist() throws NotFoundException {
+  public void shouldThrowNotFoundExceptionIfDiscussionItemDoesNotExist() {
     exception.expect(NotFoundException.class);
     meetingService.updateMeetingDiscussionItem(20L, new CreateMeetingDiscussionItemDTO());
   }
 
   @Test
-  public void shouldUpdateDiscussionItem() throws NotFoundException {
+  public void shouldUpdateDiscussionItem() {
     CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
     createMeetingDiscussionItemDTO.setAssignedTo("lal");
     createMeetingDiscussionItemDTO.setMeetingId(101L);

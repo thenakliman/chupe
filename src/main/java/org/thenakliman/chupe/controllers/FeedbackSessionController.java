@@ -2,7 +2,6 @@ package org.thenakliman.chupe.controllers;
 
 import java.util.List;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +43,7 @@ public class FeedbackSessionController extends BaseController {
   @PutMapping("/feedback-sessions/{feedbackSessionId}")
   public ResponseEntity updateFeedbackSessions(
       @PathVariable Long feedbackSessionId,
-      @RequestBody UpsertFeedbackSessionDTO feedbackSession) throws NotFoundException {
+      @RequestBody UpsertFeedbackSessionDTO feedbackSession) {
 
     feedbackSessionService.updateSession(feedbackSessionId, feedbackSession, getUsername());
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

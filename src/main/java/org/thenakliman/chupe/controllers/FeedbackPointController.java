@@ -4,7 +4,6 @@ import static java.util.Objects.isNull;
 
 import java.util.List;
 
-import javassist.NotFoundException;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,7 +56,7 @@ public class FeedbackPointController extends BaseController {
   @PutMapping("/feedback-points/{retroPointId}")
   public ResponseEntity updateRetroPoint(
       @RequestBody UpsertFeedbackPointDTO feedbackPoint,
-      @PathVariable Long retroPointId) throws NotFoundException {
+      @PathVariable Long retroPointId) {
 
     feedbackPointService.updateFeedbackPoint(getRequestUsername(), retroPointId, feedbackPoint);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

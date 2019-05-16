@@ -5,13 +5,13 @@ import static java.lang.String.format;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FeedbackPointDTO;
 import org.thenakliman.chupe.dto.UpsertFeedbackPointDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.FeedbackPoint;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.FeedbackPointRepository;
@@ -59,10 +59,9 @@ public class FeedbackPointService {
     feedbackPointRepository.save(feedbackPoint);
   }
 
-  public void updateFeedbackPoint(
-      String givenBy,
-      long feedbackPointId,
-      UpsertFeedbackPointDTO upsertFeedbackPointDTO) throws NotFoundException {
+  public void updateFeedbackPoint(String givenBy,
+                                  long feedbackPointId,
+                                  UpsertFeedbackPointDTO upsertFeedbackPointDTO) {
 
     Optional<FeedbackPoint> feedbackPointOptional = feedbackPointRepository
         .findByGivenByUserNameAndId(givenBy, feedbackPointId);

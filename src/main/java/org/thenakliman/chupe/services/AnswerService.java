@@ -5,13 +5,13 @@ import static java.lang.String.format;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.dto.UpsertAnswerDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
@@ -32,7 +32,7 @@ public class AnswerService {
     this.converter = converter;
   }
 
-  public List<AnswerDTO> getAnswers(long questionId) throws NotFoundException {
+  public List<AnswerDTO> getAnswers(long questionId) {
     List<Answer> answers = answerRepository.findByQuestionId(questionId);
     if (answers.isEmpty()) {
       throw new NotFoundException(format("Answer does not exist for question id %d", questionId));

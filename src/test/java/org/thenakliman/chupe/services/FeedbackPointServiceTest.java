@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -22,6 +21,7 @@ import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.FeedbackPointDTO;
 import org.thenakliman.chupe.dto.UpsertFeedbackPointDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.FeedbackPoint;
 import org.thenakliman.chupe.repositories.FeedbackPointRepository;
 
@@ -86,7 +86,7 @@ public class FeedbackPointServiceTest {
   }
 
   @Test
-  public void shouldUpdateFeedbackPoint() throws NotFoundException {
+  public void shouldUpdateFeedbackPoint() {
     FeedbackPoint feedbackPoint = FeedbackPoint.builder().build();
     String givenBy = "given-by";
     Long feedbackPointId = 10L;
@@ -99,7 +99,7 @@ public class FeedbackPointServiceTest {
   }
 
   @Test
-  public void shouldThrowNotFoundExceptionWhenFeedbackPointToUpdateIsNotFound() throws NotFoundException {
+  public void shouldThrowNotFoundExceptionWhenFeedbackPointToUpdateIsNotFound() {
     String givenBy = "given-by";
     Long feedbackPointId = 10L;
     when(feedbackPointRepository.findByGivenByUserNameAndId(givenBy, feedbackPointId)).thenReturn(Optional.empty());

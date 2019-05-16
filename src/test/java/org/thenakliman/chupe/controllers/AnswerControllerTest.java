@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +32,7 @@ import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.dto.UpsertAnswerDTO;
 import org.thenakliman.chupe.dto.User;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.services.AnswerService;
 import org.thenakliman.chupe.services.TokenService;

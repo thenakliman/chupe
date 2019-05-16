@@ -2,7 +2,6 @@ package org.thenakliman.chupe.controllers;
 
 import java.util.List;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,17 +46,10 @@ public class RetroPointController extends BaseController {
   }
 
   @PutMapping("/retro-points/{id}")
-  public ResponseEntity<RetroPointDTO> updateRetro(
-      @RequestBody UpsertRetroPointDTO retroPointDTO,
-      @PathVariable(value = "id") long id) {
+  public ResponseEntity<RetroPointDTO> updateRetro(@RequestBody UpsertRetroPointDTO retroPointDTO,
+                                                   @PathVariable(value = "id") long id) {
 
-    RetroPointDTO updatedRetroPoint;
-
-    try {
-      updatedRetroPoint = retroPointService.updateRetroPoint(id, retroPointDTO);
-    } catch (NotFoundException ex) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    RetroPointDTO updatedRetroPoint = retroPointService.updateRetroPoint(id, retroPointDTO);
     return new ResponseEntity<>(updatedRetroPoint, HttpStatus.OK);
   }
 }

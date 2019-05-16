@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
 import org.assertj.core.util.DateUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.dto.UpsertAnswerDTO;
+import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.User;
@@ -63,7 +63,7 @@ public class AnswerServiceTest {
   }
 
   @Test
-  public void shouldReturnAllAnswerOfGivenQuestion() throws NotFoundException {
+  public void shouldReturnAllAnswerOfGivenQuestion() {
     String username = "user";
     String testAnswer = "testAnswer";
     Long questionId = 10L;
@@ -80,8 +80,7 @@ public class AnswerServiceTest {
   }
 
   @Test(expected = NotFoundException.class)
-  public void shouldReturnNotFoundExceptionIfAnswerDoesNotExistForAQuestion()
-      throws NotFoundException {
+  public void shouldReturnNotFoundExceptionIfAnswerDoesNotExistForAQuestion() {
     int questionId = 10;
     given(answerRepository.findByQuestionId(questionId)).willReturn(emptyList());
     answerService.getAnswers(questionId);
@@ -114,7 +113,7 @@ public class AnswerServiceTest {
   }
 
   @Test
-  public void shouldReturnUpdatedAnswerAfterUpdate() throws NotFoundException {
+  public void shouldReturnUpdatedAnswerAfterUpdate() {
     Date date = DateUtil.now();
     String testAnswer = "testAnswer";
     String user = "user";
