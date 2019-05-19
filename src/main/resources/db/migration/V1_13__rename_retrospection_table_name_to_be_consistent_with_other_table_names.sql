@@ -1,0 +1,1 @@
+ALTER TABLE retro_action_item  RENAME TO retrospection_action_item;
