@@ -5,6 +5,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -83,6 +85,7 @@ public class FeedbackPointControllerTest {
     UpsertFeedbackPointDTO feedbackPointDto = UpsertFeedbackPointDTO
         .builder()
         .description("feedback session description")
+        .givenTo("given-to")
         .build();
     SecurityContextHolder.getContext().setAuthentication(authToken);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -99,6 +102,7 @@ public class FeedbackPointControllerTest {
     UpsertFeedbackPointDTO feedbackSession = UpsertFeedbackPointDTO
         .builder()
         .description("feedback session description")
+        .givenTo("given-to")
         .build();
     SecurityContextHolder.getContext().setAuthentication(authToken);
     long feedbackPointId = 10101L;
@@ -109,6 +113,77 @@ public class FeedbackPointControllerTest {
         .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
 
     verify(feedbackPointService).updateFeedbackPoint(username, feedbackPointId, feedbackSession);
+  }
+
+  @Test
+  public void shouldThrowBadRequestWhenDescriptionIsLessThan10() throws Exception {
+    UpsertFeedbackPointDTO feedbackSession = UpsertFeedbackPointDTO
+        .builder()
+        .description("feedback")
+        .givenTo("given-to")
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    long feedbackPointId = 10101L;
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/feedback-points/" + feedbackPointId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(feedbackSession)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldThrowBadRequestWhenDescriptionLengthIs257() throws Exception {
+    UpsertFeedbackPointDTO feedbackSession = UpsertFeedbackPointDTO
+        .builder()
+        .description(getStringWith257Length())
+        .givenTo("given-to")
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    long feedbackPointId = 10101L;
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/feedback-points/" + feedbackPointId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(feedbackSession)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldThrowBadRequestWhenGivenToLengthIs257() throws Exception {
+    UpsertFeedbackPointDTO feedbackSession = UpsertFeedbackPointDTO
+        .builder()
+        .givenTo(getStringWith257Length())
+        .description("description-by-chance")
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    long feedbackPointId = 10101L;
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/feedback-points/" + feedbackPointId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(feedbackSession)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldThrowBadRequestWhenGivenToLengthIsZero() throws Exception {
+    UpsertFeedbackPointDTO feedbackSession = UpsertFeedbackPointDTO
+        .builder()
+        .givenTo("")
+        .description("description-by-chance")
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    long feedbackPointId = 10101L;
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/feedback-points/" + feedbackPointId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(feedbackSession)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  private String getStringWith257Length() {
+    return IntStream
+        .range(0, 257)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.joining(""));
   }
 
   @Test

@@ -3,6 +3,8 @@ package org.thenakliman.chupe.controllers;
 import static java.util.Objects.isNull;
 
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,15 +50,15 @@ public class FeedbackPointController extends BaseController {
   }
 
   @PostMapping("/feedback-points")
-  public ResponseEntity saveRetroPoint(@RequestBody UpsertFeedbackPointDTO feedbackPoint) {
+  public ResponseEntity saveRetroPoint(@Valid @RequestBody UpsertFeedbackPointDTO feedbackPoint) {
     feedbackPointService.saveFeedbackPoint(getRequestUsername(), feedbackPoint);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
   @PutMapping("/feedback-points/{retroPointId}")
   public ResponseEntity updateRetroPoint(
-      @RequestBody UpsertFeedbackPointDTO feedbackPoint,
-      @PathVariable Long retroPointId) {
+      @RequestBody @Valid UpsertFeedbackPointDTO feedbackPoint,
+      @PathVariable @NotNull Long retroPointId) {
 
     feedbackPointService.updateFeedbackPoint(getRequestUsername(), retroPointId, feedbackPoint);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
