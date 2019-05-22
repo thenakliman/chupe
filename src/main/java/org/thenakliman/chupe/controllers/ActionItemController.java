@@ -1,6 +1,8 @@
 package org.thenakliman.chupe.controllers;
 
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,14 +35,14 @@ public class ActionItemController extends BaseController {
   }
 
   @PostMapping("/retro-action-items")
-  public ResponseEntity<ActionItemDTO> addActionItem(@RequestBody InsertActionItemDTO insertActionItemDTO) {
+  public ResponseEntity<ActionItemDTO> addActionItem(@Valid @RequestBody InsertActionItemDTO insertActionItemDTO) {
     ActionItemDTO savedActionItem = actionItemService.addActionItem(insertActionItemDTO, getRequestUsername());
     return new ResponseEntity<>(savedActionItem, HttpStatus.CREATED);
   }
 
   @PutMapping("/retro-action-items/{actionItemId}")
-  public ResponseEntity<ActionItemDTO> updateMeeting(@PathVariable Long actionItemId,
-                                                     @RequestBody UpdateActionItemDTO updateActionItemDTO) {
+  public ResponseEntity<ActionItemDTO> updateMeeting(@NotNull @PathVariable Long actionItemId,
+                                                     @Valid @RequestBody UpdateActionItemDTO updateActionItemDTO) {
 
     ActionItemDTO updatedMeeting = actionItemService.updateActionItem(
         actionItemId, updateActionItemDTO, getRequestUsername());
