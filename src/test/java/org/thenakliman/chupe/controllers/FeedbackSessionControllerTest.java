@@ -4,6 +4,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -94,6 +96,43 @@ public class FeedbackSessionControllerTest {
   }
 
   @Test
+  public void shouldAddFeedbackSessionThrowsBadRequestWhenDescriptionIsLessThan10() throws Exception {
+    UpsertFeedbackSessionDTO feedbackSession = UpsertFeedbackSessionDTO
+        .builder()
+        .description("feed")
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/feedback-sessions")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(feedbackSession)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldAddFeedbackSessionThrowsBadRequestWhenDescriptionIsGreaterThan256() throws Exception {
+    String description = getStringWith257Length();
+
+    UpsertFeedbackSessionDTO feedbackSession = UpsertFeedbackSessionDTO
+        .builder()
+        .description(description)
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/feedback-sessions")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(feedbackSession)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  private String getStringWith257Length() {
+    return IntStream
+        .range(0, 257)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.joining(""));
+  }
+
+  @Test
   public void shouldUpdateFeedbackSession() throws Exception {
     UpsertFeedbackSessionDTO feedbackSession = UpsertFeedbackSessionDTO
         .builder()
@@ -108,6 +147,50 @@ public class FeedbackSessionControllerTest {
         .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
 
     verify(feedbackSessionService).updateSession(sessionId, feedbackSession, username);
+  }
+
+  @Test
+  public void shouldUpdateReturnBadRequestFeedbackSessionWhenDescriptionIsLessThan10() throws Exception {
+    UpsertFeedbackSessionDTO feedbackSession = UpsertFeedbackSessionDTO
+        .builder()
+        .description("feedback")
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    long sessionId = 10101L;
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/feedback-sessions/" + sessionId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(feedbackSession)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenDescriptionLengthIs257() throws Exception {
+    UpsertFeedbackSessionDTO feedbackSession = UpsertFeedbackSessionDTO
+        .builder()
+        .description(getStringWith257Length())
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    long sessionId = 10101L;
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/feedback-sessions/" + sessionId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(feedbackSession)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenSessionIdIsNull() throws Exception {
+    UpsertFeedbackSessionDTO feedbackSession = UpsertFeedbackSessionDTO
+        .builder()
+        .description(getStringWith257Length())
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/feedback-sessions/" + null)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(feedbackSession)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
   }
 
   @Test

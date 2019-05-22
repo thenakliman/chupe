@@ -1,6 +1,8 @@
 package org.thenakliman.chupe.controllers;
 
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,15 +37,15 @@ public class FeedbackSessionController extends BaseController {
 
   @PostMapping("/feedback-sessions")
   public ResponseEntity createFeedbackSessions(
-      @RequestBody UpsertFeedbackSessionDTO feedbackSession) {
+      @RequestBody @Valid UpsertFeedbackSessionDTO feedbackSession) {
     feedbackSessionService.createSession(feedbackSession, getUsername());
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
   @PutMapping("/feedback-sessions/{feedbackSessionId}")
   public ResponseEntity updateFeedbackSessions(
-      @PathVariable Long feedbackSessionId,
-      @RequestBody UpsertFeedbackSessionDTO feedbackSession) {
+      @PathVariable @NotNull Long feedbackSessionId,
+      @RequestBody @Valid UpsertFeedbackSessionDTO feedbackSession) {
 
     feedbackSessionService.updateSession(feedbackSessionId, feedbackSession, getUsername());
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
