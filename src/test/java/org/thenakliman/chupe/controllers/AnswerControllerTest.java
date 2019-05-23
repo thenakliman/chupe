@@ -120,7 +120,7 @@ public class AnswerControllerTest {
   public void shouldCreateAnswer() throws Exception {
     int questionId = 100;
     String user = "user";
-    String answer1 = "answer";
+    String answer1 = "answer hello";
 
     AnswerDTO expectedAnswer = getAnswerDTO(questionId, user, answer1);
     AnswerDTO answer = getAnswerDTO(questionId, user, answer1);
@@ -204,8 +204,12 @@ public class AnswerControllerTest {
   @Test
   public void shouldReturnUpdatedAnswer() throws Exception {
     Long answerId = 1000L;
-    AnswerDTO answer = getAnswerDTO(10, "user", "answer");
-    UpsertAnswerDTO upsertAnswerDTO = UpsertAnswerDTO.builder().questionId(10).answer("answer").build();
+    AnswerDTO answer = getAnswerDTO(10, "user", "answer hello");
+    UpsertAnswerDTO upsertAnswerDTO = UpsertAnswerDTO
+        .builder()
+        .questionId(10)
+        .answer("answer hello")
+        .build();
     SecurityContextHolder.getContext().setAuthentication(authToken);
 
     BDDMockito.given(
