@@ -1,6 +1,7 @@
 package org.thenakliman.chupe.controllers;
 
 import java.util.List;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,14 +32,14 @@ public class AnswerController extends BaseController {
   }
 
   @PostMapping("/answers")
-  public ResponseEntity<AnswerDTO> addAnswer(@RequestBody UpsertAnswerDTO upsertAnswerDTO) {
+  public ResponseEntity<AnswerDTO> addAnswer(@Valid @RequestBody UpsertAnswerDTO upsertAnswerDTO) {
     AnswerDTO createdAnswer = answerService.addAnswer(upsertAnswerDTO, getRequestUsername());
     return new ResponseEntity<>(createdAnswer, HttpStatus.CREATED);
   }
 
   @PutMapping("/answers/{id}")
   public ResponseEntity<AnswerDTO> updateAnswer(@PathVariable(value = "id") Long id,
-                                                @RequestBody UpsertAnswerDTO upsertAnswerDTO) {
+                                                @Valid @RequestBody UpsertAnswerDTO upsertAnswerDTO) {
     AnswerDTO updatedAnswer = answerService.updateAnswer(id, upsertAnswerDTO, getRequestUsername());
     return new ResponseEntity<>(updatedAnswer, HttpStatus.OK);
   }

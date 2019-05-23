@@ -1,12 +1,14 @@
 package org.thenakliman.chupe.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -138,6 +140,44 @@ public class AnswerControllerTest {
     assertThat(expectedAnswer, samePropertyValuesAs(result));
   }
 
+  @Test
+  public void shouldGiveBadRequestWhenAnswerLengthIs8() throws Exception {
+    int questionId = 100;
+    String user = "user";
+    String answer1 = "answer12";
+
+    AnswerDTO expectedAnswer = getAnswerDTO(questionId, user, answer1);
+    AnswerDTO answer = getAnswerDTO(questionId, user, answer1);
+
+    BDDMockito.given(answerService.addAnswer(any(), anyString())).willReturn(expectedAnswer);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/answers")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(answer)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenAnswerLengthIs1001() throws Exception {
+    int questionId = 100;
+    String user = "user";
+    String answer1 = getStringWithLength(1001);
+
+    AnswerDTO expectedAnswer = getAnswerDTO(questionId, user, answer1);
+    AnswerDTO answer = getAnswerDTO(questionId, user, answer1);
+
+    BDDMockito.given(answerService.addAnswer(any(), anyString())).willReturn(expectedAnswer);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/answers")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(answer)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
   private AnswerDTO getAnswerDTO(int questionId, String user, String answer1) {
     return AnswerDTO.builder()
         .questionId(questionId)
@@ -183,5 +223,48 @@ public class AnswerControllerTest {
 
     assertThat(answer, samePropertyValuesAs(result));
 
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenAnswerIsLessThan10() throws Exception {
+    Long answerId = 1000L;
+    AnswerDTO answer = getAnswerDTO(10, "user", "answer");
+    UpsertAnswerDTO upsertAnswerDTO = UpsertAnswerDTO.builder().questionId(10).answer("answer").build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    BDDMockito.given(
+        answerService.updateAnswer(answerId, upsertAnswerDTO, username))
+        .willReturn(answer);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/answers/" + answerId)
+        .content(objectMapper.writeValueAsString(answer))
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenAnswerIs1001() throws Exception {
+    Long answerId = 1000L;
+    AnswerDTO answer = getAnswerDTO(10, "user", getStringWithLength(1001));
+    UpsertAnswerDTO upsertAnswerDTO = UpsertAnswerDTO.builder().questionId(10).answer("answer").build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    BDDMockito.given(
+        answerService.updateAnswer(answerId, upsertAnswerDTO, username))
+        .willReturn(answer);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/answers/" + answerId)
+        .content(objectMapper.writeValueAsString(answer))
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  private String getStringWithLength(int length) {
+    return IntStream
+        .range(0, length)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.joining(""));
   }
 }
