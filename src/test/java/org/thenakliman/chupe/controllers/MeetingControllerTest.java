@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -159,6 +161,94 @@ public class MeetingControllerTest {
   }
 
   @Test
+  public void shouldGiveBadRequestWhenDiscussionItemLengthIs9() throws Exception {
+    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    createDiscussionItemDTO.setDiscussionItem("discussio");
+    createDiscussionItemDTO.setAssignedTo("lal");
+    createDiscussionItemDTO.setMeetingId(102L);
+    createDiscussionItemDTO.setDiscussionItemType(DiscussionItemType.INFORMATION);
+
+    MeetingDiscussionItemDTO discussionItemDTO = new MeetingDiscussionItemDTO();
+    discussionItemDTO.setId(192L);
+    BDDMockito.given(meetingService.createMeetingDiscussionItem(username, createDiscussionItemDTO))
+        .willReturn(discussionItemDTO);
+
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/meeting-discussion-items")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(createDiscussionItemDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenDiscussionItemLengthIs257() throws Exception {
+    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    createDiscussionItemDTO.setDiscussionItem(getStringWithLength(257));
+    createDiscussionItemDTO.setAssignedTo("lal");
+    createDiscussionItemDTO.setMeetingId(102L);
+    createDiscussionItemDTO.setDiscussionItemType(DiscussionItemType.INFORMATION);
+
+    MeetingDiscussionItemDTO discussionItemDTO = new MeetingDiscussionItemDTO();
+    discussionItemDTO.setId(192L);
+    BDDMockito.given(meetingService.createMeetingDiscussionItem(username, createDiscussionItemDTO))
+        .willReturn(discussionItemDTO);
+
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/meeting-discussion-items")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(createDiscussionItemDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenAssignedToLengthIs257() throws Exception {
+    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    createDiscussionItemDTO.setDiscussionItem(getStringWithLength(27));
+    createDiscussionItemDTO.setAssignedTo(getStringWithLength(257));
+    createDiscussionItemDTO.setMeetingId(102L);
+    createDiscussionItemDTO.setDiscussionItemType(DiscussionItemType.INFORMATION);
+
+    MeetingDiscussionItemDTO discussionItemDTO = new MeetingDiscussionItemDTO();
+    discussionItemDTO.setId(192L);
+    BDDMockito.given(meetingService.createMeetingDiscussionItem(username, createDiscussionItemDTO))
+        .willReturn(discussionItemDTO);
+
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/meeting-discussion-items")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(createDiscussionItemDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenAssignedToLengthIs7() throws Exception {
+    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    createDiscussionItemDTO.setDiscussionItem(getStringWithLength(27));
+    createDiscussionItemDTO.setAssignedTo("");
+    createDiscussionItemDTO.setMeetingId(102L);
+    createDiscussionItemDTO.setDiscussionItemType(DiscussionItemType.INFORMATION);
+
+    MeetingDiscussionItemDTO discussionItemDTO = new MeetingDiscussionItemDTO();
+    discussionItemDTO.setId(192L);
+    BDDMockito.given(meetingService.createMeetingDiscussionItem(username, createDiscussionItemDTO))
+        .willReturn(discussionItemDTO);
+
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/meeting-discussion-items")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(createDiscussionItemDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
   public void shouldReturnMeetingDiscussionItems() throws Exception {
     MeetingDiscussionItemDTO meetingDTO1 = new MeetingDiscussionItemDTO();
     meetingDTO1.setId(101L);
@@ -193,5 +283,84 @@ public class MeetingControllerTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsBytes(createDiscussionItemDTO))
     ).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+  }
+
+  @Test
+  public void shouldGivenBadRequestWhenUpdateMeetingDiscussionItemLengthIs9() throws Exception {
+    Long id = 10L;
+    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    createDiscussionItemDTO.setDiscussionItem("discussio");
+    createDiscussionItemDTO.setAssignedTo("lal");
+    createDiscussionItemDTO.setMeetingId(102L);
+    createDiscussionItemDTO.setDiscussionItemType(DiscussionItemType.INFORMATION);
+    when(meetingService.updateMeetingDiscussionItem(id, createDiscussionItemDTO)).thenReturn(new MeetingDiscussionItemDTO());
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/meeting-discussion-items/" + id)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(createDiscussionItemDTO))
+    ).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGivenBadRequestWhenUpdateMeetingDiscussionItemLengthIs257() throws Exception {
+    Long id = 10L;
+    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    createDiscussionItemDTO.setDiscussionItem(getStringWithLength(257));
+    createDiscussionItemDTO.setAssignedTo("lal");
+    createDiscussionItemDTO.setMeetingId(102L);
+    createDiscussionItemDTO.setDiscussionItemType(DiscussionItemType.INFORMATION);
+    when(meetingService.updateMeetingDiscussionItem(id, createDiscussionItemDTO)).thenReturn(new MeetingDiscussionItemDTO());
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/meeting-discussion-items/" + id)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(createDiscussionItemDTO))
+    ).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGivenBadRequestWhenUpdateMeetingAssignedToLengthIs0() throws Exception {
+    Long id = 10L;
+    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    createDiscussionItemDTO.setDiscussionItem(getStringWithLength(25));
+    createDiscussionItemDTO.setAssignedTo("");
+    createDiscussionItemDTO.setMeetingId(102L);
+    createDiscussionItemDTO.setDiscussionItemType(DiscussionItemType.INFORMATION);
+    when(meetingService.updateMeetingDiscussionItem(id, createDiscussionItemDTO)).thenReturn(new MeetingDiscussionItemDTO());
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/meeting-discussion-items/" + id)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(createDiscussionItemDTO))
+    ).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGivenBadRequestWhenUpdateMeetingAssignedToLengthIs257() throws Exception {
+    Long id = 10L;
+    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    createDiscussionItemDTO.setDiscussionItem(getStringWithLength(25));
+    createDiscussionItemDTO.setAssignedTo(getStringWithLength(257));
+    createDiscussionItemDTO.setMeetingId(102L);
+    createDiscussionItemDTO.setDiscussionItemType(DiscussionItemType.INFORMATION);
+    when(meetingService.updateMeetingDiscussionItem(id, createDiscussionItemDTO)).thenReturn(new MeetingDiscussionItemDTO());
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/meeting-discussion-items/" + id)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsBytes(createDiscussionItemDTO))
+    ).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  private String getStringWithLength(int n) {
+    return IntStream
+        .range(0, n)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.joining(""));
   }
 }

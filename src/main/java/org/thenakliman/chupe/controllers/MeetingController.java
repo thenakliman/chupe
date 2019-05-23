@@ -1,6 +1,8 @@
 package org.thenakliman.chupe.controllers;
 
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,14 +35,14 @@ public class MeetingController extends BaseController {
   }
 
   @PostMapping("/meetings")
-  public ResponseEntity<MeetingDTO> createMeeting(@RequestBody String subject) {
+  public ResponseEntity<MeetingDTO> createMeeting(@RequestBody @NotNull String subject) {
     MeetingDTO createdMeeting = meetingService.createMeeting(subject, getRequestUsername());
     return new ResponseEntity<>(createdMeeting, HttpStatus.CREATED);
   }
 
   @PutMapping("/meetings/{meetingId}")
   public ResponseEntity<MeetingDTO> updateMeeting(@PathVariable Long meetingId,
-                                                  @RequestBody String subject) {
+                                                  @RequestBody @NotNull String subject) {
 
     MeetingDTO updatedMeeting = meetingService.updateMeeting(meetingId, subject, getRequestUsername());
     return new ResponseEntity<>(updatedMeeting, HttpStatus.OK);
@@ -54,7 +56,7 @@ public class MeetingController extends BaseController {
 
   @PostMapping("/meeting-discussion-items")
   public ResponseEntity<MeetingDiscussionItemDTO> createMeetingDiscussionItems(
-      @RequestBody CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
+      @RequestBody @Valid CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
 
     MeetingDiscussionItemDTO createdMeeting = meetingService.createMeetingDiscussionItem(
         getRequestUsername(),
@@ -66,7 +68,7 @@ public class MeetingController extends BaseController {
   @PutMapping("/meeting-discussion-items/{meetingDiscussionItemId}")
   public ResponseEntity<MeetingDiscussionItemDTO> updateMeetingDiscussionItem(
       @PathVariable Long meetingDiscussionItemId,
-      @RequestBody CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
+      @RequestBody @Valid CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
 
     MeetingDiscussionItemDTO updatedMeeting = meetingService.updateMeetingDiscussionItem(
         meetingDiscussionItemId,
