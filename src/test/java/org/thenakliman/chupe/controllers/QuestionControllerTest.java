@@ -10,6 +10,8 @@ import static org.mockito.Mockito.doThrow;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -33,6 +35,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.QuestionDTO;
+import org.thenakliman.chupe.dto.UpsertQuestionDTO;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.exceptions.NotFoundException;
@@ -88,16 +91,14 @@ public class QuestionControllerTest {
 
   @Test
   public void shouldAddQuestions() throws Exception {
-    QuestionDTO questionDTO = new QuestionDTO();
+    UpsertQuestionDTO questionDTO = new UpsertQuestionDTO();
     questionDTO.setQuestion("What is your name?");
     questionDTO.setAssignedTo("testUser1");
     questionDTO.setDescription("Need your name for auth service");
-    questionDTO.setOwner("testUser2");
-    questionDTO.setId(19);
     questionDTO.setPriority(QuestionPriority.LOW);
     questionDTO.setStatus(QuestionStatus.OPEN);
     SecurityContextHolder.getContext().setAuthentication(authToken);
-    BDDMockito.given(questionService.addQuestion(any(), anyString())).willReturn(questionDTO);
+    BDDMockito.given(questionService.addQuestion(any(), anyString())).willReturn(new QuestionDTO());
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/questions")
@@ -108,7 +109,104 @@ public class QuestionControllerTest {
     QuestionDTO result = objectMapper.readValue(
         mvcResult.getResponse().getContentAsString(), QuestionDTO.class);
 
-    assertThat(questionDTO, samePropertyValuesAs(result));
+    assertThat(new QuestionDTO(), samePropertyValuesAs(result));
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenAddQuestionsQuestionLengthIs8() throws Exception {
+    UpsertQuestionDTO questionDTO = new UpsertQuestionDTO();
+    questionDTO.setQuestion("What is ");
+    questionDTO.setAssignedTo("testUser1");
+    questionDTO.setDescription("Need your name for auth service");
+    questionDTO.setPriority(QuestionPriority.LOW);
+    questionDTO.setStatus(QuestionStatus.OPEN);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    BDDMockito.given(questionService.addQuestion(any(), anyString())).willReturn(new QuestionDTO());
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/questions")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(questionDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenAddQuestionsQuestionLengthIs101() throws Exception {
+    UpsertQuestionDTO questionDTO = new UpsertQuestionDTO();
+    questionDTO.setQuestion(getStringWithLength(101));
+    questionDTO.setAssignedTo("testUser1");
+    questionDTO.setDescription("Need your name for auth service");
+    questionDTO.setPriority(QuestionPriority.LOW);
+    questionDTO.setStatus(QuestionStatus.OPEN);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    BDDMockito.given(questionService.addQuestion(any(), anyString())).willReturn(new QuestionDTO());
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/questions")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(questionDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenAddQuestionsDescriptionLengthIs9() throws Exception {
+    UpsertQuestionDTO questionDTO = new UpsertQuestionDTO();
+    questionDTO.setQuestion("hello question");
+    questionDTO.setAssignedTo("testUser1");
+    questionDTO.setDescription("123456789");
+    questionDTO.setPriority(QuestionPriority.LOW);
+    questionDTO.setStatus(QuestionStatus.OPEN);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    BDDMockito.given(questionService.addQuestion(any(), anyString())).willReturn(new QuestionDTO());
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/questions")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(questionDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenAddQuestionsAssignedToLengthIs0() throws Exception {
+    UpsertQuestionDTO questionDTO = new UpsertQuestionDTO();
+    questionDTO.setQuestion("hello question");
+    questionDTO.setAssignedTo("");
+    questionDTO.setDescription("123456789fdffdfdfd");
+    questionDTO.setPriority(QuestionPriority.LOW);
+    questionDTO.setStatus(QuestionStatus.OPEN);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    BDDMockito.given(questionService.addQuestion(any(), anyString())).willReturn(new QuestionDTO());
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/questions")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(questionDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenAddQuestionsAssignedToLengthIs257() throws Exception {
+    UpsertQuestionDTO questionDTO = new UpsertQuestionDTO();
+    questionDTO.setQuestion("hello question");
+    questionDTO.setAssignedTo(getStringWithLength(257));
+    questionDTO.setDescription("123456789fdfd");
+    questionDTO.setPriority(QuestionPriority.LOW);
+    questionDTO.setStatus(QuestionStatus.OPEN);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    BDDMockito.given(questionService.addQuestion(any(), anyString())).willReturn(new QuestionDTO());
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/questions")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(questionDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  private String getStringWithLength(int length) {
+    return IntStream
+        .range(0, length)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.joining(""));
   }
 
   @Test
@@ -173,8 +271,8 @@ public class QuestionControllerTest {
   public void shouldUpdateQuestions() throws Exception {
     long id = 10;
     QuestionDTO questionDTO = new QuestionDTO(
-        id, "why?",
-        "desc1", "user1",
+        id, "why? sure lets update",
+        "description - 1", "user1",
         "user2", QuestionStatus.OPEN,
         QuestionPriority.LOW);
     SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -189,8 +287,8 @@ public class QuestionControllerTest {
   public void shouldReturnNotFoundStatusIfQuestionDoesNotExist() throws Exception {
     long id = 10;
     QuestionDTO questionDTO = new QuestionDTO(
-        id, "why?",
-        "desc1", "user1",
+        id, "why? fdsfsdafsdf",
+        "descfsdfsadf1", "user1",
         "user2", QuestionStatus.OPEN,
         QuestionPriority.LOW);
     SecurityContextHolder.getContext().setAuthentication(authToken);

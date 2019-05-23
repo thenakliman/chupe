@@ -1,7 +1,8 @@
 package org.thenakliman.chupe.controllers;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.thenakliman.chupe.dto.QuestionDTO;
 import org.thenakliman.chupe.dto.UpsertQuestionDTO;
 import org.thenakliman.chupe.services.QuestionService;
@@ -26,15 +26,14 @@ public class QuestionController extends BaseController {
   }
 
   @PostMapping("/questions")
-  public ResponseEntity<QuestionDTO> askQuestion(@RequestBody UpsertQuestionDTO question) {
+  public ResponseEntity<QuestionDTO> askQuestion(@Valid @RequestBody UpsertQuestionDTO question) {
     QuestionDTO createdQuestion = questionService.addQuestion(question, getRequestUsername());
     return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
   }
 
   @PutMapping("/questions/{id}")
-  public ResponseEntity updateQuestion(@RequestHeader HttpHeaders header,
-                                       @PathVariable(value = "id") long id,
-                                       @RequestBody UpsertQuestionDTO questionDTO) {
+  public ResponseEntity updateQuestion(@PathVariable(value = "id") long id,
+                                       @Valid @RequestBody UpsertQuestionDTO questionDTO) {
     QuestionDTO updatedQuestion = questionService.updateQuestions(id, questionDTO, getRequestUsername());
     return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
   }
