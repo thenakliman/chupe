@@ -1,5 +1,7 @@
 package org.thenakliman.chupe.controllers;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +31,13 @@ public class TaskController extends BaseController {
   }
 
   @PostMapping("/tasks")
-  public ResponseEntity<TaskDTO> createTask(@RequestBody UpsertTaskDTO taskDTO) {
+  public ResponseEntity<TaskDTO> createTask(@RequestBody @Valid UpsertTaskDTO taskDTO) {
     TaskDTO createdTask = taskService.saveTask(taskDTO, getRequestUsername());
     return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
   }
 
   @PutMapping("/tasks/{id}")
-  public ResponseEntity<TaskDTO> updateTask(@RequestBody UpsertTaskDTO taskDTO,
+  public ResponseEntity<TaskDTO> updateTask(@RequestBody @Valid UpsertTaskDTO taskDTO,
                                             @PathVariable(value = "id") long id) {
     TaskDTO createdTask = taskService.updateTask(id, taskDTO, getRequestUsername());
     return new ResponseEntity<>(createdTask, HttpStatus.OK);

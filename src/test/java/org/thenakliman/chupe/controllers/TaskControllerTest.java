@@ -7,6 +7,8 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -124,6 +126,36 @@ public class TaskControllerTest extends BaseControllerTest {
   }
 
   @Test
+  public void shouldGiveBadRequestWhenCreateTaskDescriptionLengthIs8() throws Exception {
+    String description = "today111";
+    TaskDTO taskDTO = TaskDTO.builder().description(description).build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    UpsertTaskDTO upsertTaskDTO = UpsertTaskDTO.builder().description(description).build();
+    given(taskService.saveTask(upsertTaskDTO, username)).willReturn(taskDTO);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/tasks")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(upsertTaskDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenCreateTaskDescriptionLengthIs257() throws Exception {
+    String description = getStringWithLength(257);
+    TaskDTO taskDTO = TaskDTO.builder().description(description).build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    UpsertTaskDTO upsertTaskDTO = UpsertTaskDTO.builder().description(description).build();
+    given(taskService.saveTask(upsertTaskDTO, username)).willReturn(taskDTO);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/tasks")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(upsertTaskDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
   public void shouldUpdateTask() throws Exception {
     String description = "today's only task";
     TaskDTO taskDTO = TaskDTO.builder().description(description).build();
@@ -144,6 +176,44 @@ public class TaskControllerTest extends BaseControllerTest {
     assertThat(result, samePropertyValuesAs(taskDTO));
   }
 
+  @Test
+  public void shouldGiveBadRequestWhenUpdateTaskWhenDescriptionLengthIs9() throws Exception {
+    String description = "today1111";
+    TaskDTO taskDTO = TaskDTO.builder().description(description).build();
+    UpsertTaskDTO upsertTaskDTO = UpsertTaskDTO.builder().description(description).build();
+    long taskId = 10L;
+    given(taskService.updateTask(taskId, upsertTaskDTO, username)).willReturn(taskDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/tasks/" + taskId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(upsertTaskDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenUpdateTaskWhenDescriptionLengthIs257() throws Exception {
+    String description = getStringWithLength(257);
+    TaskDTO taskDTO = TaskDTO.builder().description(description).build();
+    UpsertTaskDTO upsertTaskDTO = UpsertTaskDTO.builder().description(description).build();
+    long taskId = 10L;
+    given(taskService.updateTask(taskId, upsertTaskDTO, username)).willReturn(taskDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/tasks/" + taskId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(upsertTaskDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  private String getStringWithLength(int length) {
+    return IntStream
+        .range(0, length)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.joining(""));
+  }
   @Test
   public void shouldRaiseNotFoundWhenUpdateTask() throws Exception {
     String description = "today's only task";
