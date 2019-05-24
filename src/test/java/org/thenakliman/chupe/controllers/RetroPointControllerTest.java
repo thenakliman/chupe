@@ -7,6 +7,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -119,6 +121,44 @@ public class RetroPointControllerTest extends BaseControllerTest {
   }
 
   @Test
+  public void shouldGiveBadRequestWhenCreateRetroPointWhenDescriptionLengthIs9() throws Exception {
+    RetroPointDTO retroDTO = getRetroPointDTO();
+    UpsertRetroPointDTO upsertRetroPointDTO = UpsertRetroPointDTO
+        .builder()
+        .description("descripti")
+        .retroId(1020L)
+        .type(RetroPointType.NEED_IMPROVEMENT)
+        .build();
+
+    given(retroPointService.saveRetroPoint(upsertRetroPointDTO, username)).willReturn(retroDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/retro-points")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(upsertRetroPointDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldGiveBadRequestWhenCreateRetroPointWhenDescriptionLengthIs257() throws Exception {
+    RetroPointDTO retroDTO = getRetroPointDTO();
+    UpsertRetroPointDTO upsertRetroPointDTO = UpsertRetroPointDTO
+        .builder()
+        .description(getStringWithLength(257))
+        .retroId(1020L)
+        .type(RetroPointType.NEED_IMPROVEMENT)
+        .build();
+
+    given(retroPointService.saveRetroPoint(upsertRetroPointDTO, username)).willReturn(retroDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/retro-points")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(upsertRetroPointDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
   public void shouldUpdateRetroPoint() throws Exception {
     RetroPointDTO retroDTO = getRetroPointDTO();
     long retroPointId = 10L;
@@ -142,6 +182,55 @@ public class RetroPointControllerTest extends BaseControllerTest {
         mvcResult.getResponse().getContentAsString(), RetroPointDTO.class);
 
     assertThat(result, samePropertyValuesAs(retroDTO));
+  }
+
+  @Test
+  public void shouldUpdateRetroPointWhenDescriptionLengthIs8() throws Exception {
+    RetroPointDTO retroDTO = getRetroPointDTO();
+    long retroPointId = 10L;
+    UpsertRetroPointDTO upsertRetroPointDTO = UpsertRetroPointDTO
+        .builder()
+        .description("descript")
+        .retroId(1020L)
+        .type(RetroPointType.NEED_IMPROVEMENT)
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    given(retroPointService.updateRetroPoint(retroPointId, upsertRetroPointDTO))
+        .willReturn(retroDTO);
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/retro-points/" + retroPointId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(upsertRetroPointDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldUpdateRetroPointWhenDescriptionLengthIs257() throws Exception {
+    RetroPointDTO retroDTO = getRetroPointDTO();
+    long retroPointId = 10L;
+    UpsertRetroPointDTO upsertRetroPointDTO = UpsertRetroPointDTO
+        .builder()
+        .description(getStringWithLength(257))
+        .retroId(1020L)
+        .type(RetroPointType.NEED_IMPROVEMENT)
+        .build();
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    given(retroPointService.updateRetroPoint(retroPointId, upsertRetroPointDTO))
+        .willReturn(retroDTO);
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/retro-points/" + retroPointId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(upsertRetroPointDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  private String getStringWithLength(int length) {
+    return IntStream
+        .range(0, length)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.joining(""));
   }
 
   @Test

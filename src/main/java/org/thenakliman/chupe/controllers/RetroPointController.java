@@ -1,6 +1,7 @@
 package org.thenakliman.chupe.controllers;
 
 import java.util.List;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class RetroPointController extends BaseController {
   }
 
   @PostMapping("/retro-points")
-  public ResponseEntity createRetro(@RequestBody UpsertRetroPointDTO upsertRetroPointDTO) {
+  public ResponseEntity createRetro(@RequestBody @Valid UpsertRetroPointDTO upsertRetroPointDTO) {
     User userDetails =
         (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -46,7 +47,7 @@ public class RetroPointController extends BaseController {
   }
 
   @PutMapping("/retro-points/{id}")
-  public ResponseEntity<RetroPointDTO> updateRetro(@RequestBody UpsertRetroPointDTO retroPointDTO,
+  public ResponseEntity<RetroPointDTO> updateRetro(@Valid @RequestBody UpsertRetroPointDTO retroPointDTO,
                                                    @PathVariable(value = "id") long id) {
 
     RetroPointDTO updatedRetroPoint = retroPointService.updateRetroPoint(id, retroPointDTO);
