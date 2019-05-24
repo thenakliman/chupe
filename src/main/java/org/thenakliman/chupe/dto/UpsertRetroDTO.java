@@ -1,18 +1,20 @@
 package org.thenakliman.chupe.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
 public class UpsertRetroDTO {
-  @NonNull
+  @Size(min = 10, max = 256)
   private String name;
-  @NonNull
+  @Min(value = 1)
   private Long maximumVote;
 }

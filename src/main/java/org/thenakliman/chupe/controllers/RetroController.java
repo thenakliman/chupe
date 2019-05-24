@@ -1,6 +1,7 @@
 package org.thenakliman.chupe.controllers;
 
 import java.util.List;
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class RetroController extends BaseController {
   }
 
   @PostMapping("/retros")
-  public ResponseEntity createRetro(@RequestBody UpsertRetroDTO upsertRetroDTO) {
+  public ResponseEntity createRetro(@RequestBody @Valid UpsertRetroDTO upsertRetroDTO) {
     User userDetails =
         (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -41,7 +42,7 @@ public class RetroController extends BaseController {
   }
 
   @PutMapping("/retros/{id}")
-  public ResponseEntity<RetroDTO> updateRetro(@RequestBody UpsertRetroDTO upsertRetroDTO,
+  public ResponseEntity<RetroDTO> updateRetro(@Valid @RequestBody UpsertRetroDTO upsertRetroDTO,
                                               @PathVariable(value = "id") long id) {
     RetroDTO updatedRetro = retroService.updateRetro(id, upsertRetroDTO);
     return new ResponseEntity<>(updatedRetro, HttpStatus.OK);

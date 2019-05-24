@@ -8,6 +8,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -131,6 +133,54 @@ public class RetroControllerTest extends BaseControllerTest {
   }
 
   @Test
+  public void shouldReturnBadRequestWhenRetroNameLengthIs9() throws Exception {
+    String name = "today1234";
+    RetroDTO retroDTO = getRetroDTO(name);
+    given(retroService.saveRetro(any(), any())).willReturn(retroDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/retros")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(retroDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenRetroNameLengthIs257() throws Exception {
+    RetroDTO retroDTO = getRetroDTO(getStringWithLength(257));
+    given(retroService.saveRetro(any(), any())).willReturn(retroDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/retros")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(retroDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenRetroVoteIs0() throws Exception {
+    RetroDTO retroDTO = getRetroDTO("a valid retro name");
+    retroDTO.setMaximumVote(0L);
+    given(retroService.saveRetro(any(), any())).willReturn(retroDTO);
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .post("/api/v1/retros")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(retroDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  private String getStringWithLength(int length) {
+    return IntStream
+        .range(0, length)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.joining(""));
+  }
+
+  @Test
   public void shouldUpdateTask() throws Exception {
     String name = "today task";
     RetroDTO retroDTO = getRetroDTO(name);
@@ -150,8 +200,51 @@ public class RetroControllerTest extends BaseControllerTest {
   }
 
   @Test
+  public void shouldReturnBadRequestWhenUpdateTaskWhenRetroNameLengthIs9() throws Exception {
+    String name = "today tas";
+    RetroDTO retroDTO = getRetroDTO(name);
+    long retroId = 10L;
+    given(retroService.updateRetro(retroId, getUpsertRetroDTO(name))).willReturn(retroDTO);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/retros/" + retroId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(retroDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenUpdateTaskWhenRetroNameLengthIs257() throws Exception {
+    String name = getStringWithLength(257);
+    RetroDTO retroDTO = getRetroDTO(name);
+    long retroId = 10L;
+    given(retroService.updateRetro(retroId, getUpsertRetroDTO(name))).willReturn(retroDTO);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/retros/" + retroId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(retroDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
+  public void shouldReturnBadRequestWhenUpdateTaskWhenRetroVoteIs0() throws Exception {
+    String name = getStringWithLength(257);
+    RetroDTO retroDTO = getRetroDTO(name);
+    retroDTO.setMaximumVote(0L);
+    long retroId = 10L;
+    given(retroService.updateRetro(retroId, getUpsertRetroDTO(name))).willReturn(retroDTO);
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/retros/" + retroId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(retroDTO)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+  }
+
+  @Test
   public void shouldRaiseNotFoundWhenUpdateTask() throws Exception {
-    String name = "my name";
+    String name = "my name is a valid name";
     RetroDTO retroDTO = getRetroDTO(name);
     long retroId = 10L;
     given(retroService.updateRetro(retroId, getUpsertRetroDTO(name))).willThrow(
