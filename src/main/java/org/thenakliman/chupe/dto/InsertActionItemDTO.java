@@ -19,7 +19,6 @@ public class InsertActionItemDTO {
   private Long retroPointId;
   @Size(min = 10, max = 2000)
   private String description;
-  private ActionItemStatus status;
   @Size(min = 1, max = 256)
   private String assignedTo;
   @NotNull

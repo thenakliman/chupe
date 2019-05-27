@@ -81,7 +81,6 @@ public class InsertActionItemDtoToActionItemMappingTest {
         .assignedTo("assigned-to")
         .deadlineToAct(deadlineToAct)
         .description("description")
-        .status(ActionItemStatus.CREATED)
         .retroId(101L)
         .retroPointId(102L)
         .build();

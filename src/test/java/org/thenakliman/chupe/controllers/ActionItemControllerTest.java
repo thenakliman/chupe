@@ -105,7 +105,6 @@ public class ActionItemControllerTest {
         .deadlineToAct(new Date())
         .description("1234567fdasfdsf")
         .retroId(123)
-        .status(ActionItemStatus.CREATED)
         .retroPointId(12L)
         .build();
 
@@ -131,7 +130,6 @@ public class ActionItemControllerTest {
         .deadlineToAct(new Date())
         .description("1234567")
         .retroId(123)
-        .status(ActionItemStatus.CREATED)
         .retroPointId(12L)
         .build();
 
@@ -152,7 +150,6 @@ public class ActionItemControllerTest {
         .deadlineToAct(new Date())
         .description(getStringWith2001Length())
         .retroId(123)
-        .status(ActionItemStatus.CREATED)
         .retroPointId(12L)
         .build();
 
@@ -171,7 +168,6 @@ public class ActionItemControllerTest {
     InsertActionItemDTO insertActionItemDTO = InsertActionItemDTO.builder()
         .assignedTo("lal_singh")
         .description("description for the sake of description")
-        .status(ActionItemStatus.CREATED)
         .retroPointId(12L)
         .build();
 
@@ -190,7 +186,6 @@ public class ActionItemControllerTest {
     InsertActionItemDTO insertActionItemDTO = InsertActionItemDTO.builder()
         .assignedTo("")
         .description("description for the sake of description")
-        .status(ActionItemStatus.CREATED)
         .retroPointId(12L)
         .retroId(10)
         .build();
@@ -210,7 +205,6 @@ public class ActionItemControllerTest {
     InsertActionItemDTO insertActionItemDTO = InsertActionItemDTO.builder()
         .assignedTo(getStringWith257Length())
         .description("description for the sake of description")
-        .status(ActionItemStatus.CREATED)
         .retroPointId(12L)
         .retroId(10)
         .build();

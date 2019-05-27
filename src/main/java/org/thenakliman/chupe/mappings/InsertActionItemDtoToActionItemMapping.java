@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.InsertActionItemDTO;
 import org.thenakliman.chupe.models.ActionItem;
+import org.thenakliman.chupe.models.ActionItemStatus;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.RetroPoint;
 import org.thenakliman.chupe.models.User;
@@ -41,7 +42,7 @@ public class InsertActionItemDtoToActionItemMapping
             .description(source.getDescription())
             .retro(Retro.builder().id(source.getRetroId()).build())
             .retroPoint(retroPoint)
-            .status(source.getStatus())
+            .status(ActionItemStatus.CREATED)
             .createdAt(dateUtil.getTime())
             .updatedAt(dateUtil.getTime())
             .build();
