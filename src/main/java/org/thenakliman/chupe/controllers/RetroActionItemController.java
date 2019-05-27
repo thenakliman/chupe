@@ -17,26 +17,26 @@ import org.thenakliman.chupe.dto.ActionItemDTO;
 import org.thenakliman.chupe.dto.ActionItemQueryParams;
 import org.thenakliman.chupe.dto.InsertActionItemDTO;
 import org.thenakliman.chupe.dto.UpdateActionItemDTO;
-import org.thenakliman.chupe.services.ActionItemService;
+import org.thenakliman.chupe.services.RetroActionItemService;
 
 @Controller
-public class ActionItemController extends BaseController {
-  private ActionItemService actionItemService;
+public class RetroActionItemController extends BaseController {
+  private RetroActionItemService retroActionItemService;
 
   @Autowired
-  public ActionItemController(ActionItemService actionItemService) {
-    this.actionItemService = actionItemService;
+  public RetroActionItemController(RetroActionItemService retroActionItemService) {
+    this.retroActionItemService = retroActionItemService;
   }
 
   @GetMapping("/retro-action-items")
   public ResponseEntity<List<ActionItemDTO>> getMeetings(ActionItemQueryParams actionItemQueryParams) {
-    List<ActionItemDTO> actionItemDTOs = actionItemService.getActionItems(actionItemQueryParams);
+    List<ActionItemDTO> actionItemDTOs = retroActionItemService.getActionItems(actionItemQueryParams);
     return new ResponseEntity<>(actionItemDTOs, HttpStatus.OK);
   }
 
   @PostMapping("/retro-action-items")
   public ResponseEntity<ActionItemDTO> addActionItem(@Valid @RequestBody InsertActionItemDTO insertActionItemDTO) {
-    ActionItemDTO savedActionItem = actionItemService.addActionItem(insertActionItemDTO, getRequestUsername());
+    ActionItemDTO savedActionItem = retroActionItemService.addActionItem(insertActionItemDTO, getRequestUsername());
     return new ResponseEntity<>(savedActionItem, HttpStatus.CREATED);
   }
 
@@ -44,7 +44,7 @@ public class ActionItemController extends BaseController {
   public ResponseEntity<ActionItemDTO> updateMeeting(@NotNull @PathVariable Long actionItemId,
                                                      @Valid @RequestBody UpdateActionItemDTO updateActionItemDTO) {
 
-    ActionItemDTO updatedMeeting = actionItemService.updateActionItem(
+    ActionItemDTO updatedMeeting = retroActionItemService.updateActionItem(
         actionItemId, updateActionItemDTO, getRequestUsername());
 
     return new ResponseEntity<>(updatedMeeting, HttpStatus.OK);

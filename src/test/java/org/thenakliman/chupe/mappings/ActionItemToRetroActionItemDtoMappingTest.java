@@ -11,14 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.dto.ActionItemDTO;
-import org.thenakliman.chupe.models.ActionItem;
+import org.thenakliman.chupe.models.RetroActionItem;
 import org.thenakliman.chupe.models.ActionItemStatus;
 import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.RetroPoint;
 import org.thenakliman.chupe.models.User;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ActionItemToActionItemDtoMappingTest {
+public class ActionItemToRetroActionItemDtoMappingTest {
   @InjectMocks
   private ModelMapper modelMapper;
 
@@ -30,7 +30,7 @@ public class ActionItemToActionItemDtoMappingTest {
   @Test
   public void shouldMapActionItemToActionItemDto() {
     Date deadlineToAct = new Date();
-    ActionItem actionItem = ActionItem.builder()
+    RetroActionItem retroActionItem = RetroActionItem.builder()
         .status(ActionItemStatus.CREATED)
         .retroPoint(RetroPoint.builder().id(102L).build())
         .retro(Retro.builder().id(101L).build())
@@ -41,7 +41,7 @@ public class ActionItemToActionItemDtoMappingTest {
         .assignedTo(User.builder().userName("assigned-to").build())
         .build();
 
-    ActionItemDTO actionItemDTO = modelMapper.map(actionItem, ActionItemDTO.class);
+    ActionItemDTO actionItemDTO = modelMapper.map(retroActionItem, ActionItemDTO.class);
 
     assertEquals(Long.valueOf(103), actionItemDTO.getId());
     assertEquals("description", actionItemDTO.getDescription());

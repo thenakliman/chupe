@@ -29,11 +29,11 @@ import org.thenakliman.chupe.dto.ActionItemQueryParams;
 import org.thenakliman.chupe.dto.InsertActionItemDTO;
 import org.thenakliman.chupe.dto.UpdateActionItemDTO;
 import org.thenakliman.chupe.exceptions.NotFoundException;
-import org.thenakliman.chupe.models.ActionItem;
+import org.thenakliman.chupe.models.RetroActionItem;
 import org.thenakliman.chupe.repositories.ActionItemRepository;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ActionItemServiceTest {
+public class RetroRetroActionItemServiceTest {
   @Mock
   private ActionItemRepository actionItemRepository;
   @Mock
@@ -41,17 +41,17 @@ public class ActionItemServiceTest {
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
   @InjectMocks
-  private ActionItemService actionItemService;
+  private RetroActionItemService retroActionItemService;
 
   @Test
   public void addActionItem_shouldCreateActionItem() {
-    ActionItem actionItem = mock(ActionItem.class);
-    when(converter.convertToObject(any(InsertActionItemDTO.class), eq(ActionItem.class))).thenReturn(actionItem);
-    when(actionItemRepository.save(actionItem)).thenReturn(actionItem);
+    RetroActionItem retroActionItem = mock(RetroActionItem.class);
+    when(converter.convertToObject(any(InsertActionItemDTO.class), eq(RetroActionItem.class))).thenReturn(retroActionItem);
+    when(actionItemRepository.save(retroActionItem)).thenReturn(retroActionItem);
     ActionItemDTO savedActionItemDto = ActionItemDTO.builder().id(101L).build();
-    when(converter.convertToObject(actionItem, ActionItemDTO.class)).thenReturn(savedActionItemDto);
+    when(converter.convertToObject(retroActionItem, ActionItemDTO.class)).thenReturn(savedActionItemDto);
 
-    ActionItemDTO actionItemDTO = actionItemService.addActionItem(new InsertActionItemDTO(), "username");
+    ActionItemDTO actionItemDTO = retroActionItemService.addActionItem(new InsertActionItemDTO(), "username");
 
     assertThat(actionItemDTO, is(savedActionItemDto));
   }
@@ -61,37 +61,37 @@ public class ActionItemServiceTest {
     when(actionItemRepository
         .findByIdAndCreatedByUserNameOrIdAndAssignedToUserName(anyLong(), anyString(), anyLong(), anyString())).thenReturn(Optional.empty());
     expectedException.expect(NotFoundException.class);
-    actionItemService.updateActionItem(10L, new UpdateActionItemDTO(), "username");
+    retroActionItemService.updateActionItem(10L, new UpdateActionItemDTO(), "username");
   }
 
   @Test
   public void updateActionItem_shouldUpdateActionItem() {
-    ActionItem actionItem = mock(ActionItem.class);
+    RetroActionItem retroActionItem = mock(RetroActionItem.class);
     when(actionItemRepository
-        .findByIdAndCreatedByUserNameOrIdAndAssignedToUserName(anyLong(), anyString(), anyLong(), anyString())).thenReturn(Optional.of(actionItem));
-    when(actionItemRepository.save(actionItem)).thenReturn(actionItem);
+        .findByIdAndCreatedByUserNameOrIdAndAssignedToUserName(anyLong(), anyString(), anyLong(), anyString())).thenReturn(Optional.of(retroActionItem));
+    when(actionItemRepository.save(retroActionItem)).thenReturn(retroActionItem);
     ActionItemDTO actionItemDTO = mock(ActionItemDTO.class);
-    when(converter.convertToObject(actionItem, ActionItemDTO.class)).thenReturn(actionItemDTO);
+    when(converter.convertToObject(retroActionItem, ActionItemDTO.class)).thenReturn(actionItemDTO);
 
-    ActionItemDTO savedActionItem = actionItemService.updateActionItem(10L, new UpdateActionItemDTO(), "username");
+    ActionItemDTO savedActionItem = retroActionItemService.updateActionItem(10L, new UpdateActionItemDTO(), "username");
 
     assertThat(actionItemDTO, is(savedActionItem));
   }
 
   @Test
   public void getActionItems_shouldGetActionItem() {
-    List<ActionItem> actionItems = asList(
-        ActionItem.builder().id(101L).build(),
-        ActionItem.builder().id(102L).build());
-    when(actionItemRepository.findAll(any(Specification.class))).thenReturn(actionItems);
+    List<RetroActionItem> retroActionItems = asList(
+        RetroActionItem.builder().id(101L).build(),
+        RetroActionItem.builder().id(102L).build());
+    when(actionItemRepository.findAll(any(Specification.class))).thenReturn(retroActionItems);
     ActionItemDTO actionItemDTO1 = ActionItemDTO.builder().id(101L).build();
     ActionItemDTO actionItemDTO2 = ActionItemDTO.builder().id(102L).build();
-    when(converter.convertToListOfObjects(actionItems, ActionItemDTO.class)).thenReturn(asList(
+    when(converter.convertToListOfObjects(retroActionItems, ActionItemDTO.class)).thenReturn(asList(
         actionItemDTO1,
         actionItemDTO2
     ));
 
-    List<ActionItemDTO> fetchedActionItems = actionItemService.getActionItems(new ActionItemQueryParams());
+    List<ActionItemDTO> fetchedActionItems = retroActionItemService.getActionItems(new ActionItemQueryParams());
 
     assertThat(fetchedActionItems, hasSize(2));
     assertThat(fetchedActionItems, hasItems(actionItemDTO1, actionItemDTO2));

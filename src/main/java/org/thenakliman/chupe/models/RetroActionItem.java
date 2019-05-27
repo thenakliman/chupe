@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity(name = "retrospection_action_item")
 @Table
-public class ActionItem {
+public class RetroActionItem {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

@@ -37,13 +37,12 @@ import org.thenakliman.chupe.dto.ActionItemQueryParams;
 import org.thenakliman.chupe.dto.InsertActionItemDTO;
 import org.thenakliman.chupe.dto.UpdateActionItemDTO;
 import org.thenakliman.chupe.dto.User;
-import org.thenakliman.chupe.models.ActionItemStatus;
-import org.thenakliman.chupe.services.ActionItemService;
+import org.thenakliman.chupe.services.RetroActionItemService;
 import org.thenakliman.chupe.services.TokenService;
 
-@WebMvcTest(controllers = ActionItemController.class)
+@WebMvcTest(controllers = RetroActionItemController.class)
 @RunWith(SpringRunner.class)
-public class ActionItemControllerTest {
+public class RetroRetroActionItemControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
@@ -51,7 +50,7 @@ public class ActionItemControllerTest {
   private WebApplicationContext webApplicationContext;
 
   @MockBean
-  private ActionItemService actionItemService;
+  private RetroActionItemService retroActionItemService;
 
   @Autowired
   private Jackson2ObjectMapperBuilder jacksonBuilder;
@@ -82,7 +81,7 @@ public class ActionItemControllerTest {
   public void shouldGetActionItems() throws Exception {
     ArrayList<ActionItemDTO> actionItemDtos = new ArrayList<>();
     actionItemDtos.add(ActionItemDTO.builder().build());
-    BDDMockito.given(actionItemService.getActionItems(any(ActionItemQueryParams.class))).willReturn(actionItemDtos);
+    BDDMockito.given(retroActionItemService.getActionItems(any(ActionItemQueryParams.class))).willReturn(actionItemDtos);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .get("/api/v1/retro-action-items")
@@ -98,7 +97,7 @@ public class ActionItemControllerTest {
   @Test
   public void shouldCreateActionItem() throws Exception {
     ActionItemDTO actionItemDTO = ActionItemDTO.builder().id(102L).build();
-    BDDMockito.given(actionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
+    BDDMockito.given(retroActionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
     SecurityContextHolder.getContext().setAuthentication(authToken);
     InsertActionItemDTO insertActionItemDTO = InsertActionItemDTO.builder()
         .assignedTo("lal_singh")
@@ -123,7 +122,7 @@ public class ActionItemControllerTest {
   @Test
   public void shouldCreateActionItemThrowBadRequestWhenDescriptionLengthIs7() throws Exception {
     ActionItemDTO actionItemDTO = ActionItemDTO.builder().description("1111111").id(102L).build();
-    BDDMockito.given(actionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
+    BDDMockito.given(retroActionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
     SecurityContextHolder.getContext().setAuthentication(authToken);
     InsertActionItemDTO insertActionItemDTO = InsertActionItemDTO.builder()
         .assignedTo("lal_singh")
@@ -143,7 +142,7 @@ public class ActionItemControllerTest {
   @Test
   public void shouldCreateActionItemThrowBadRequestWhenDescriptionLengthIs2001() throws Exception {
     ActionItemDTO actionItemDTO = ActionItemDTO.builder().description("1111111").id(102L).build();
-    BDDMockito.given(actionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
+    BDDMockito.given(retroActionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
     SecurityContextHolder.getContext().setAuthentication(authToken);
     InsertActionItemDTO insertActionItemDTO = InsertActionItemDTO.builder()
         .assignedTo("lal_singh")
@@ -163,7 +162,7 @@ public class ActionItemControllerTest {
   @Test
   public void shouldCreateActionItemThrowBadRequestWhenDeadlineIsNull() throws Exception {
     ActionItemDTO actionItemDTO = ActionItemDTO.builder().description("1111111").id(102L).build();
-    BDDMockito.given(actionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
+    BDDMockito.given(retroActionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
     SecurityContextHolder.getContext().setAuthentication(authToken);
     InsertActionItemDTO insertActionItemDTO = InsertActionItemDTO.builder()
         .assignedTo("lal_singh")
@@ -181,7 +180,7 @@ public class ActionItemControllerTest {
   @Test
   public void shouldCreateActionItemThrowBadRequestWhenAssignedToLengthIs0() throws Exception {
     ActionItemDTO actionItemDTO = ActionItemDTO.builder().description("1111111").id(102L).build();
-    BDDMockito.given(actionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
+    BDDMockito.given(retroActionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
     SecurityContextHolder.getContext().setAuthentication(authToken);
     InsertActionItemDTO insertActionItemDTO = InsertActionItemDTO.builder()
         .assignedTo("")
@@ -200,7 +199,7 @@ public class ActionItemControllerTest {
   @Test
   public void shouldCreateActionItemThrowBadRequestWhenAssignedToLengthIs257() throws Exception {
     ActionItemDTO actionItemDTO = ActionItemDTO.builder().description("1111111").id(102L).build();
-    BDDMockito.given(actionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
+    BDDMockito.given(retroActionItemService.addActionItem(any(), anyString())).willReturn(actionItemDTO);
     SecurityContextHolder.getContext().setAuthentication(authToken);
     InsertActionItemDTO insertActionItemDTO = InsertActionItemDTO.builder()
         .assignedTo(getStringWith257Length())
@@ -228,7 +227,7 @@ public class ActionItemControllerTest {
     SecurityContextHolder.getContext().setAuthentication(authToken);
 
     BDDMockito.given(
-        actionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
+        retroActionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
         .willReturn(actionItemDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -255,7 +254,7 @@ public class ActionItemControllerTest {
     SecurityContextHolder.getContext().setAuthentication(authToken);
 
     BDDMockito.given(
-        actionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
+        retroActionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
         .willReturn(actionItemDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -277,7 +276,7 @@ public class ActionItemControllerTest {
     SecurityContextHolder.getContext().setAuthentication(authToken);
 
     BDDMockito.given(
-        actionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
+        retroActionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
         .willReturn(actionItemDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -299,7 +298,7 @@ public class ActionItemControllerTest {
     SecurityContextHolder.getContext().setAuthentication(authToken);
 
     BDDMockito.given(
-        actionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
+        retroActionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
         .willReturn(actionItemDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -321,7 +320,7 @@ public class ActionItemControllerTest {
     SecurityContextHolder.getContext().setAuthentication(authToken);
 
     BDDMockito.given(
-        actionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
+        retroActionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
         .willReturn(actionItemDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -342,7 +341,7 @@ public class ActionItemControllerTest {
     SecurityContextHolder.getContext().setAuthentication(authToken);
 
     BDDMockito.given(
-        actionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
+        retroActionItemService.updateActionItem(actionItemDto, updateActionItemDto, username))
         .willReturn(actionItemDTO);
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders

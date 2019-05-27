@@ -8,15 +8,15 @@ import org.modelmapper.Converter;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.InsertActionItemDTO;
-import org.thenakliman.chupe.models.ActionItem;
 import org.thenakliman.chupe.models.ActionItemStatus;
 import org.thenakliman.chupe.models.Retro;
+import org.thenakliman.chupe.models.RetroActionItem;
 import org.thenakliman.chupe.models.RetroPoint;
 import org.thenakliman.chupe.models.User;
 
 @Component
 public class InsertActionItemDtoToActionItemMapping
-    extends ConverterConfigurerSupport<InsertActionItemDTO, ActionItem> {
+    extends ConverterConfigurerSupport<InsertActionItemDTO, RetroActionItem> {
 
   private final DateUtil dateUtil;
 
@@ -25,17 +25,17 @@ public class InsertActionItemDtoToActionItemMapping
   }
 
   @Override
-  public Converter<InsertActionItemDTO, ActionItem> converter() {
+  public Converter<InsertActionItemDTO, RetroActionItem> converter() {
 
-    return new AbstractConverter<InsertActionItemDTO, ActionItem>() {
+    return new AbstractConverter<InsertActionItemDTO, RetroActionItem>() {
       @Override
-      protected ActionItem convert(InsertActionItemDTO source) {
+      protected RetroActionItem convert(InsertActionItemDTO source) {
         RetroPoint retroPoint = null;
         if (!isNull(source.getRetroPointId())) {
           retroPoint = RetroPoint.builder().id(source.getRetroPointId()).build();
         }
 
-        return ActionItem
+        return RetroActionItem
             .builder()
             .assignedTo(User.builder().userName(source.getAssignedTo()).build())
             .deadlineToAct(source.getDeadlineToAct())

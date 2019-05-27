@@ -8,9 +8,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
-import org.thenakliman.chupe.models.ActionItem;
+import org.thenakliman.chupe.models.RetroActionItem;
 
-public class ActionItemRetroSpecification implements Specification<ActionItem> {
+public class ActionItemRetroSpecification implements Specification<RetroActionItem> {
   private Long retro;
 
   public ActionItemRetroSpecification(Long retro) {
@@ -19,7 +19,7 @@ public class ActionItemRetroSpecification implements Specification<ActionItem> {
 
 
   @Override
-  public Predicate toPredicate(Root<ActionItem> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+  public Predicate toPredicate(Root<RetroActionItem> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     if (isNull(retro)) {
       return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
     }

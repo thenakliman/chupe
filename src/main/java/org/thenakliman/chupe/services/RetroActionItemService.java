@@ -12,7 +12,7 @@ import org.thenakliman.chupe.dto.ActionItemQueryParams;
 import org.thenakliman.chupe.dto.InsertActionItemDTO;
 import org.thenakliman.chupe.dto.UpdateActionItemDTO;
 import org.thenakliman.chupe.exceptions.NotFoundException;
-import org.thenakliman.chupe.models.ActionItem;
+import org.thenakliman.chupe.models.RetroActionItem;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.ActionItemRepository;
 import org.thenakliman.chupe.repositories.specifications.retroactionitem.ActionItemAssignedToSpecification;
@@ -20,51 +20,51 @@ import org.thenakliman.chupe.repositories.specifications.retroactionitem.ActionI
 import org.thenakliman.chupe.repositories.specifications.retroactionitem.ActionItemStatusSpecification;
 
 @Service
-public class ActionItemService {
+public class RetroActionItemService {
   private final ActionItemRepository actionItemRepository;
   private final Converter converter;
 
   @Autowired
-  public ActionItemService(ActionItemRepository actionItemRepository,
-                           Converter converter) {
+  public RetroActionItemService(ActionItemRepository actionItemRepository,
+                                Converter converter) {
 
     this.actionItemRepository = actionItemRepository;
     this.converter = converter;
   }
 
   public ActionItemDTO addActionItem(InsertActionItemDTO insertActionItemDTO, String username) {
-    ActionItem actionItem = converter.convertToObject(insertActionItemDTO, ActionItem.class);
-    actionItem.setCreatedBy(User.builder().userName(username).build());
-    ActionItem savedActionItem = actionItemRepository.save(actionItem);
-    return converter.convertToObject(savedActionItem, ActionItemDTO.class);
+    RetroActionItem retroActionItem = converter.convertToObject(insertActionItemDTO, RetroActionItem.class);
+    retroActionItem.setCreatedBy(User.builder().userName(username).build());
+    RetroActionItem savedRetroActionItem = actionItemRepository.save(retroActionItem);
+    return converter.convertToObject(savedRetroActionItem, ActionItemDTO.class);
   }
 
   public List<ActionItemDTO> getActionItems(ActionItemQueryParams actionItemQueryParams) {
-    Specification<ActionItem> specification = Specification
-        .<ActionItem>where(new ActionItemStatusSpecification(actionItemQueryParams.getStatuses()))
+    Specification<RetroActionItem> specification = Specification
+        .<RetroActionItem>where(new ActionItemStatusSpecification(actionItemQueryParams.getStatuses()))
         .and(new ActionItemRetroSpecification(actionItemQueryParams.getRetro()))
         .and(new ActionItemAssignedToSpecification(actionItemQueryParams.getAssignedTo()));
 
-    List<ActionItem> actionItems = actionItemRepository.findAll(specification);
-    return converter.convertToListOfObjects(actionItems, ActionItemDTO.class);
+    List<RetroActionItem> retroActionItems = actionItemRepository.findAll(specification);
+    return converter.convertToListOfObjects(retroActionItems, ActionItemDTO.class);
   }
 
   public ActionItemDTO updateActionItem(Long actionItemId, UpdateActionItemDTO updateActionItemDTO, String username) {
-    Optional<ActionItem> actionItemOptional = actionItemRepository
+    Optional<RetroActionItem> actionItemOptional = actionItemRepository
         .findByIdAndCreatedByUserNameOrIdAndAssignedToUserName(actionItemId,
                                                                username,
                                                                actionItemId,
                                                                username);
 
-    ActionItem actionItem = actionItemOptional.orElseThrow(
+    RetroActionItem retroActionItem = actionItemOptional.orElseThrow(
         () -> new NotFoundException(
             String.format("Action item %s is not found or you don't have permission.", actionItemId)));
 
-    actionItem.setAssignedTo(User.builder().userName(updateActionItemDTO.getAssignedTo()).build());
-    actionItem.setDeadlineToAct(updateActionItemDTO.getDeadlineToAct());
-    actionItem.setDescription(updateActionItemDTO.getDescription());
-    actionItem.setStatus(updateActionItemDTO.getStatus());
-    ActionItem savedActionItem = actionItemRepository.save(actionItem);
-    return converter.convertToObject(savedActionItem, ActionItemDTO.class);
+    retroActionItem.setAssignedTo(User.builder().userName(updateActionItemDTO.getAssignedTo()).build());
+    retroActionItem.setDeadlineToAct(updateActionItemDTO.getDeadlineToAct());
+    retroActionItem.setDescription(updateActionItemDTO.getDescription());
+    retroActionItem.setStatus(updateActionItemDTO.getStatus());
+    RetroActionItem savedRetroActionItem = actionItemRepository.save(retroActionItem);
+    return converter.convertToObject(savedRetroActionItem, ActionItemDTO.class);
   }
 }

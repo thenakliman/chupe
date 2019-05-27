@@ -7,10 +7,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
-import org.thenakliman.chupe.models.ActionItem;
 import org.thenakliman.chupe.models.ActionItemStatus;
+import org.thenakliman.chupe.models.RetroActionItem;
 
-public class ActionItemStatusSpecification implements Specification<ActionItem> {
+public class ActionItemStatusSpecification implements Specification<RetroActionItem> {
   private List<ActionItemStatus> statuses;
 
   public ActionItemStatusSpecification(List<ActionItemStatus> statuses) {
@@ -18,7 +18,7 @@ public class ActionItemStatusSpecification implements Specification<ActionItem> 
   }
 
   @Override
-  public Predicate toPredicate(Root<ActionItem> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+  public Predicate toPredicate(Root<RetroActionItem> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     if (this.statuses.isEmpty()) {
       return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
     }

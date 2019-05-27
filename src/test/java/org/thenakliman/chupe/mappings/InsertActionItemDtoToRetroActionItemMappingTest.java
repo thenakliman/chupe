@@ -15,11 +15,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.InsertActionItemDTO;
-import org.thenakliman.chupe.models.ActionItem;
+import org.thenakliman.chupe.models.RetroActionItem;
 import org.thenakliman.chupe.models.ActionItemStatus;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InsertActionItemDtoToActionItemMappingTest {
+public class InsertActionItemDtoToRetroActionItemMappingTest {
 
   @Mock
   private DateUtil dateUtil;
@@ -41,18 +41,18 @@ public class InsertActionItemDtoToActionItemMappingTest {
     Date deadlineToAct = new Date();
     InsertActionItemDTO actionItemDTO = getInsertActionItemDTO(deadlineToAct);
 
-    ActionItem actionItem = modelMapper.map(actionItemDTO, ActionItem.class);
+    RetroActionItem retroActionItem = modelMapper.map(actionItemDTO, RetroActionItem.class);
 
-    assertEquals("assigned-to", actionItem.getAssignedTo().getUserName());
-    assertEquals(deadlineToAct, actionItem.getDeadlineToAct());
-    assertEquals("description", actionItem.getDescription());
-    assertEquals(ActionItemStatus.CREATED, actionItem.getStatus());
-    assertEquals(now, actionItem.getCreatedAt());
-    assertEquals(now, actionItem.getUpdatedAt());
-    assertEquals(Long.valueOf(101L), actionItem.getRetro().getId());
-    assertEquals(Long.valueOf(102L), actionItem.getRetroPoint().getId());
-    assertNull(actionItem.getCreatedBy());
-    assertNull(actionItem.getId());
+    assertEquals("assigned-to", retroActionItem.getAssignedTo().getUserName());
+    assertEquals(deadlineToAct, retroActionItem.getDeadlineToAct());
+    assertEquals("description", retroActionItem.getDescription());
+    assertEquals(ActionItemStatus.CREATED, retroActionItem.getStatus());
+    assertEquals(now, retroActionItem.getCreatedAt());
+    assertEquals(now, retroActionItem.getUpdatedAt());
+    assertEquals(Long.valueOf(101L), retroActionItem.getRetro().getId());
+    assertEquals(Long.valueOf(102L), retroActionItem.getRetroPoint().getId());
+    assertNull(retroActionItem.getCreatedBy());
+    assertNull(retroActionItem.getId());
   }
 
   @Test
@@ -61,18 +61,18 @@ public class InsertActionItemDtoToActionItemMappingTest {
     InsertActionItemDTO actionItemDTO = getInsertActionItemDTO(deadlineToAct);
     actionItemDTO.setRetroPointId(null);
 
-    ActionItem actionItem = modelMapper.map(actionItemDTO, ActionItem.class);
+    RetroActionItem retroActionItem = modelMapper.map(actionItemDTO, RetroActionItem.class);
 
-    assertEquals("assigned-to", actionItem.getAssignedTo().getUserName());
-    assertEquals(deadlineToAct, actionItem.getDeadlineToAct());
-    assertEquals("description", actionItem.getDescription());
-    assertEquals(ActionItemStatus.CREATED, actionItem.getStatus());
-    assertEquals(now, actionItem.getCreatedAt());
-    assertEquals(now, actionItem.getUpdatedAt());
-    assertEquals(Long.valueOf(101L), actionItem.getRetro().getId());
-    assertNull(actionItem.getRetroPoint());
-    assertNull(actionItem.getCreatedBy());
-    assertNull(actionItem.getId());
+    assertEquals("assigned-to", retroActionItem.getAssignedTo().getUserName());
+    assertEquals(deadlineToAct, retroActionItem.getDeadlineToAct());
+    assertEquals("description", retroActionItem.getDescription());
+    assertEquals(ActionItemStatus.CREATED, retroActionItem.getStatus());
+    assertEquals(now, retroActionItem.getCreatedAt());
+    assertEquals(now, retroActionItem.getUpdatedAt());
+    assertEquals(Long.valueOf(101L), retroActionItem.getRetro().getId());
+    assertNull(retroActionItem.getRetroPoint());
+    assertNull(retroActionItem.getCreatedBy());
+    assertNull(retroActionItem.getId());
   }
 
   private InsertActionItemDTO getInsertActionItemDTO(Date deadlineToAct) {
