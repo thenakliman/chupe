@@ -42,7 +42,7 @@ import org.thenakliman.chupe.services.TokenService;
 
 @WebMvcTest(controllers = RetroActionItemController.class)
 @RunWith(SpringRunner.class)
-public class RetroRetroActionItemControllerTest {
+public class RetroActionItemControllerTest {
   @Autowired
   private MockMvc mockMvc;
 

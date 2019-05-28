@@ -24,18 +24,20 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.jpa.domain.Specification;
 import org.thenakliman.chupe.common.utils.Converter;
+import org.thenakliman.chupe.dto.ActionItem;
 import org.thenakliman.chupe.dto.ActionItemDTO;
 import org.thenakliman.chupe.dto.ActionItemQueryParams;
 import org.thenakliman.chupe.dto.InsertActionItemDTO;
 import org.thenakliman.chupe.dto.UpdateActionItemDTO;
 import org.thenakliman.chupe.exceptions.NotFoundException;
+import org.thenakliman.chupe.models.ActionItemStatus;
 import org.thenakliman.chupe.models.RetroActionItem;
-import org.thenakliman.chupe.repositories.ActionItemRepository;
+import org.thenakliman.chupe.repositories.RetroActionItemRepository;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RetroRetroActionItemServiceTest {
+public class RetroActionItemServiceTest {
   @Mock
-  private ActionItemRepository actionItemRepository;
+  private RetroActionItemRepository retroActionItemRepository;
   @Mock
   private Converter converter;
   @Rule
@@ -47,7 +49,7 @@ public class RetroRetroActionItemServiceTest {
   public void addActionItem_shouldCreateActionItem() {
     RetroActionItem retroActionItem = mock(RetroActionItem.class);
     when(converter.convertToObject(any(InsertActionItemDTO.class), eq(RetroActionItem.class))).thenReturn(retroActionItem);
-    when(actionItemRepository.save(retroActionItem)).thenReturn(retroActionItem);
+    when(retroActionItemRepository.save(retroActionItem)).thenReturn(retroActionItem);
     ActionItemDTO savedActionItemDto = ActionItemDTO.builder().id(101L).build();
     when(converter.convertToObject(retroActionItem, ActionItemDTO.class)).thenReturn(savedActionItemDto);
 
@@ -58,7 +60,7 @@ public class RetroRetroActionItemServiceTest {
 
   @Test
   public void updateActionItem_shouldThrowNotFoundException_whenActionItemDoesNotExist() {
-    when(actionItemRepository
+    when(retroActionItemRepository
         .findByIdAndCreatedByUserNameOrIdAndAssignedToUserName(anyLong(), anyString(), anyLong(), anyString())).thenReturn(Optional.empty());
     expectedException.expect(NotFoundException.class);
     retroActionItemService.updateActionItem(10L, new UpdateActionItemDTO(), "username");
@@ -67,9 +69,9 @@ public class RetroRetroActionItemServiceTest {
   @Test
   public void updateActionItem_shouldUpdateActionItem() {
     RetroActionItem retroActionItem = mock(RetroActionItem.class);
-    when(actionItemRepository
+    when(retroActionItemRepository
         .findByIdAndCreatedByUserNameOrIdAndAssignedToUserName(anyLong(), anyString(), anyLong(), anyString())).thenReturn(Optional.of(retroActionItem));
-    when(actionItemRepository.save(retroActionItem)).thenReturn(retroActionItem);
+    when(retroActionItemRepository.save(retroActionItem)).thenReturn(retroActionItem);
     ActionItemDTO actionItemDTO = mock(ActionItemDTO.class);
     when(converter.convertToObject(retroActionItem, ActionItemDTO.class)).thenReturn(actionItemDTO);
 
@@ -83,7 +85,7 @@ public class RetroRetroActionItemServiceTest {
     List<RetroActionItem> retroActionItems = asList(
         RetroActionItem.builder().id(101L).build(),
         RetroActionItem.builder().id(102L).build());
-    when(actionItemRepository.findAll(any(Specification.class))).thenReturn(retroActionItems);
+    when(retroActionItemRepository.findAll(any(Specification.class))).thenReturn(retroActionItems);
     ActionItemDTO actionItemDTO1 = ActionItemDTO.builder().id(101L).build();
     ActionItemDTO actionItemDTO2 = ActionItemDTO.builder().id(102L).build();
     when(converter.convertToListOfObjects(retroActionItems, ActionItemDTO.class)).thenReturn(asList(
@@ -95,5 +97,32 @@ public class RetroRetroActionItemServiceTest {
 
     assertThat(fetchedActionItems, hasSize(2));
     assertThat(fetchedActionItems, hasItems(actionItemDTO1, actionItemDTO2));
+  }
+
+  @Test
+  public void getActiveActionItems_shouldGetActionItemInStateOfCreatedAndInProgress() {
+    List<RetroActionItem> retroActionItems = asList(
+        RetroActionItem.builder().id(101L).build(),
+        RetroActionItem.builder().id(102L).build());
+
+    String username = "username";
+    when(retroActionItemRepository.findByAssignedToUserNameAndStatusIn(
+        username,
+        asList(ActionItemStatus.IN_PROGRESS, ActionItemStatus.CREATED))
+    ).thenReturn(retroActionItems);
+
+    ActionItem actionItem1 = new ActionItem();
+    actionItem1.setId(101L);
+    ActionItem actionItem2 = new ActionItem();
+    actionItem2.setId(102L);
+    when(converter.convertToListOfObjects(retroActionItems, ActionItem.class)).thenReturn(asList(
+        actionItem1,
+        actionItem2
+    ));
+
+    List<ActionItem> fetchedActionItems = retroActionItemService.getActiveActionItem("username");
+
+    assertThat(fetchedActionItems, hasSize(2));
+    assertThat(fetchedActionItems, hasItems(actionItem1, actionItem2));
   }
 }
