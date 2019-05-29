@@ -1,5 +1,6 @@
 package org.thenakliman.chupe.services;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -8,7 +9,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -24,10 +24,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.ActionItem;
-import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
+import org.thenakliman.chupe.dto.UpsertMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
 import org.thenakliman.chupe.dto.MeetingDiscussionItemDTO;
 import org.thenakliman.chupe.exceptions.NotFoundException;
+import org.thenakliman.chupe.models.ActionItemStatus;
 import org.thenakliman.chupe.models.DiscussionItemType;
 import org.thenakliman.chupe.models.Meeting;
 import org.thenakliman.chupe.models.MeetingDiscussionItem;
@@ -84,13 +85,13 @@ public class MeetingServiceTest {
   @Test
   public void shouldReturnMeetings() {
     String createdBy = "created-by";
-    List<Meeting> meetings = Arrays.asList(new Meeting(), new Meeting());
+    List<Meeting> meetings = asList(new Meeting(), new Meeting());
     when(meetingRepository.findAll()).thenReturn(meetings);
     MeetingDTO meetingDTO1 = new MeetingDTO();
     meetingDTO1.setId(10L);
     MeetingDTO meetingDTO2 = new MeetingDTO();
     when(converter.convertToListOfObjects(meetings, MeetingDTO.class))
-        .thenReturn(Arrays.asList(meetingDTO1, meetingDTO2));
+        .thenReturn(asList(meetingDTO1, meetingDTO2));
 
     List<MeetingDTO> meetingsDtos = meetingService.getMeetings();
     assertThat(meetingsDtos, hasSize(2));
@@ -130,13 +131,13 @@ public class MeetingServiceTest {
   @Test
   public void getMeetingDiscussionItems() {
     Long meetingId = 10L;
-    List<MeetingDiscussionItem> meetingDiscussionItems = Arrays.asList(
+    List<MeetingDiscussionItem> meetingDiscussionItems = asList(
         mock(MeetingDiscussionItem.class),
         mock(MeetingDiscussionItem.class));
     when(meetingDiscussionItemRepository.findByMeetingId(meetingId)).thenReturn(meetingDiscussionItems);
     MeetingDiscussionItemDTO meetingDiscussionItemDTO1 = mock(MeetingDiscussionItemDTO.class);
     MeetingDiscussionItemDTO meetingDiscussionItemDTO2 = mock(MeetingDiscussionItemDTO.class);
-    List<MeetingDiscussionItemDTO> meetingDiscussionItemDTOS = Arrays.asList(
+    List<MeetingDiscussionItemDTO> meetingDiscussionItemDTOS = asList(
         meetingDiscussionItemDTO1,
         meetingDiscussionItemDTO2
     );
@@ -151,14 +152,16 @@ public class MeetingServiceTest {
 
   @Test
   public void getMeetingActionItem_shouldReturnActionItems() {
-    List<MeetingDiscussionItem> meetingDiscussionItems = Arrays.asList(
+    List<MeetingDiscussionItem> meetingDiscussionItems = asList(
         mock(MeetingDiscussionItem.class),
         mock(MeetingDiscussionItem.class));
     String username = "aise hi user";
-    when(meetingDiscussionItemRepository.findByAssignedToUserName(username)).thenReturn(meetingDiscussionItems);
+    when(meetingDiscussionItemRepository.findByAssignedToUserNameAndStatusIn(
+        username, asList(ActionItemStatus.IN_PROGRESS, ActionItemStatus.CREATED))).thenReturn(meetingDiscussionItems);
+
     ActionItem meetingDiscussionItemDTO1 = mock(ActionItem.class);
     ActionItem meetingDiscussionItemDTO2 = mock(ActionItem.class);
-    List<ActionItem> meetingDiscussionItemDTOS = Arrays.asList(
+    List<ActionItem> meetingDiscussionItemDTOS = asList(
         meetingDiscussionItemDTO1,
         meetingDiscussionItemDTO2
     );
@@ -174,7 +177,7 @@ public class MeetingServiceTest {
   @Test
   public void shouldCreateDiscussionItem() {
     MeetingDiscussionItem discussionItem = new MeetingDiscussionItem();
-    CreateMeetingDiscussionItemDTO createDiscussionItem = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItem = new UpsertMeetingDiscussionItemDTO();
     when(converter.convertToObject(createDiscussionItem, MeetingDiscussionItem.class)).thenReturn(discussionItem);
     MeetingDiscussionItem discussionItemToBeSaved = new MeetingDiscussionItem();
     discussionItemToBeSaved.setCreatedBy(User.builder().userName("created-by").build());
@@ -192,17 +195,17 @@ public class MeetingServiceTest {
   @Test
   public void shouldThrowNotFoundExceptionIfDiscussionItemDoesNotExist() {
     exception.expect(NotFoundException.class);
-    meetingService.updateMeetingDiscussionItem(20L, new CreateMeetingDiscussionItemDTO());
+    meetingService.updateMeetingDiscussionItem(20L, new UpsertMeetingDiscussionItemDTO());
   }
 
   @Test
   public void shouldUpdateDiscussionItem() {
-    CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
-    createMeetingDiscussionItemDTO.setAssignedTo("lal");
-    createMeetingDiscussionItemDTO.setMeetingId(101L);
+    UpsertMeetingDiscussionItemDTO upsertMeetingDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
+    upsertMeetingDiscussionItemDTO.setAssignedTo("lal");
+    upsertMeetingDiscussionItemDTO.setMeetingId(101L);
     String discussionItem = "Discussion item";
-    createMeetingDiscussionItemDTO.setDiscussionItem(discussionItem);
-    createMeetingDiscussionItemDTO.setDiscussionItemType(DiscussionItemType.INFORMATION);
+    upsertMeetingDiscussionItemDTO.setDiscussionItem(discussionItem);
+    upsertMeetingDiscussionItemDTO.setDiscussionItemType(DiscussionItemType.INFORMATION);
     when(meetingDiscussionItemRepository.findByIdAndMeetingId(10L, 101L)).thenReturn(Optional.of(new MeetingDiscussionItem()));
 
     MeetingDiscussionItem meetingDiscussionItem = new MeetingDiscussionItem();
@@ -215,7 +218,7 @@ public class MeetingServiceTest {
     MeetingDiscussionItemDTO meetingDiscussionItemDTO = mock(MeetingDiscussionItemDTO.class);
     when(converter.convertToObject(savedDiscussionItem, MeetingDiscussionItemDTO.class)).thenReturn(meetingDiscussionItemDTO);
 
-    MeetingDiscussionItemDTO discussionItemDTO = meetingService.updateMeetingDiscussionItem(10L, createMeetingDiscussionItemDTO);
+    MeetingDiscussionItemDTO discussionItemDTO = meetingService.updateMeetingDiscussionItem(10L, upsertMeetingDiscussionItemDTO);
 
     assertThat(discussionItemDTO, is(meetingDiscussionItemDTO));
     verify(meetingDiscussionItemRepository).save(meetingDiscussionItem);

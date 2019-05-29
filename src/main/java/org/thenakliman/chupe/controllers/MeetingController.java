@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
 import org.thenakliman.chupe.dto.MeetingDiscussionItemDTO;
+import org.thenakliman.chupe.dto.UpsertMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.services.MeetingService;
 
 @Controller
@@ -56,11 +56,11 @@ public class MeetingController extends BaseController {
 
   @PostMapping("/meeting-discussion-items")
   public ResponseEntity<MeetingDiscussionItemDTO> createMeetingDiscussionItems(
-      @RequestBody @Valid CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
+      @RequestBody @Valid UpsertMeetingDiscussionItemDTO upsertMeetingDiscussionItemDTO) {
 
     MeetingDiscussionItemDTO createdMeeting = meetingService.createMeetingDiscussionItem(
         getRequestUsername(),
-        createMeetingDiscussionItemDTO);
+        upsertMeetingDiscussionItemDTO);
 
     return new ResponseEntity<>(createdMeeting, HttpStatus.CREATED);
   }
@@ -68,11 +68,11 @@ public class MeetingController extends BaseController {
   @PutMapping("/meeting-discussion-items/{meetingDiscussionItemId}")
   public ResponseEntity<MeetingDiscussionItemDTO> updateMeetingDiscussionItem(
       @PathVariable Long meetingDiscussionItemId,
-      @RequestBody @Valid CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
+      @RequestBody @Valid UpsertMeetingDiscussionItemDTO upsertMeetingDiscussionItemDTO) {
 
     MeetingDiscussionItemDTO updatedMeeting = meetingService.updateMeetingDiscussionItem(
         meetingDiscussionItemId,
-        createMeetingDiscussionItemDTO);
+        upsertMeetingDiscussionItemDTO);
     return new ResponseEntity<>(updatedMeeting, HttpStatus.OK);
   }
 }

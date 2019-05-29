@@ -1,18 +1,20 @@
 package org.thenakliman.chupe.services;
 
+import static java.util.Arrays.asList;
+
 import java.util.List;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.ActionItem;
-import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
 import org.thenakliman.chupe.dto.MeetingDiscussionItemDTO;
+import org.thenakliman.chupe.dto.UpsertMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.exceptions.NotFoundException;
+import org.thenakliman.chupe.models.ActionItemStatus;
 import org.thenakliman.chupe.models.Meeting;
 import org.thenakliman.chupe.models.MeetingDiscussionItem;
 import org.thenakliman.chupe.models.User;
@@ -75,10 +77,10 @@ public class MeetingService {
 
   public MeetingDiscussionItemDTO createMeetingDiscussionItem(
       String createdBy,
-      CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
+      UpsertMeetingDiscussionItemDTO upsertMeetingDiscussionItemDTO) {
 
     MeetingDiscussionItem meetingDiscussionItem = converter.convertToObject(
-        createMeetingDiscussionItemDTO,
+        upsertMeetingDiscussionItemDTO,
         MeetingDiscussionItem.class);
 
     meetingDiscussionItem.setCreatedBy(User.builder().userName(createdBy).build());
@@ -88,18 +90,18 @@ public class MeetingService {
 
   public MeetingDiscussionItemDTO updateMeetingDiscussionItem(
       Long discussionItemId,
-      CreateMeetingDiscussionItemDTO createMeetingDiscussionItemDTO) {
+      UpsertMeetingDiscussionItemDTO upsertMeetingDiscussionItemDTO) {
 
     Optional<MeetingDiscussionItem> discussionItemOptional = meetingDiscussionItemRepository.findByIdAndMeetingId(
         discussionItemId,
-        createMeetingDiscussionItemDTO.getMeetingId());
+        upsertMeetingDiscussionItemDTO.getMeetingId());
 
     MeetingDiscussionItem discussionItem = discussionItemOptional.orElseThrow(() -> new NotFoundException(
         String.format("Meeting discussion item with id %s does not exist", discussionItemId)));
 
-    discussionItem.setDiscussionItem(createMeetingDiscussionItemDTO.getDiscussionItem());
-    discussionItem.setDiscussionItemType(createMeetingDiscussionItemDTO.getDiscussionItemType());
-    User assignedTo = getUser(createMeetingDiscussionItemDTO.getAssignedTo());
+    discussionItem.setDiscussionItem(upsertMeetingDiscussionItemDTO.getDiscussionItem());
+    discussionItem.setDiscussionItemType(upsertMeetingDiscussionItemDTO.getDiscussionItemType());
+    User assignedTo = getUser(upsertMeetingDiscussionItemDTO.getAssignedTo());
     discussionItem.setAssignedTo(assignedTo);
     discussionItem.setUpdatedAt(dateUtil.getTime());
     MeetingDiscussionItem savedDiscussionItem = meetingDiscussionItemRepository.save(discussionItem);
@@ -108,7 +110,7 @@ public class MeetingService {
 
   List<ActionItem> getMeetingActionItem(String username) {
     List<MeetingDiscussionItem> meetingDiscussionItems = meetingDiscussionItemRepository
-        .findByAssignedToUserName(username);
+        .findByAssignedToUserNameAndStatusIn(username, asList(ActionItemStatus.IN_PROGRESS, ActionItemStatus.CREATED));
 
     return converter.convertToListOfObjects(meetingDiscussionItems, ActionItem.class);
   }

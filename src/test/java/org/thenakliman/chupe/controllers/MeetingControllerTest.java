@@ -33,7 +33,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
-import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
+import org.thenakliman.chupe.dto.UpsertMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
 import org.thenakliman.chupe.dto.MeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.User;
@@ -135,7 +135,7 @@ public class MeetingControllerTest {
 
   @Test
   public void shouldCreateMeetingDiscussionItem() throws Exception {
-    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
     createDiscussionItemDTO.setDiscussionItem("discussion-item");
     createDiscussionItemDTO.setAssignedTo("lal");
     createDiscussionItemDTO.setMeetingId(102L);
@@ -162,7 +162,7 @@ public class MeetingControllerTest {
 
   @Test
   public void shouldGiveBadRequestWhenDiscussionItemLengthIs9() throws Exception {
-    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
     createDiscussionItemDTO.setDiscussionItem("discussio");
     createDiscussionItemDTO.setAssignedTo("lal");
     createDiscussionItemDTO.setMeetingId(102L);
@@ -184,7 +184,7 @@ public class MeetingControllerTest {
 
   @Test
   public void shouldGiveBadRequestWhenDiscussionItemLengthIs257() throws Exception {
-    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
     createDiscussionItemDTO.setDiscussionItem(getStringWithLength(257));
     createDiscussionItemDTO.setAssignedTo("lal");
     createDiscussionItemDTO.setMeetingId(102L);
@@ -206,7 +206,7 @@ public class MeetingControllerTest {
 
   @Test
   public void shouldGiveBadRequestWhenAssignedToLengthIs257() throws Exception {
-    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
     createDiscussionItemDTO.setDiscussionItem(getStringWithLength(27));
     createDiscussionItemDTO.setAssignedTo(getStringWithLength(257));
     createDiscussionItemDTO.setMeetingId(102L);
@@ -228,7 +228,7 @@ public class MeetingControllerTest {
 
   @Test
   public void shouldGiveBadRequestWhenAssignedToLengthIs7() throws Exception {
-    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
     createDiscussionItemDTO.setDiscussionItem(getStringWithLength(27));
     createDiscussionItemDTO.setAssignedTo("");
     createDiscussionItemDTO.setMeetingId(102L);
@@ -270,7 +270,7 @@ public class MeetingControllerTest {
   @Test
   public void shouldUpdateMeetingDiscussionItem() throws Exception {
     Long id = 10L;
-    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
     createDiscussionItemDTO.setDiscussionItem("discussion-item");
     createDiscussionItemDTO.setAssignedTo("lal");
     createDiscussionItemDTO.setMeetingId(102L);
@@ -288,7 +288,7 @@ public class MeetingControllerTest {
   @Test
   public void shouldGivenBadRequestWhenUpdateMeetingDiscussionItemLengthIs9() throws Exception {
     Long id = 10L;
-    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
     createDiscussionItemDTO.setDiscussionItem("discussio");
     createDiscussionItemDTO.setAssignedTo("lal");
     createDiscussionItemDTO.setMeetingId(102L);
@@ -306,7 +306,7 @@ public class MeetingControllerTest {
   @Test
   public void shouldGivenBadRequestWhenUpdateMeetingDiscussionItemLengthIs257() throws Exception {
     Long id = 10L;
-    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
     createDiscussionItemDTO.setDiscussionItem(getStringWithLength(257));
     createDiscussionItemDTO.setAssignedTo("lal");
     createDiscussionItemDTO.setMeetingId(102L);
@@ -324,7 +324,7 @@ public class MeetingControllerTest {
   @Test
   public void shouldGivenBadRequestWhenUpdateMeetingAssignedToLengthIs0() throws Exception {
     Long id = 10L;
-    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
     createDiscussionItemDTO.setDiscussionItem(getStringWithLength(25));
     createDiscussionItemDTO.setAssignedTo("");
     createDiscussionItemDTO.setMeetingId(102L);
@@ -342,7 +342,7 @@ public class MeetingControllerTest {
   @Test
   public void shouldGivenBadRequestWhenUpdateMeetingAssignedToLengthIs257() throws Exception {
     Long id = 10L;
-    CreateMeetingDiscussionItemDTO createDiscussionItemDTO = new CreateMeetingDiscussionItemDTO();
+    UpsertMeetingDiscussionItemDTO createDiscussionItemDTO = new UpsertMeetingDiscussionItemDTO();
     createDiscussionItemDTO.setDiscussionItem(getStringWithLength(25));
     createDiscussionItemDTO.setAssignedTo(getStringWithLength(257));
     createDiscussionItemDTO.setMeetingId(102L);
