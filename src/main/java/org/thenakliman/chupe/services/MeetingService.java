@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
+import org.thenakliman.chupe.dto.ActionItem;
 import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
 import org.thenakliman.chupe.dto.MeetingDiscussionItemDTO;
@@ -28,7 +29,6 @@ public class MeetingService {
   @Autowired
   public MeetingService(MeetingRepository meetingRepository,
                         MeetingDiscussionItemRepository meetingDiscussionItemRepository,
-                        ModelMapper modelMapper,
                         DateUtil dateUtil,
                         Converter converter) {
 
@@ -104,6 +104,13 @@ public class MeetingService {
     discussionItem.setUpdatedAt(dateUtil.getTime());
     MeetingDiscussionItem savedDiscussionItem = meetingDiscussionItemRepository.save(discussionItem);
     return converter.convertToObject(savedDiscussionItem, MeetingDiscussionItemDTO.class);
+  }
+
+  List<ActionItem> getMeetingActionItem(String username) {
+    List<MeetingDiscussionItem> meetingDiscussionItems = meetingDiscussionItemRepository
+        .findByAssignedToUserName(username);
+
+    return converter.convertToListOfObjects(meetingDiscussionItems, ActionItem.class);
   }
 
   private User getUser(String username) {

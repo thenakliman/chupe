@@ -12,4 +12,6 @@ public interface MeetingDiscussionItemRepository extends JpaRepository<MeetingDi
   List<MeetingDiscussionItem> findByMeetingId(Long id);
 
   Optional<MeetingDiscussionItem> findByIdAndMeetingId(Long id, Long meetindId);
+
+  List<MeetingDiscussionItem> findByAssignedToUserName(String username);
 }

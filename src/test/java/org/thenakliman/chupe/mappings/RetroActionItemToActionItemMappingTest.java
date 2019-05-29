@@ -41,7 +41,7 @@ public class RetroActionItemToActionItemMappingTest {
     actionItem.setDescription(description1);
     actionItem.setId(actionItemId);
     actionItem.setDeadlineToAct(deadlineToAct);
-    actionItem.setType(ActionItemType.RETRO_ACTION_ITEM);
+    actionItem.setType(ActionItemType.RETROSPECTION);
 
     assertThat(mappedActionItem, is(actionItem));
   }

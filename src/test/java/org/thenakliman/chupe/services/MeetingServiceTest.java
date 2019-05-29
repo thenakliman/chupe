@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
+import org.thenakliman.chupe.dto.ActionItem;
 import org.thenakliman.chupe.dto.CreateMeetingDiscussionItemDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
 import org.thenakliman.chupe.dto.MeetingDiscussionItemDTO;
@@ -146,6 +147,28 @@ public class MeetingServiceTest {
     List<MeetingDiscussionItemDTO> receivedMeetingDiscussionItem = meetingService.getMeetingDiscussionItems(meetingId);
 
     assertThat(receivedMeetingDiscussionItem, hasItems(meetingDiscussionItemDTO1, meetingDiscussionItemDTO2));
+  }
+
+  @Test
+  public void getMeetingActionItem_shouldReturnActionItems() {
+    List<MeetingDiscussionItem> meetingDiscussionItems = Arrays.asList(
+        mock(MeetingDiscussionItem.class),
+        mock(MeetingDiscussionItem.class));
+    String username = "aise hi user";
+    when(meetingDiscussionItemRepository.findByAssignedToUserName(username)).thenReturn(meetingDiscussionItems);
+    ActionItem meetingDiscussionItemDTO1 = mock(ActionItem.class);
+    ActionItem meetingDiscussionItemDTO2 = mock(ActionItem.class);
+    List<ActionItem> meetingDiscussionItemDTOS = Arrays.asList(
+        meetingDiscussionItemDTO1,
+        meetingDiscussionItemDTO2
+    );
+
+    when(converter.convertToListOfObjects(meetingDiscussionItems, ActionItem.class))
+        .thenReturn(meetingDiscussionItemDTOS);
+
+    List<ActionItem> receivedActionItem = meetingService.getMeetingActionItem(username);
+
+    assertThat(receivedActionItem, hasItems(meetingDiscussionItemDTO1, meetingDiscussionItemDTO2));
   }
 
   @Test

@@ -16,7 +16,7 @@ public class RetroActionItemToActionItemMapping extends PropertyMapConfigurerSup
     return new PropertyMap<>() {
       @Override
       protected void configure() {
-        map().setType(ActionItemType.RETRO_ACTION_ITEM);
+        map().setType(ActionItemType.RETROSPECTION);
       }
     };
   }
