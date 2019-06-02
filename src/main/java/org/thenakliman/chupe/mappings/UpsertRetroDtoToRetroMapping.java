@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.models.Retro;
+import org.thenakliman.chupe.models.RetroStatus;
 
 @Component
 public class UpsertRetroDtoToRetroMapping
@@ -30,6 +31,7 @@ public class UpsertRetroDtoToRetroMapping
             .maximumVote(source.getMaximumVote())
             .createdAt(dateUtil.getTime())
             .updatedAt(dateUtil.getTime())
+            .status(RetroStatus.OPEN)
             .build();
       }
     };

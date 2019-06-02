@@ -5,6 +5,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,9 +43,17 @@ public class RetroController extends BaseController {
   }
 
   @PutMapping("/retros/{id}")
+  @PreAuthorize("@retroValidationService.canRetroBeUpdated(#retroId)")
   public ResponseEntity<RetroDTO> updateRetro(@Valid @RequestBody UpsertRetroDTO upsertRetroDTO,
-                                              @PathVariable(value = "id") long id) {
-    RetroDTO updatedRetro = retroService.updateRetro(id, upsertRetroDTO);
+                                              @PathVariable(value = "id") long retroId) {
+    RetroDTO updatedRetro = retroService.updateRetro(retroId, upsertRetroDTO);
     return new ResponseEntity<>(updatedRetro, HttpStatus.OK);
+  }
+
+  @PutMapping("/retros/{id}/close")
+  @PreAuthorize("@retroValidationService.canRetroBeUpdated(#retroId)")
+  public ResponseEntity<RetroDTO> closeRetro(@PathVariable(value = "id") long retroId) {
+    retroService.closeRetro(retroId);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

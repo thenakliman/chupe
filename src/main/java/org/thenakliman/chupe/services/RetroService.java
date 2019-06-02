@@ -12,6 +12,7 @@ import org.thenakliman.chupe.dto.RetroDTO;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Retro;
+import org.thenakliman.chupe.models.RetroStatus;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.RetroRepository;
 
@@ -53,5 +54,14 @@ public class RetroService {
 
     Retro updatedRetro = retroRepository.save(savedRetro.get());
     return converter.convertToObject(updatedRetro, RetroDTO.class);
+  }
+
+  public void closeRetro(long retroId) {
+    Optional<Retro> savedRetro = retroRepository.findById(retroId);
+    Retro retro = savedRetro.orElseThrow(
+        () -> new NotFoundException(format("Retro %d could not be found", retroId)));
+
+    retro.setStatus(RetroStatus.CLOSED);
+    retroRepository.save(retro);
   }
 }

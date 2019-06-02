@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -39,6 +42,9 @@ public class RetroServiceTest {
 
   @InjectMocks
   private RetroService retroService;
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
   private Date now;
 
@@ -157,6 +163,22 @@ public class RetroServiceTest {
 
     verify(retroRepository).save(updatedRetro);
     assertThat(actualRetroDTO, samePropertyValuesAs(retroDTO));
+  }
+
+  @Test
+  public void closeRetro_shouldThrowNotFoundException_whenRetroDoesNotExist() {
+    when(retroRepository.findById(1029L)).thenReturn(Optional.empty());
+
+    expectedException.expect(NotFoundException.class);
+    retroService.closeRetro(1029L);
+  }
+
+  @Test
+  public void closeRetro_shouldCloseRetro() {
+    Retro retro = mock(Retro.class);
+    when(retroRepository.findById(1029L)).thenReturn(Optional.of(retro));
+    retroService.closeRetro(1029L);
+    verify(retroRepository).save(retro);
   }
 
   private RetroDTO getRetroDTO(Retro retro) {

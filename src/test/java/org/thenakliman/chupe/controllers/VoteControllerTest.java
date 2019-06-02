@@ -2,6 +2,7 @@ package org.thenakliman.chupe.controllers;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import org.thenakliman.chupe.exceptions.BadRequestException;
 import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.services.RetroPointService;
 import org.thenakliman.chupe.services.TokenService;
+import org.thenakliman.chupe.validators.RetroValidationService;
 
 
 @WebMvcTest(controllers = VoteController.class)
@@ -41,6 +43,9 @@ public class VoteControllerTest extends BaseControllerTest {
   private TokenAuthenticationService tokenAuthenticationService;
   @MockBean
   private ApplicationContext applicationContext;
+  @MockBean
+  private RetroValidationService retroValidationService;
+
   private Authentication authToken;
 
   /**

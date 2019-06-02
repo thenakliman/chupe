@@ -1,0 +1,1 @@
+ALTER TABLE retrospection ADD status varchar(256);

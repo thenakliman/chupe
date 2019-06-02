@@ -25,4 +25,10 @@ public class GlobalExceptionHandler {
     logger.error(exception.getMessage(), exception);
     return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<String> handleException(AccessDeniedException exception) {
+    logger.error(exception.getMessage(), exception);
+    return new ResponseEntity<>(exception.getMessage(), HttpStatus.FORBIDDEN);
+  }
 }

@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,13 +30,14 @@ public class RetroPointController extends BaseController {
   }
 
   @GetMapping("/retro-points")
-  public ResponseEntity getRetros(@RequestParam("retroId") long id) {
+  public ResponseEntity getRetroPoints(@RequestParam("retroId") long id) {
     List<RetroPointDTO> retroPoints = retroPointService.getRetroPoints(id);
     return new ResponseEntity<>(retroPoints, HttpStatus.OK);
   }
 
   @PostMapping("/retro-points")
-  public ResponseEntity createRetro(@RequestBody @Valid UpsertRetroPointDTO upsertRetroPointDTO) {
+  @PreAuthorize("@retroValidationService.isRetroOpen(#upsertRetroPointDTO.retroId)")
+  public ResponseEntity createRetroPoint(@RequestBody @Valid UpsertRetroPointDTO upsertRetroPointDTO) {
     User userDetails =
         (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -47,10 +49,11 @@ public class RetroPointController extends BaseController {
   }
 
   @PutMapping("/retro-points/{id}")
-  public ResponseEntity<RetroPointDTO> updateRetro(@Valid @RequestBody UpsertRetroPointDTO retroPointDTO,
-                                                   @PathVariable(value = "id") long id) {
+  @PreAuthorize("@retroValidationService.canBeUpdated(#retroPointId)")
+  public ResponseEntity<RetroPointDTO> updateRetroPoint(@Valid @RequestBody UpsertRetroPointDTO retroPointDTO,
+                                                        @PathVariable(value = "id") long retroPointId) {
 
-    RetroPointDTO updatedRetroPoint = retroPointService.updateRetroPoint(id, retroPointDTO);
+    RetroPointDTO updatedRetroPoint = retroPointService.updateRetroPoint(retroPointId, retroPointDTO);
     return new ResponseEntity<>(updatedRetroPoint, HttpStatus.OK);
   }
 }

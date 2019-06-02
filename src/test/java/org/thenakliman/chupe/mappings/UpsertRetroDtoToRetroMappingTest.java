@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.models.Retro;
+import org.thenakliman.chupe.models.RetroStatus;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -49,6 +50,7 @@ public class UpsertRetroDtoToRetroMappingTest {
     Retro mappedRetro = modelMapper.map(upsertRetroDTO, Retro.class);
 
     assertEquals(retroName, mappedRetro.getName());
+    assertEquals(RetroStatus.OPEN, mappedRetro.getStatus());
     assertEquals(now, mappedRetro.getCreatedAt());
     assertEquals(now, mappedRetro.getUpdatedAt());
     assertNull(mappedRetro.getId());

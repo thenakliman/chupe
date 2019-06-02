@@ -2,6 +2,7 @@ package org.thenakliman.chupe.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +19,11 @@ public class VoteController extends BaseController {
     this.retroPointService = retroPointService;
   }
 
-  @PostMapping("/retro-point-votes/{id}")
-  public ResponseEntity castVote(@PathVariable(value = "id") long id) {
-    User userDetails =
-        (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-    retroPointService.castVote(id, userDetails.getUsername());
+  @PostMapping("/retro-point-votes/{retroPointId}")
+  @PreAuthorize("@retroValidationService.canBeVoted(#retroId)")
+  public ResponseEntity castVote(@PathVariable(value = "retroPointId") long retroPointId) {
+    User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    retroPointService.castVote(retroPointId, user.getUsername());
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 }
