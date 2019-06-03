@@ -1,6 +1,7 @@
 package org.thenakliman.chupe.models;
 
 public enum RetroStatus {
-  OPEN,
+  CREATED,
+  IN_PROGRESS,
   CLOSED
 }

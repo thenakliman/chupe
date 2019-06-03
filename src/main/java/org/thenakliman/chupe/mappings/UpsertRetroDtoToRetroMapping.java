@@ -31,7 +31,7 @@ public class UpsertRetroDtoToRetroMapping
             .maximumVote(source.getMaximumVote())
             .createdAt(dateUtil.getTime())
             .updatedAt(dateUtil.getTime())
-            .status(RetroStatus.OPEN)
+            .status(RetroStatus.CREATED)
             .build();
       }
     };

@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.RetroDTO;
+import org.thenakliman.chupe.dto.UpdateRetroStatusDto;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Retro;
-import org.thenakliman.chupe.models.RetroStatus;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.RetroRepository;
 
@@ -56,12 +56,12 @@ public class RetroService {
     return converter.convertToObject(updatedRetro, RetroDTO.class);
   }
 
-  public void closeRetro(long retroId) {
+  public void changeRetroStatus(long retroId, UpdateRetroStatusDto updateRetroStatusDto) {
     Optional<Retro> savedRetro = retroRepository.findById(retroId);
     Retro retro = savedRetro.orElseThrow(
         () -> new NotFoundException(format("Retro %d could not be found", retroId)));
 
-    retro.setStatus(RetroStatus.CLOSED);
+    retro.setStatus(updateRetroStatusDto.getStatus());
     retroRepository.save(retro);
   }
 }

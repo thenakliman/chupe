@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -31,9 +32,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.RetroDTO;
+import org.thenakliman.chupe.dto.UpdateRetroStatusDto;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.exceptions.NotFoundException;
+import org.thenakliman.chupe.models.RetroStatus;
 import org.thenakliman.chupe.services.RetroService;
 import org.thenakliman.chupe.services.TokenService;
 
@@ -197,6 +200,20 @@ public class RetroControllerTest extends BaseControllerTest {
         mvcResult.getResponse().getContentAsString(), RetroDTO.class);
 
     assertThat(result, samePropertyValuesAs(retroDTO));
+  }
+
+  @Test
+  public void shouldUpdateStatus() throws Exception {
+    UpdateRetroStatusDto updateRetroStatusDto = new UpdateRetroStatusDto(RetroStatus.IN_PROGRESS);
+    long retroId = 10L;
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .put("/api/v1/retro-status/" + retroId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(updateRetroStatusDto)))
+        .andExpect(MockMvcResultMatchers.status().isNoContent() ).andReturn();
+
+    verify(retroService).changeRetroStatus(retroId, updateRetroStatusDto);
   }
 
   @Test

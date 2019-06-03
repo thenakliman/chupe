@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.thenakliman.chupe.dto.RetroDTO;
+import org.thenakliman.chupe.dto.UpdateRetroStatusDto;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.services.RetroService;
@@ -50,10 +51,11 @@ public class RetroController extends BaseController {
     return new ResponseEntity<>(updatedRetro, HttpStatus.OK);
   }
 
-  @PutMapping("/retros/{id}/close")
+  @PutMapping("/retro-status/{id}")
   @PreAuthorize("@retroValidationService.canRetroBeUpdated(#retroId)")
-  public ResponseEntity<RetroDTO> closeRetro(@PathVariable(value = "id") long retroId) {
-    retroService.closeRetro(retroId);
+  public ResponseEntity<RetroDTO> retroStatusChange(@PathVariable(value = "id") long retroId,
+                                                    @RequestBody UpdateRetroStatusDto updateRetroStatusDto) {
+    retroService.changeRetroStatus(retroId, updateRetroStatusDto);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

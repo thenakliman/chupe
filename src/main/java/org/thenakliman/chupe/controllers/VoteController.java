@@ -20,7 +20,7 @@ public class VoteController extends BaseController {
   }
 
   @PostMapping("/retro-point-votes/{retroPointId}")
-  @PreAuthorize("@retroValidationService.canBeVoted(#retroId)")
+  @PreAuthorize("@retroValidationService.canBeVoted(#retroPointId)")
   public ResponseEntity castVote(@PathVariable(value = "retroPointId") long retroPointId) {
     User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     retroPointService.castVote(retroPointId, user.getUsername());

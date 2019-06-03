@@ -47,7 +47,7 @@ public class RetroValidationService {
     Retro retro = retroOptional.orElseThrow(
         () -> new NotFoundException(String.format("Retro %s not found", retroId)));
 
-    return RetroStatus.OPEN.equals(retro.getStatus());
+    return RetroStatus.CREATED.equals(retro.getStatus());
   }
 
   public boolean canBeVoted(long retroPointId) {
@@ -55,7 +55,7 @@ public class RetroValidationService {
     RetroPoint retroPoint = retroPointOptional.orElseThrow(
         () -> new NotFoundException(String.format("Retro point %s not found", retroPointId)));
 
-    return RetroStatus.OPEN.equals(retroPoint.getRetro().getStatus());
+    return RetroStatus.IN_PROGRESS.equals(retroPoint.getRetro().getStatus());
   }
 
   public boolean canBeUpdated(long retroPointId) {

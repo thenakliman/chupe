@@ -50,7 +50,7 @@ public class UpsertRetroDtoToRetroMappingTest {
     Retro mappedRetro = modelMapper.map(upsertRetroDTO, Retro.class);
 
     assertEquals(retroName, mappedRetro.getName());
-    assertEquals(RetroStatus.OPEN, mappedRetro.getStatus());
+    assertEquals(RetroStatus.CREATED, mappedRetro.getStatus());
     assertEquals(now, mappedRetro.getCreatedAt());
     assertEquals(now, mappedRetro.getUpdatedAt());
     assertNull(mappedRetro.getId());

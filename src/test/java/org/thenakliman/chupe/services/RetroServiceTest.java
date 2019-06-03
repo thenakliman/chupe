@@ -25,9 +25,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.RetroDTO;
+import org.thenakliman.chupe.dto.UpdateRetroStatusDto;
 import org.thenakliman.chupe.dto.UpsertRetroDTO;
 import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Retro;
+import org.thenakliman.chupe.models.RetroStatus;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.RetroRepository;
 
@@ -166,18 +168,18 @@ public class RetroServiceTest {
   }
 
   @Test
-  public void closeRetro_shouldThrowNotFoundException_whenRetroDoesNotExist() {
+  public void changeRetroStatus_shouldThrowNotFoundException_whenRetroDoesNotExist() {
     when(retroRepository.findById(1029L)).thenReturn(Optional.empty());
 
     expectedException.expect(NotFoundException.class);
-    retroService.closeRetro(1029L);
+    retroService.changeRetroStatus(1029L, new UpdateRetroStatusDto(RetroStatus.CLOSED));
   }
 
   @Test
-  public void closeRetro_shouldCloseRetro() {
+  public void changeRetroStatus_shouldCloseRetro() {
     Retro retro = mock(Retro.class);
     when(retroRepository.findById(1029L)).thenReturn(Optional.of(retro));
-    retroService.closeRetro(1029L);
+    retroService.changeRetroStatus(1029L, new UpdateRetroStatusDto(RetroStatus.CLOSED));
     verify(retroRepository).save(retro);
   }
 

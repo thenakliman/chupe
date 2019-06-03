@@ -82,7 +82,7 @@ public class RetroValidationServiceTest {
     Optional<Retro> retroOptional = Optional.of(Retro
         .builder()
         .id(retroId)
-        .status(RetroStatus.OPEN)
+        .status(RetroStatus.CREATED)
         .createdBy(org.thenakliman.chupe.models.User.builder().userName("fake-user").build())
         .build());
 
@@ -98,7 +98,7 @@ public class RetroValidationServiceTest {
     Optional<Retro> retroOptional = Optional.of(Retro
         .builder()
         .id(retroId)
-        .status(RetroStatus.OPEN)
+        .status(RetroStatus.CREATED)
         .createdBy(org.thenakliman.chupe.models.User.builder().userName(username).build())
         .build());
 
@@ -136,7 +136,7 @@ public class RetroValidationServiceTest {
     Optional<Retro> retroOptional = Optional.of(Retro
         .builder()
         .id(retroId)
-        .status(RetroStatus.OPEN)
+        .status(RetroStatus.CREATED)
         .build());
 
     when(retroRepository.findById(retroId)).thenReturn(retroOptional);
@@ -174,7 +174,7 @@ public class RetroValidationServiceTest {
     Optional<RetroPoint> retroOptional = Optional.of(RetroPoint
         .builder()
         .id(retroId)
-        .retro(Retro.builder().status(RetroStatus.OPEN).build())
+        .retro(Retro.builder().status(RetroStatus.CREATED).build())
         .addedBy(org.thenakliman.chupe.models.User.builder().userName("fake-user").build())
         .build());
 
@@ -190,7 +190,7 @@ public class RetroValidationServiceTest {
     Optional<RetroPoint> retroOptional = Optional.of(RetroPoint
         .builder()
         .id(retroId)
-        .retro(Retro.builder().status(RetroStatus.OPEN).build())
+        .retro(Retro.builder().status(RetroStatus.CREATED).build())
         .addedBy(org.thenakliman.chupe.models.User.builder().userName(username).build())
         .build());
 
@@ -228,7 +228,7 @@ public class RetroValidationServiceTest {
     Optional<RetroPoint> retroOptional = Optional.of(RetroPoint
         .builder()
         .id(retroId)
-        .retro(Retro.builder().status(RetroStatus.OPEN).build())
+        .retro(Retro.builder().status(RetroStatus.IN_PROGRESS).build())
         .build());
 
     when(retroPointRepository.findById(retroId)).thenReturn(retroOptional);
@@ -236,5 +236,20 @@ public class RetroValidationServiceTest {
     boolean retroOpen = retroValidationService.canBeVoted(retroId);
 
     assertTrue(retroOpen);
+  }
+
+  @Test
+  public void canBeVoted_shouldReturnFalse_whenStatusIsCreated() {
+    Optional<RetroPoint> retroOptional = Optional.of(RetroPoint
+        .builder()
+        .id(retroId)
+        .retro(Retro.builder().status(RetroStatus.CREATED).build())
+        .build());
+
+    when(retroPointRepository.findById(retroId)).thenReturn(retroOptional);
+
+    boolean retroOpen = retroValidationService.canBeVoted(retroId);
+
+    assertFalse(retroOpen);
   }
 }
