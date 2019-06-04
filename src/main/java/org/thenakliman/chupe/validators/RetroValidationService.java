@@ -47,7 +47,12 @@ public class RetroValidationService {
     Retro retro = retroOptional.orElseThrow(
         () -> new NotFoundException(String.format("Retro %s not found", retroId)));
 
-    return RetroStatus.CREATED.equals(retro.getStatus());
+    if (!RetroStatus.CREATED.equals(retro.getStatus())) {
+      throw new BadRequestException(
+          String.format("Retro %s is not in open status. status = %s", retroId, retro.getStatus()));
+    }
+
+    return true;
   }
 
   public boolean canBeVoted(long retroPointId) {
@@ -55,7 +60,12 @@ public class RetroValidationService {
     RetroPoint retroPoint = retroPointOptional.orElseThrow(
         () -> new NotFoundException(String.format("Retro point %s not found", retroPointId)));
 
-    return RetroStatus.IN_PROGRESS.equals(retroPoint.getRetro().getStatus());
+    if (!RetroStatus.IN_PROGRESS.equals(retroPoint.getRetro().getStatus())) {
+      throw new BadRequestException(
+          String.format("Retro %s is not in progress. status = %s",
+              retroPoint.getRetro().getId(), retroPoint.getRetro().getStatus()));
+    }
+    return true;
   }
 
   public boolean canBeUpdated(long retroPointId) {

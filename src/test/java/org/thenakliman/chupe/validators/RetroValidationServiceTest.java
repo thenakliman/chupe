@@ -117,7 +117,7 @@ public class RetroValidationServiceTest {
   }
 
   @Test
-  public void isRetroOpen_shouldReturnFalse_whenStatusIsClosed() {
+  public void isRetroOpen_shouldThrowBadRequest_whenStatusIsClosed() {
     Optional<Retro> retroOptional = Optional.of(Retro
         .builder()
         .id(retroId)
@@ -126,9 +126,8 @@ public class RetroValidationServiceTest {
 
     when(retroRepository.findById(retroId)).thenReturn(retroOptional);
 
-    boolean retroOpen = retroValidationService.isRetroOpen(retroId);
-
-    assertFalse(retroOpen);
+    expectedException.expect(BadRequestException.class);
+    retroValidationService.isRetroOpen(retroId);
   }
 
   @Test
@@ -218,9 +217,8 @@ public class RetroValidationServiceTest {
 
     when(retroPointRepository.findById(retroId)).thenReturn(retroOptional);
 
-    boolean retroOpen = retroValidationService.canBeVoted(retroId);
-
-    assertFalse(retroOpen);
+    expectedException.expect(BadRequestException.class);
+    retroValidationService.canBeVoted(retroId);
   }
 
   @Test
@@ -248,8 +246,7 @@ public class RetroValidationServiceTest {
 
     when(retroPointRepository.findById(retroId)).thenReturn(retroOptional);
 
-    boolean retroOpen = retroValidationService.canBeVoted(retroId);
-
-    assertFalse(retroOpen);
+    expectedException.expect(BadRequestException.class);
+    retroValidationService.canBeVoted(retroId);
   }
 }
