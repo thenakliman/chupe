@@ -20,5 +20,5 @@ public class RetroDTO {
   private String createdBy;
   @NonNull
   private Long maximumVote;
-  private RetroStatus retroStatus;
+  private RetroStatus status;
 }
