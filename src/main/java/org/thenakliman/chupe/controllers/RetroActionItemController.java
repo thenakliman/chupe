@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,12 +36,14 @@ public class RetroActionItemController extends BaseController {
   }
 
   @PostMapping("/retro-action-items")
+  @PreAuthorize("@retroValidationService.isRetroInProgress(#insertActionItemDTO.getRetroId())")
   public ResponseEntity<ActionItemDTO> addActionItem(@Valid @RequestBody InsertActionItemDTO insertActionItemDTO) {
     ActionItemDTO savedActionItem = retroActionItemService.addActionItem(insertActionItemDTO, getRequestUsername());
     return new ResponseEntity<>(savedActionItem, HttpStatus.CREATED);
   }
 
   @PutMapping("/retro-action-items/{actionItemId}")
+  @PreAuthorize("@retroValidationService.canActionItemBeUpdated(#actionItemId)")
   public ResponseEntity<ActionItemDTO> updateMeeting(@NotNull @PathVariable Long actionItemId,
                                                      @Valid @RequestBody UpdateActionItemDTO updateActionItemDTO) {
 

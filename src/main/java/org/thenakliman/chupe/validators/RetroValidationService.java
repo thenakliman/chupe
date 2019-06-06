@@ -9,8 +9,10 @@ import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.exceptions.BadRequestException;
 import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.Retro;
+import org.thenakliman.chupe.models.RetroActionItem;
 import org.thenakliman.chupe.models.RetroPoint;
 import org.thenakliman.chupe.models.RetroStatus;
+import org.thenakliman.chupe.repositories.RetroActionItemRepository;
 import org.thenakliman.chupe.repositories.RetroPointRepository;
 import org.thenakliman.chupe.repositories.RetroRepository;
 
@@ -18,12 +20,16 @@ import org.thenakliman.chupe.repositories.RetroRepository;
 public class RetroValidationService {
   private RetroRepository retroRepository;
   private RetroPointRepository retroPointRepository;
+  private RetroActionItemRepository retroActionItemRepository;
 
   @Autowired
   public RetroValidationService(RetroRepository retroRepository,
-                                RetroPointRepository retroPointRepository) {
+                                RetroPointRepository retroPointRepository,
+                                RetroActionItemRepository retroActionItemRepository) {
+
     this.retroRepository = retroRepository;
     this.retroPointRepository = retroPointRepository;
+    this.retroActionItemRepository = retroActionItemRepository;
   }
 
   private String getRequestUserName() {
@@ -66,6 +72,32 @@ public class RetroValidationService {
               retroPoint.getRetro().getId(), retroPoint.getRetro().getStatus()));
     }
     return true;
+  }
+
+  public boolean isRetroInProgress(long retroId) {
+    Optional<Retro> retroOptional = retroRepository.findById(retroId);
+    Retro retro = retroOptional.orElseThrow(
+        () -> new NotFoundException(String.format("Retro %s not found", retroId)));
+
+    if (!RetroStatus.IN_PROGRESS.equals(retro.getStatus())) {
+      throw new BadRequestException(
+          String.format("Retro %s is not in progress. status = %s",
+              retro.getId(), retro.getStatus()));
+    }
+    return true;
+  }
+
+  public boolean canActionItemBeUpdated(long actionItemId) {
+    Optional<RetroActionItem> retroOptional = retroActionItemRepository.findById(actionItemId);
+    RetroActionItem retroActionItem = retroOptional.orElseThrow(
+        () -> new NotFoundException(String.format("Action item %s not found", actionItemId)));
+
+    if (RetroStatus.CLOSED.equals(retroActionItem.getRetro().getStatus())) {
+      throw new BadRequestException(
+          String.format("Retro %s is in closed status.", retroActionItem.getRetro().getId()));
+    }
+
+    return getRequestUserName().equals(retroActionItem.getCreatedBy().getUserName());
   }
 
   public boolean canBeUpdated(long retroPointId) {
