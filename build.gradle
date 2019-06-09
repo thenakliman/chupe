@@ -5,14 +5,22 @@ plugins {
     // Apply the application plugin to add support for building an application
     id 'application'
 
+    id 'org.unbroken-dome.test-sets' version '1.5.2'
+
     // flyway plugin for database migrations
     id "org.flywaydb.flyway" version "5.0.7"
+
+    id "au.com.dius.pact" version "3.6.4"
 }
 
 // Define the main class for the application
 mainClassName = 'org.thenakliman.chupe.App'
 apply plugin: 'pmd'
 apply plugin: 'checkstyle'
+
+testSets {
+    contractTest
+}
 
 dependencies {
     compileOnly('org.projectlombok:lombok:1.18.2')
@@ -37,6 +45,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.0.1.RELEASE'
     testCompile 'org.mockito:mockito-core:2.18.0'
+    contractTestCompile 'au.com.dius:pact-jvm-provider-spring_2.12:3.6.4'
+    contractTestCompile 'au.com.dius:pact-jvm-provider-junit_2.12:3.6.4'
+    contractTestCompile 'au.com.dius:pact-jvm-consumer-junit_2.12:3.6.4'
 }
 
 // In this section you declare where to find the dependencies of your project
