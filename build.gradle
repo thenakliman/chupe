@@ -45,6 +45,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.0.1.RELEASE'
     testCompile 'org.mockito:mockito-core:2.18.0'
+    testCompile 'com.h2database:h2:1.4.199'
     contractTestCompile 'au.com.dius:pact-jvm-provider-spring_2.12:3.6.4'
     contractTestCompile 'au.com.dius:pact-jvm-provider-junit_2.12:3.6.4'
     contractTestCompile 'au.com.dius:pact-jvm-consumer-junit_2.12:3.6.4'
