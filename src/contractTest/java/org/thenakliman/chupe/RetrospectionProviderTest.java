@@ -19,8 +19,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.thenakliman.chupe.config.UserToken;
 import org.thenakliman.chupe.dto.RetroDTO;
+import org.thenakliman.chupe.dto.RetroPointDTO;
 import org.thenakliman.chupe.dto.User;
+import org.thenakliman.chupe.models.RetroPointType;
 import org.thenakliman.chupe.models.RetroStatus;
+import org.thenakliman.chupe.services.RetroPointService;
 import org.thenakliman.chupe.services.RetroService;
 import org.thenakliman.chupe.services.TokenService;
 import org.thenakliman.chupe.validators.RetroValidationService;
@@ -36,6 +39,9 @@ public class RetrospectionProviderTest {
 
   @MockBean
   private RetroService retroService;
+
+  @MockBean
+  private RetroPointService retroPointService;
 
   @MockBean
   private RetroValidationService retroValidationService;
@@ -69,5 +75,20 @@ public class RetrospectionProviderTest {
         .build();
 
     when(retroService.getRetros()).thenReturn(Collections.singletonList(retroDto));
+  }
+
+  @State("should have retro points")
+  public void shouldReturnRetroPoints() {
+    RetroPointDTO retroPointDTO = RetroPointDTO
+        .builder()
+        .retroId(10L)
+        .type(RetroPointType.NEED_IMPROVEMENT)
+        .description("some description")
+        .addedBy("someUser")
+        .votes(12)
+        .id(101L)
+        .build();
+
+    when(retroPointService.getRetroPoints(10L)).thenReturn(Collections.singletonList(retroPointDTO));
   }
 }
