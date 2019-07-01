@@ -81,8 +81,18 @@ checkstyle {
 
 }
 
+def getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
 contractTest {
     systemProperty "pact.verifier.publishResults", System.getProperty("pact.verifier.publishResults")
+    systemProperty "pact.provider.version", "${getGitHash()}"
 }
 
 flyway {
