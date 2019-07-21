@@ -94,10 +94,3 @@ contractTest {
     systemProperty "pact.verifier.publishResults", System.getProperty("pact.verifier.publishResults")
     systemProperty "pact.provider.version", "${getGitHash()}"
 }
-
-flyway {
-    url = 'jdbc:postgresql://172.17.0.2:5432/chupe'
-    user = 'chupe'
-    password = 'password'
-    baselineOnMigrate = true
-}
