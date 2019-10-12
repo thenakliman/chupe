@@ -31,7 +31,7 @@ public class FeedbackSession {
   private String description;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "createdBy", referencedColumnName = "username")
+  @JoinColumn(name = "created_by", referencedColumnName = "username")
   private User createdBy;
 
   @Column(name = "created_at", nullable = false)

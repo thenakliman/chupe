@@ -45,7 +45,7 @@ public class RetroActionItem {
   private ActionItemStatus status;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "createdBy", referencedColumnName = "username")
+  @JoinColumn(name = "created_by", referencedColumnName = "username")
   private User createdBy;
 
   @ManyToOne(fetch = FetchType.LAZY)

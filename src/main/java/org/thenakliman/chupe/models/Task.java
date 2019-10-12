@@ -40,7 +40,7 @@ public class Task {
   private int progress;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "createdBy", referencedColumnName = "username")
+  @JoinColumn(name = "created_by", referencedColumnName = "username")
   private User createdBy;
 
   @Column(name = "started_on")
