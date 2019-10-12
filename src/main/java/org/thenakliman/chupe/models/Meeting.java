@@ -31,7 +31,7 @@ public class Meeting {
   private String subject;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "created_by", referencedColumnName = "username")
+  @JoinColumn(name = "createdBy", referencedColumnName = "username")
   private User createdBy;
 
   @Column(name = "created_at", nullable = false)

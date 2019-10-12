@@ -1,10 +1,7 @@
 package org.thenakliman.chupe.models;
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,37 +9,38 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity(name = "retrospection")
+@Entity(name = "best_practice_assessment")
 @Table
-public class Retro {
+public class BestPracticeAssessment {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "name", nullable = false)
-  private String name;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "best_practice_id", referencedColumnName = "id")
+  private BestPractice bestPractice;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "createdBy", referencedColumnName = "username")
-  private User createdBy;
+  @JoinColumn(name = "retrospection_id", referencedColumnName = "id")
+  private Retro retro;
 
-  @Column(name = "maximum_vote", nullable = false)
-  private Long maximumVote;
+  @Column(name = "answer", nullable = false)
+  private Boolean answer;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "status", nullable = false)
-  private RetroStatus status;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "answered_by", referencedColumnName = "username")
+  private User answeredBy;
 
   @Column(name = "created_at", nullable = false)
   private Date createdAt;
