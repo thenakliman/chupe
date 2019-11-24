@@ -30,12 +30,6 @@ public class BestPractice {
   @Column(name = "description", nullable = false)
   private String description;
 
-  @Column(name = "need_improvement", nullable = false)
-  private String needImprovement;
-
-  @Column(name = "done_well", nullable = false)
-  private String doneWell;
-
   @Column(name = "applicable", nullable = false)
   private Boolean applicable;
 

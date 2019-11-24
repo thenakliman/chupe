@@ -41,8 +41,6 @@ public class UpsertBestPracticeDtoToBestPracticeMappingTest {
     UpsertBestPracticeDTO upsertBestPracticeDTO = UpsertBestPracticeDTO.builder()
         .description("hello world")
         .applicable(false)
-        .doneWell("really great work")
-        .needImprovement("need to work on some areas")
         .build();
 
     BestPractice bestPractice = modelMapper.map(upsertBestPracticeDTO, BestPractice.class);
@@ -51,7 +49,5 @@ public class UpsertBestPracticeDtoToBestPracticeMappingTest {
     assertThat(bestPractice.getUpdatedAt(), is(now));
     assertNull(bestPractice.getCreatedBy());
     assertThat(bestPractice.getDescription(), is("hello world"));
-    assertThat(bestPractice.getDoneWell(), is("really great work"));
-    assertThat(bestPractice.getNeedImprovement(), is("need to work on some areas"));
   }
 }

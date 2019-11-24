@@ -34,7 +34,7 @@ public class BestPracticeAssessmentService {
   public List<BestPracticeAssessmentDTO> saveBestPracticeAssessment(
       List<UpsertBestPracticeAssessmentDTO> upsertBestPracticeAssessmentDTOs, String currentUser) {
 
-    validatePracticesIfInvalidThrowException(upsertBestPracticeAssessmentDTOs);
+    throwExceptionIfInvalidPractice(upsertBestPracticeAssessmentDTOs);
 
     final List<BestPracticeAssessment> assessments = upsertBestPracticeAssessmentDTOs.stream()
         .map(assessment -> converter.convertToObject(assessment, BestPracticeAssessment.class))
@@ -45,7 +45,7 @@ public class BestPracticeAssessmentService {
     return converter.convertToListOfObjects(assessments, BestPracticeAssessmentDTO.class);
   }
 
-  private void validatePracticesIfInvalidThrowException(List<UpsertBestPracticeAssessmentDTO> assessmentDTOs) {
+  private void throwExceptionIfInvalidPractice(List<UpsertBestPracticeAssessmentDTO> assessmentDTOs) {
     List<BestPracticeDTO> bestPractices = bestPracticeService.getActiveBestPractices();
     Set<Long> bestPracticesId = bestPractices.stream()
         .map(BestPracticeDTO::getId)
@@ -53,9 +53,7 @@ public class BestPracticeAssessmentService {
 
     if (assessmentDTOs.size() != bestPracticesId.size()) {
       throw new BadRequestException(String.format(
-          "All the assessments must be answered, valid assessments are %s, you have answered %s.",
-          assessmentDTOs.size(),
-          bestPracticesId.size()));
+          "Valid assessments are: %s, you have answered: %s.", bestPracticesId.size(), assessmentDTOs.size()));
     }
 
     assessmentDTOs.stream()

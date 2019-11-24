@@ -1,0 +1,1 @@
+ALTER TABLE best_practice DROP COLUMN need_improvement, DROP COLUMN done_well;

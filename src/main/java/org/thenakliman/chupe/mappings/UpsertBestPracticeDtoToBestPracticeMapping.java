@@ -30,8 +30,6 @@ public class UpsertBestPracticeDtoToBestPracticeMapping extends ConverterConfigu
             .builder()
             .description(source.getDescription())
             .applicable(source.isApplicable())
-            .doneWell(source.getDoneWell())
-            .needImprovement(source.getNeedImprovement())
             .createdAt(dateUtil.getTime())
             .updatedAt(dateUtil.getTime())
             .build();

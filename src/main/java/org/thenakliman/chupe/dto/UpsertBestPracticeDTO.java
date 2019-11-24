@@ -14,10 +14,6 @@ import lombok.NoArgsConstructor;
 public class UpsertBestPracticeDTO {
   @NotNull
   private String description;
-  @NotNull
-  private String needImprovement;
-  @NotNull
-  private String doneWell;
   private boolean applicable;
 }
 

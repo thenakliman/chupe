@@ -28,10 +28,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.BestPracticeAssessmentDTO;
-import org.thenakliman.chupe.dto.BestPracticeDTO;
 import org.thenakliman.chupe.dto.UpsertBestPracticeAssessmentDTO;
 import org.thenakliman.chupe.dto.User;
-import org.thenakliman.chupe.models.BestPracticeAssessment;
 import org.thenakliman.chupe.services.BestPracticeAssessmentService;
 import org.thenakliman.chupe.services.TokenService;
 
@@ -74,7 +72,7 @@ public class BestPracticeAssessmentControllerTest {
   }
 
   @Test
-  public void shouldGetBestPractice() throws Exception {
+  public void shouldGetBestPracticeAssessment() throws Exception {
     SecurityContextHolder.getContext().setAuthentication(authToken);
     UpsertBestPracticeAssessmentDTO upsertBestPracticeAssessmentDTO = UpsertBestPracticeAssessmentDTO.builder()
         .bestPracticeId(100L)
@@ -95,7 +93,7 @@ public class BestPracticeAssessmentControllerTest {
         .post("/api/v1/best-practices-assessments")
         .content(objectMapper.writeValueAsBytes(singletonList(upsertBestPracticeAssessmentDTO)))
         .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.status().isCreated())
         .andReturn();
 
     verify(bestPracticeAssessmentService).saveBestPracticeAssessment(singletonList(upsertBestPracticeAssessmentDTO), username);

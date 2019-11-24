@@ -29,6 +29,6 @@ public class BestPracticesController extends BaseController {
   @PostMapping("/best-practices")
   public ResponseEntity<BestPracticeDTO> createPractice(@Valid @RequestBody UpsertBestPracticeDTO upsertBestPracticeDTO) {
     BestPracticeDTO bestPractices = bestPracticeService.saveBestPractice(upsertBestPracticeDTO, getRequestUsername());
-    return new ResponseEntity<>(bestPractices, HttpStatus.OK);
+    return new ResponseEntity<>(bestPractices, HttpStatus.CREATED);
   }
 }

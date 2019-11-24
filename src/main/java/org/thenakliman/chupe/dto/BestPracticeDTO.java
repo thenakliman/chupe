@@ -12,8 +12,5 @@ import lombok.NoArgsConstructor;
 public class BestPracticeDTO {
   private Long id;
   private String description;
-  private String needImprovement;
-  private String doneWell;
-  private boolean applicable;
 }
 

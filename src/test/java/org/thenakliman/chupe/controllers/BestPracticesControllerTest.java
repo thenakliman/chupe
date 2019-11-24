@@ -85,10 +85,7 @@ public class BestPracticesControllerTest {
     SecurityContextHolder.getContext().setAuthentication(authToken);
     BestPracticeDTO bestPracticeDTO = BestPracticeDTO.builder()
         .id(101L)
-        .needImprovement("need improvement")
         .description("description")
-        .doneWell("something good")
-        .applicable(false)
         .build();
 
     when(bestPracticeService.getActiveBestPractices()).thenReturn(Collections.singletonList(bestPracticeDTO));
@@ -108,25 +105,20 @@ public class BestPracticesControllerTest {
   public void shouldCreateBestPractice() throws Exception {
     SecurityContextHolder.getContext().setAuthentication(authToken);
     UpsertBestPracticeDTO upsertBestPracticeDTO = UpsertBestPracticeDTO.builder()
-        .needImprovement("need improvement")
         .description("description")
-        .doneWell("something good")
-        .applicable(false)
+        .applicable(true)
         .build();
 
     BestPracticeDTO bestPracticeDTO = BestPracticeDTO.builder()
-        .needImprovement("need improvement")
         .description("description")
-        .doneWell("something good")
-        .applicable(false)
         .build();
 
     when(bestPracticeService.saveBestPractice(upsertBestPracticeDTO, "username")).thenReturn(bestPracticeDTO);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/best-practices")
-        .content(objectMapper.writeValueAsBytes(bestPracticeDTO))
+        .content(objectMapper.writeValueAsBytes(upsertBestPracticeDTO))
         .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.status().isCreated())
         .andReturn();
 
     verify(bestPracticeService).saveBestPractice(upsertBestPracticeDTO, "username");

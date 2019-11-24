@@ -35,6 +35,7 @@ public class BestPracticeService {
         .build();
 
     bestPractice.setCreatedBy(createdBy);
+    bestPractice.setApplicable(true);
     BestPractice savedBestPractice = bestPracticeRepository.save(bestPractice);
     return converter.convertToObject(savedBestPractice, BestPracticeDTO.class);
   }

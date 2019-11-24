@@ -27,6 +27,6 @@ public class BestPracticeAssessmentController extends BaseController {
         upsertBestPracticeAssessmentDTOs,
         getRequestUsername());
 
-    return new ResponseEntity<>(bestPracticeAssessmentDTOs, HttpStatus.OK);
+    return new ResponseEntity<>(bestPracticeAssessmentDTOs, HttpStatus.CREATED);
   }
 }
