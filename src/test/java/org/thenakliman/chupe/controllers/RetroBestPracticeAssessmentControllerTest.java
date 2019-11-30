@@ -1,8 +1,8 @@
 package org.thenakliman.chupe.controllers;
 
 import static java.util.Collections.singletonList;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.hasItemInArray;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,15 +27,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.thenakliman.chupe.config.TokenAuthenticationService;
+import org.thenakliman.chupe.dto.BestPracticeAssessmentAnswerDTO;
 import org.thenakliman.chupe.dto.BestPracticeAssessmentDTO;
-import org.thenakliman.chupe.dto.UpsertBestPracticeAssessmentDTO;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.services.BestPracticeAssessmentService;
 import org.thenakliman.chupe.services.TokenService;
 
-@WebMvcTest(controllers = BestPracticeAssessmentController.class, secure = false)
+@WebMvcTest(controllers = RetroBestPracticeAssessmentController.class, secure = false)
 @RunWith(SpringRunner.class)
-public class BestPracticeAssessmentControllerTest {
+public class RetroBestPracticeAssessmentControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
@@ -74,31 +74,29 @@ public class BestPracticeAssessmentControllerTest {
   @Test
   public void shouldGetBestPracticeAssessment() throws Exception {
     SecurityContextHolder.getContext().setAuthentication(authToken);
-    UpsertBestPracticeAssessmentDTO upsertBestPracticeAssessmentDTO = UpsertBestPracticeAssessmentDTO.builder()
+    BestPracticeAssessmentAnswerDTO bestPracticeAssessmentAnswerDTO = BestPracticeAssessmentAnswerDTO.builder()
         .bestPracticeId(100L)
         .answer(false)
-        .retroId(102L)
         .build();
 
     BestPracticeAssessmentDTO bestPracticeAssessmentDTO = BestPracticeAssessmentDTO.builder()
-        .bestPracticeId(100L)
-        .answer(false)
-        .retroId(102L)
+        .answers(singletonList(bestPracticeAssessmentAnswerDTO))
         .id(1222L)
         .build();
 
-    when(bestPracticeAssessmentService.saveBestPracticeAssessment(singletonList(upsertBestPracticeAssessmentDTO), username))
-        .thenReturn(singletonList(bestPracticeAssessmentDTO));
+    long retroId = 12345L;
+    when(bestPracticeAssessmentService.saveBestPracticeAssessment(retroId, singletonList(bestPracticeAssessmentAnswerDTO), username))
+        .thenReturn(bestPracticeAssessmentDTO);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-        .post("/api/v1/best-practices-assessments")
-        .content(objectMapper.writeValueAsBytes(singletonList(upsertBestPracticeAssessmentDTO)))
+        .post("/api/v1/retros/12345/best-practices-assessments")
+        .content(objectMapper.writeValueAsBytes(singletonList(bestPracticeAssessmentAnswerDTO)))
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isCreated())
         .andReturn();
 
-    verify(bestPracticeAssessmentService).saveBestPracticeAssessment(singletonList(upsertBestPracticeAssessmentDTO), username);
-    BestPracticeAssessmentDTO[] bestPracticeAssessmentDTOs = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BestPracticeAssessmentDTO[].class);
-    assertThat(bestPracticeAssessmentDTOs, arrayWithSize(1));
-    assertThat(bestPracticeAssessmentDTOs, hasItemInArray(bestPracticeAssessmentDTO));
+    verify(bestPracticeAssessmentService).saveBestPracticeAssessment(retroId, singletonList(bestPracticeAssessmentAnswerDTO), username);
+    BestPracticeAssessmentDTO bestPracticeAssessmentDTOs = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BestPracticeAssessmentDTO.class);
+    assertThat(bestPracticeAssessmentDTOs.getAnswers(), hasSize(1));
+    assertThat(bestPracticeAssessmentDTOs.getAnswers(), hasItem(bestPracticeAssessmentAnswerDTO));
   }
 }

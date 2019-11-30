@@ -8,10 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Date;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,23 +20,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity(name = "best_practice_assessment")
+@Entity(name = "best_practices_assessment_answer")
 @Table
-public class BestPracticeAssessment {
+public class BestPracticeAssessmentAnswer {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "retrospection_id", referencedColumnName = "id")
-  private Retro retro;
+  @JoinColumn(name = "best_practice_id", referencedColumnName = "id")
+  private BestPractice bestPractice;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "answered_by", referencedColumnName = "username")
-  private User answeredBy;
+  @JoinColumn(name = "best_practice_assessment_id", referencedColumnName = "id")
+  private BestPracticeAssessment bestPracticeAssessment;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "bestPracticeAssessment")
-  private List<BestPracticeAssessmentAnswer> bestPracticeAssessmentAnswers;
+  @Column(name = "answer", nullable = false)
+  private Boolean answer;
 
   @Column(name = "created_at", nullable = false)
   private Date createdAt;

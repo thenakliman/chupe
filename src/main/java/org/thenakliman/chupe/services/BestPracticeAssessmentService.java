@@ -7,12 +7,15 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
+import org.thenakliman.chupe.common.utils.DateUtil;
+import org.thenakliman.chupe.dto.BestPracticeAssessmentAnswerDTO;
 import org.thenakliman.chupe.dto.BestPracticeAssessmentDTO;
 import org.thenakliman.chupe.dto.BestPracticeDTO;
-import org.thenakliman.chupe.dto.UpsertBestPracticeAssessmentDTO;
 import org.thenakliman.chupe.exceptions.BadRequestException;
 import org.thenakliman.chupe.exceptions.NotFoundException;
 import org.thenakliman.chupe.models.BestPracticeAssessment;
+import org.thenakliman.chupe.models.BestPracticeAssessmentAnswer;
+import org.thenakliman.chupe.models.Retro;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.BestPracticeAssessmentRepository;
 
@@ -20,32 +23,53 @@ import org.thenakliman.chupe.repositories.BestPracticeAssessmentRepository;
 public class BestPracticeAssessmentService {
   private BestPracticeAssessmentRepository bestPracticeAssessmentRepository;
   private BestPracticeService bestPracticeService;
+  private DateUtil dateUtil;
   private Converter converter;
 
   @Autowired
   public BestPracticeAssessmentService(BestPracticeAssessmentRepository bestPracticeAssessmentRepository,
                                        BestPracticeService bestPracticeService,
+                                       DateUtil dateUtil,
                                        Converter converter) {
     this.bestPracticeAssessmentRepository = bestPracticeAssessmentRepository;
     this.bestPracticeService = bestPracticeService;
+    this.dateUtil = dateUtil;
     this.converter = converter;
   }
 
-  public List<BestPracticeAssessmentDTO> saveBestPracticeAssessment(
-      List<UpsertBestPracticeAssessmentDTO> upsertBestPracticeAssessmentDTOs, String currentUser) {
-
-    throwExceptionIfInvalidPractice(upsertBestPracticeAssessmentDTOs);
-
-    final List<BestPracticeAssessment> assessments = upsertBestPracticeAssessmentDTOs.stream()
-        .map(assessment -> converter.convertToObject(assessment, BestPracticeAssessment.class))
-        .peek(bestPracticeAssessment -> bestPracticeAssessment.setAnsweredBy(User.builder().userName(currentUser).build()))
-        .map(bestPracticeAssessment -> bestPracticeAssessmentRepository.save(bestPracticeAssessment))
-        .collect(Collectors.toList());
-
-    return converter.convertToListOfObjects(assessments, BestPracticeAssessmentDTO.class);
+  public BestPracticeAssessmentDTO saveBestPracticeAssessment(Long retroId, List<BestPracticeAssessmentAnswerDTO> assessmentAnswerDTOs, String currentUser) {
+    throwExceptionIfInvalidPractice(assessmentAnswerDTOs);
+    BestPracticeAssessment bestPracticeAssessment = constructAssessment(retroId, assessmentAnswerDTOs, currentUser);
+    BestPracticeAssessment practiceAssessment = bestPracticeAssessmentRepository.save(bestPracticeAssessment);
+    return constructAssessmentDto(practiceAssessment);
   }
 
-  private void throwExceptionIfInvalidPractice(List<UpsertBestPracticeAssessmentDTO> assessmentDTOs) {
+  private BestPracticeAssessment constructAssessment(Long retroId, List<BestPracticeAssessmentAnswerDTO> assessmentAnswerDTOS, String currentUser) {
+    List<BestPracticeAssessmentAnswer> bestPracticeAssessmentAnswers = assessmentAnswerDTOS.stream()
+        .map(bestPracticeAssessmentAnswerDTO -> converter.convertToObject(bestPracticeAssessmentAnswerDTO, BestPracticeAssessmentAnswer.class))
+        .collect(Collectors.toList());
+
+    return BestPracticeAssessment.builder()
+        .answeredBy(User.builder().userName(currentUser).build())
+        .retro(Retro.builder().id(retroId).build())
+        .bestPracticeAssessmentAnswers(bestPracticeAssessmentAnswers)
+        .createdAt(dateUtil.getTime())
+        .updatedAt(dateUtil.getTime())
+        .build();
+  }
+
+  private BestPracticeAssessmentDTO constructAssessmentDto(BestPracticeAssessment practiceAssessment) {
+    List<BestPracticeAssessmentAnswerDTO> bestPracticesAssessmentAnsers = converter.convertToListOfObjects(
+        practiceAssessment.getBestPracticeAssessmentAnswers(),
+        BestPracticeAssessmentAnswerDTO.class);
+
+    return BestPracticeAssessmentDTO.builder()
+        .id(practiceAssessment.getId())
+        .answers(bestPracticesAssessmentAnsers)
+        .build();
+  }
+
+  private void throwExceptionIfInvalidPractice(List<BestPracticeAssessmentAnswerDTO> assessmentDTOs) {
     List<BestPracticeDTO> bestPractices = bestPracticeService.getActiveBestPractices();
     Set<Long> bestPracticesId = bestPractices.stream()
         .map(BestPracticeDTO::getId)
@@ -53,7 +77,7 @@ public class BestPracticeAssessmentService {
 
     if (assessmentDTOs.size() != bestPracticesId.size()) {
       throw new BadRequestException(String.format(
-          "Valid assessments are: %s, you have answered: %s.", bestPracticesId.size(), assessmentDTOs.size()));
+          "Valid practices are: %s, you have answered: %s.", bestPracticesId.size(), assessmentDTOs.size()));
     }
 
     assessmentDTOs.stream()

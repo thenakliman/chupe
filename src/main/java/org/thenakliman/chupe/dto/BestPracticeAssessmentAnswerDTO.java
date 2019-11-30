@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UpsertBestPracticeAssessmentDTO {
+public class BestPracticeAssessmentAnswerDTO {
   private Long bestPracticeId;
-  private Long retroId;
   private Boolean answer;
 }
