@@ -1,22 +1,13 @@
 package org.thenakliman.chupe.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import java.util.Date;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -24,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity(name = "best_practice_assessment")
 @Table
-public class BestPracticeAssessment {
+public class PracticeAssessment {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -37,8 +28,8 @@ public class BestPracticeAssessment {
   @JoinColumn(name = "answered_by", referencedColumnName = "username")
   private User answeredBy;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "bestPracticeAssessment")
-  private List<BestPracticeAssessmentAnswer> bestPracticeAssessmentAnswers;
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "practicesAssessment", cascade = CascadeType.ALL)
+  private List<PracticeAssessmentAnswer> practiceAssessmentAnswers;
 
   @Column(name = "created_at", nullable = false)
   private Date createdAt;

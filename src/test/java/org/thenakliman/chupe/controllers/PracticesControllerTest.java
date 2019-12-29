@@ -32,12 +32,12 @@ import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.BestPracticeDTO;
 import org.thenakliman.chupe.dto.UpsertBestPracticeDTO;
 import org.thenakliman.chupe.dto.User;
-import org.thenakliman.chupe.services.BestPracticeService;
+import org.thenakliman.chupe.services.PracticeService;
 import org.thenakliman.chupe.services.TokenService;
 
-@WebMvcTest(controllers = BestPracticesController.class, secure = false)
+@WebMvcTest(controllers = PracticesController.class, secure = false)
 @RunWith(SpringRunner.class)
-public class BestPracticesControllerTest {
+public class PracticesControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
@@ -45,7 +45,7 @@ public class BestPracticesControllerTest {
   private WebApplicationContext webApplicationContext;
 
   @MockBean
-  private BestPracticeService bestPracticeService;
+  private PracticeService practiceService;
 
   @Autowired
   private Jackson2ObjectMapperBuilder jacksonBuilder;
@@ -88,14 +88,14 @@ public class BestPracticesControllerTest {
         .description("description")
         .build();
 
-    when(bestPracticeService.getActiveBestPractices()).thenReturn(Collections.singletonList(bestPracticeDTO));
+    when(practiceService.getActiveBestPractices()).thenReturn(Collections.singletonList(bestPracticeDTO));
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .get("/api/v1/best-practices")
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn();
 
-    verify(bestPracticeService).getActiveBestPractices();
+    verify(practiceService).getActiveBestPractices();
     BestPracticeDTO[] bestPracticeDTOs = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BestPracticeDTO[].class);
     assertThat(bestPracticeDTOs, arrayWithSize(1));
     assertThat(bestPracticeDTOs, hasItemInArray(bestPracticeDTO));
@@ -113,7 +113,7 @@ public class BestPracticesControllerTest {
         .description("description")
         .build();
 
-    when(bestPracticeService.saveBestPractice(upsertBestPracticeDTO, "username")).thenReturn(bestPracticeDTO);
+    when(practiceService.saveBestPractice(upsertBestPracticeDTO, "username")).thenReturn(bestPracticeDTO);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
         .post("/api/v1/best-practices")
         .content(objectMapper.writeValueAsBytes(upsertBestPracticeDTO))
@@ -121,7 +121,7 @@ public class BestPracticesControllerTest {
         .andExpect(MockMvcResultMatchers.status().isCreated())
         .andReturn();
 
-    verify(bestPracticeService).saveBestPractice(upsertBestPracticeDTO, "username");
+    verify(practiceService).saveBestPractice(upsertBestPracticeDTO, "username");
     BestPracticeDTO actualBestPracticeDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BestPracticeDTO.class);
     assertThat(actualBestPracticeDTO, samePropertyValuesAs(bestPracticeDTO));
   }

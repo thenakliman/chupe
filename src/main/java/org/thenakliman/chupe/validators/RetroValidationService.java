@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.validators;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -15,6 +13,8 @@ import org.thenakliman.chupe.models.RetroStatus;
 import org.thenakliman.chupe.repositories.RetroActionItemRepository;
 import org.thenakliman.chupe.repositories.RetroPointRepository;
 import org.thenakliman.chupe.repositories.RetroRepository;
+
+import java.util.Optional;
 
 @Service
 public class RetroValidationService {
@@ -40,7 +40,7 @@ public class RetroValidationService {
   public boolean canRetroBeUpdated(long retroId) {
     Optional<Retro> retroOptional = retroRepository.findById(retroId);
     Retro retro = retroOptional.orElseThrow(
-        () -> new NotFoundException(String.format("Retro %s not found", retroId)));
+            () -> new NotFoundException(String.format("Retro %s not found", retroId)));
 
     if (RetroStatus.CLOSED.equals(retro.getStatus())) {
       throw new BadRequestException(String.format("Retro %s not found", retroId));
@@ -51,11 +51,11 @@ public class RetroValidationService {
   public boolean isRetroOpen(long retroId) {
     Optional<Retro> retroOptional = retroRepository.findById(retroId);
     Retro retro = retroOptional.orElseThrow(
-        () -> new NotFoundException(String.format("Retro %s not found", retroId)));
+            () -> new NotFoundException(String.format("Retro %s not found", retroId)));
 
     if (!RetroStatus.CREATED.equals(retro.getStatus())) {
       throw new BadRequestException(
-          String.format("Retro %s is not in open status. status = %s", retroId, retro.getStatus()));
+              String.format("Retro %s is not in open status. status = %s", retroId, retro.getStatus()));
     }
 
     return true;
@@ -64,12 +64,12 @@ public class RetroValidationService {
   public boolean canBeVoted(long retroPointId) {
     Optional<RetroPoint> retroPointOptional = retroPointRepository.findById(retroPointId);
     RetroPoint retroPoint = retroPointOptional.orElseThrow(
-        () -> new NotFoundException(String.format("Retro point %s not found", retroPointId)));
+            () -> new NotFoundException(String.format("Retro point %s not found", retroPointId)));
 
     if (!RetroStatus.IN_PROGRESS.equals(retroPoint.getRetro().getStatus())) {
       throw new BadRequestException(
-          String.format("Retro %s is not in progress. status = %s",
-              retroPoint.getRetro().getId(), retroPoint.getRetro().getStatus()));
+              String.format("Retro %s is not in progress. status = %s",
+                      retroPoint.getRetro().getId(), retroPoint.getRetro().getStatus()));
     }
     return true;
   }
@@ -77,12 +77,12 @@ public class RetroValidationService {
   public boolean isRetroInProgress(long retroId) {
     Optional<Retro> retroOptional = retroRepository.findById(retroId);
     Retro retro = retroOptional.orElseThrow(
-        () -> new NotFoundException(String.format("Retro %s not found", retroId)));
+            () -> new NotFoundException(String.format("Retro %s not found", retroId)));
 
     if (!RetroStatus.IN_PROGRESS.equals(retro.getStatus())) {
       throw new BadRequestException(
-          String.format("Retro %s is not in progress. status = %s",
-              retro.getId(), retro.getStatus()));
+              String.format("Retro %s is not in progress. status = %s",
+                      retro.getId(), retro.getStatus()));
     }
     return true;
   }
@@ -90,11 +90,11 @@ public class RetroValidationService {
   public boolean canActionItemBeUpdated(long actionItemId) {
     Optional<RetroActionItem> retroOptional = retroActionItemRepository.findById(actionItemId);
     RetroActionItem retroActionItem = retroOptional.orElseThrow(
-        () -> new NotFoundException(String.format("Action item %s not found", actionItemId)));
+            () -> new NotFoundException(String.format("Action item %s not found", actionItemId)));
 
     if (RetroStatus.CLOSED.equals(retroActionItem.getRetro().getStatus())) {
       throw new BadRequestException(
-          String.format("Retro %s is in closed status.", retroActionItem.getRetro().getId()));
+              String.format("Retro %s is in closed status.", retroActionItem.getRetro().getId()));
     }
 
     return getRequestUserName().equals(retroActionItem.getCreatedBy().getUserName());
@@ -103,11 +103,11 @@ public class RetroValidationService {
   public boolean canBeUpdated(long retroPointId) {
     Optional<RetroPoint> retroPointOptional = retroPointRepository.findById(retroPointId);
     RetroPoint retroPoint = retroPointOptional.orElseThrow(
-        () -> new NotFoundException(String.format("Retro point %s not found", retroPointId)));
+            () -> new NotFoundException(String.format("Retro point %s not found", retroPointId)));
 
     if (RetroStatus.CLOSED.equals(retroPoint.getRetro().getStatus())) {
       throw new BadRequestException(
-          String.format("Retro point %s can not be updated in closed status", retroPointId));
+              String.format("Retro point %s can not be updated in closed status", retroPointId));
     }
 
     return getRequestUserName().equals(retroPoint.getAddedBy().getUserName());

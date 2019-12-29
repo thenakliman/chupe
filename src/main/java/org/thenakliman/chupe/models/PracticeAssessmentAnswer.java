@@ -1,20 +1,12 @@
 package org.thenakliman.chupe.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Builder
 @AllArgsConstructor
@@ -22,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity(name = "best_practices_assessment_answer")
 @Table
-public class BestPracticeAssessmentAnswer {
+public class PracticeAssessmentAnswer {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -33,7 +25,7 @@ public class BestPracticeAssessmentAnswer {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "best_practice_assessment_id", referencedColumnName = "id")
-  private BestPracticeAssessment bestPracticeAssessment;
+  private PracticeAssessment practicesAssessment;
 
   @Column(name = "answer", nullable = false)
   private Boolean answer;

@@ -21,7 +21,7 @@ import org.thenakliman.chupe.models.BestPractice;
 import org.thenakliman.chupe.repositories.BestPracticeRepository;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestPracticeServiceTest {
+public class PracticeServiceTest {
   @Mock
   private Converter converter;
 
@@ -29,7 +29,7 @@ public class BestPracticeServiceTest {
   private BestPracticeRepository bestPracticeRepository;
 
   @InjectMocks
-  private BestPracticeService bestPracticeService;
+  private PracticeService practiceService;
 
   @Test
   public void getActiveBestPractices_shouldReturnActivePractices() {
@@ -39,7 +39,7 @@ public class BestPracticeServiceTest {
     BestPracticeDTO bestPracticeDTO = BestPracticeDTO.builder().id(123L).build();
     when(converter.convertToListOfObjects(Collections.singletonList(bestPractice), BestPracticeDTO.class))
         .thenReturn(Collections.singletonList(bestPracticeDTO));
-    List<BestPracticeDTO> activeBestPractices = bestPracticeService.getActiveBestPractices();
+    List<BestPracticeDTO> activeBestPractices = practiceService.getActiveBestPractices();
     assertThat(activeBestPractices, hasSize(1));
     assertThat(activeBestPractices, hasItems(bestPracticeDTO));
   }
@@ -54,7 +54,7 @@ public class BestPracticeServiceTest {
     BestPracticeDTO savedBestPracticeDTO = BestPracticeDTO.builder().id(123L).description(description).build();
     when(converter.convertToObject(bestPractice, BestPracticeDTO.class)).thenReturn(savedBestPracticeDTO);
 
-    BestPracticeDTO savedBestPracticedDto = bestPracticeService.saveBestPractice(
+    BestPracticeDTO savedBestPracticedDto = practiceService.saveBestPractice(
         upsertBestPracticeDTO, "username");
 
     assertThat(savedBestPracticedDto,

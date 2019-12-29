@@ -12,13 +12,13 @@ import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.BestPracticeRepository;
 
 @Service
-public class BestPracticeService {
+public class PracticeService {
   private BestPracticeRepository bestPracticeRepository;
   private Converter converter;
 
   @Autowired
-  public BestPracticeService(BestPracticeRepository bestPracticeRepository,
-                             Converter converter) {
+  public PracticeService(BestPracticeRepository bestPracticeRepository,
+                         Converter converter) {
     this.bestPracticeRepository = bestPracticeRepository;
     this.converter = converter;
   }

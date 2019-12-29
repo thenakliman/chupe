@@ -1,12 +1,5 @@
 package org.thenakliman.chupe.controllers;
 
-import static java.util.Collections.singletonList;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,12 +23,18 @@ import org.thenakliman.chupe.config.TokenAuthenticationService;
 import org.thenakliman.chupe.dto.BestPracticeAssessmentAnswerDTO;
 import org.thenakliman.chupe.dto.BestPracticeAssessmentDTO;
 import org.thenakliman.chupe.dto.User;
-import org.thenakliman.chupe.services.BestPracticeAssessmentService;
+import org.thenakliman.chupe.services.PracticesAssessmentService;
 import org.thenakliman.chupe.services.TokenService;
 
-@WebMvcTest(controllers = RetroBestPracticeAssessmentController.class, secure = false)
+import static java.util.Collections.singletonList;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@WebMvcTest(controllers = PracticesAssessmentController.class, secure = false)
 @RunWith(SpringRunner.class)
-public class RetroBestPracticeAssessmentControllerTest {
+public class PracticesAssessmentControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
@@ -43,7 +42,7 @@ public class RetroBestPracticeAssessmentControllerTest {
   private WebApplicationContext webApplicationContext;
 
   @MockBean
-  private BestPracticeAssessmentService bestPracticeAssessmentService;
+  private PracticesAssessmentService practicesAssessmentService;
 
   @Autowired
   private Jackson2ObjectMapperBuilder jacksonBuilder;
@@ -65,38 +64,61 @@ public class RetroBestPracticeAssessmentControllerTest {
     objectMapper = jacksonBuilder.build();
     this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     authToken = new UsernamePasswordAuthenticationToken(
-        User.builder().username(username).build(),
-        null,
-        null);
+            User.builder().username(username).build(),
+            null,
+            null);
 
+  }
+
+  @Test
+  public void shouldSavePracticeAssessment() throws Exception {
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    BestPracticeAssessmentAnswerDTO bestPracticeAssessmentAnswerDTO = BestPracticeAssessmentAnswerDTO.builder()
+            .bestPracticeId(100L)
+            .answer(false)
+            .build();
+
+    BestPracticeAssessmentDTO bestPracticeAssessmentDTO = BestPracticeAssessmentDTO.builder()
+            .answers(singletonList(bestPracticeAssessmentAnswerDTO))
+            .id(1222L)
+            .build();
+
+    long retroId = 12345L;
+    when(practicesAssessmentService.saveBestPracticeAssessment(retroId, singletonList(bestPracticeAssessmentAnswerDTO), username))
+            .thenReturn(bestPracticeAssessmentDTO);
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/retros/12345/practices-assessment")
+            .content(objectMapper.writeValueAsBytes(singletonList(bestPracticeAssessmentAnswerDTO)))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andReturn();
+
+    verify(practicesAssessmentService).saveBestPracticeAssessment(retroId, singletonList(bestPracticeAssessmentAnswerDTO), username);
+    BestPracticeAssessmentDTO bestPracticeAssessmentDTOs = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BestPracticeAssessmentDTO.class);
+    assertThat(bestPracticeAssessmentDTOs.getAnswers(), hasSize(1));
+    assertThat(bestPracticeAssessmentDTOs.getAnswers(), hasItem(bestPracticeAssessmentAnswerDTO));
   }
 
   @Test
   public void shouldGetBestPracticeAssessment() throws Exception {
     SecurityContextHolder.getContext().setAuthentication(authToken);
     BestPracticeAssessmentAnswerDTO bestPracticeAssessmentAnswerDTO = BestPracticeAssessmentAnswerDTO.builder()
-        .bestPracticeId(100L)
-        .answer(false)
-        .build();
-
-    BestPracticeAssessmentDTO bestPracticeAssessmentDTO = BestPracticeAssessmentDTO.builder()
-        .answers(singletonList(bestPracticeAssessmentAnswerDTO))
-        .id(1222L)
-        .build();
+            .bestPracticeId(100L)
+            .answer(false)
+            .build();
 
     long retroId = 12345L;
-    when(bestPracticeAssessmentService.saveBestPracticeAssessment(retroId, singletonList(bestPracticeAssessmentAnswerDTO), username))
-        .thenReturn(bestPracticeAssessmentDTO);
+    when(practicesAssessmentService.getPracticesAssessment(retroId, username))
+            .thenReturn(singletonList(bestPracticeAssessmentAnswerDTO));
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-        .post("/api/v1/retros/12345/best-practices-assessments")
-        .content(objectMapper.writeValueAsBytes(singletonList(bestPracticeAssessmentAnswerDTO)))
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(MockMvcResultMatchers.status().isCreated())
-        .andReturn();
+            .get("/api/v1/retros/12345/practices-assessment")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andReturn();
 
-    verify(bestPracticeAssessmentService).saveBestPracticeAssessment(retroId, singletonList(bestPracticeAssessmentAnswerDTO), username);
-    BestPracticeAssessmentDTO bestPracticeAssessmentDTOs = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BestPracticeAssessmentDTO.class);
-    assertThat(bestPracticeAssessmentDTOs.getAnswers(), hasSize(1));
-    assertThat(bestPracticeAssessmentDTOs.getAnswers(), hasItem(bestPracticeAssessmentAnswerDTO));
+    verify(practicesAssessmentService).getPracticesAssessment(retroId, username);
+    BestPracticeAssessmentAnswerDTO[] bestPracticeAssessmentDTOs = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BestPracticeAssessmentAnswerDTO[].class);
+    assertThat(bestPracticeAssessmentDTOs, arrayWithSize(1));
+    assertThat(bestPracticeAssessmentDTOs, arrayContaining(bestPracticeAssessmentAnswerDTO));
   }
 }
