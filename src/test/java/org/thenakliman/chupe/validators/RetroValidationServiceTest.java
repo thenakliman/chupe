@@ -1,13 +1,5 @@
 package org.thenakliman.chupe.validators;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,6 +21,14 @@ import org.thenakliman.chupe.models.RetroStatus;
 import org.thenakliman.chupe.repositories.RetroActionItemRepository;
 import org.thenakliman.chupe.repositories.RetroPointRepository;
 import org.thenakliman.chupe.repositories.RetroRepository;
+
+import java.util.Optional;
+
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RetroValidationServiceTest {
@@ -54,9 +54,9 @@ public class RetroValidationServiceTest {
   @Before
   public void setUp() {
     Authentication authToken = new UsernamePasswordAuthenticationToken(
-        User.builder().username(username).build(),
-        null,
-        null);
+            User.builder().username(username).build(),
+            null,
+            null);
 
     SecurityContextHolder.getContext().setAuthentication(authToken);
   }
@@ -72,10 +72,10 @@ public class RetroValidationServiceTest {
   @Test
   public void canRetroBeUpdated_shouldReturnBadRequest_whenRetroStatusIsOpen() {
     Optional<Retro> retroOptional = Optional.of(Retro
-        .builder()
-        .id(retroId)
-        .status(RetroStatus.CLOSED)
-        .build());
+            .builder()
+            .id(retroId)
+            .status(RetroStatus.CLOSED)
+            .build());
 
     when(retroRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -87,11 +87,11 @@ public class RetroValidationServiceTest {
   public void canRetroBeUpdated_shouldReturnBadRequest_whenRequestUserIsNotTheSameAsUpdated() {
 
     Optional<Retro> retroOptional = Optional.of(Retro
-        .builder()
-        .id(retroId)
-        .status(RetroStatus.CREATED)
-        .createdBy(org.thenakliman.chupe.models.User.builder().userName("fake-user").build())
-        .build());
+            .builder()
+            .id(retroId)
+            .status(RetroStatus.CREATED)
+            .createdBy(org.thenakliman.chupe.models.User.builder().userName("fake-user").build())
+            .build());
 
     when(retroRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -103,11 +103,11 @@ public class RetroValidationServiceTest {
   public void canRetroBeUpdated_shouldReturnBadRequest_whenRequestUserIsTheSameAsUpdated() {
 
     Optional<Retro> retroOptional = Optional.of(Retro
-        .builder()
-        .id(retroId)
-        .status(RetroStatus.CREATED)
-        .createdBy(org.thenakliman.chupe.models.User.builder().userName(username).build())
-        .build());
+            .builder()
+            .id(retroId)
+            .status(RetroStatus.CREATED)
+            .createdBy(org.thenakliman.chupe.models.User.builder().userName(username).build())
+            .build());
 
     when(retroRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -126,10 +126,10 @@ public class RetroValidationServiceTest {
   @Test
   public void isRetroOpen_shouldThrowBadRequest_whenStatusIsClosed() {
     Optional<Retro> retroOptional = Optional.of(Retro
-        .builder()
-        .id(retroId)
-        .status(RetroStatus.CLOSED)
-        .build());
+            .builder()
+            .id(retroId)
+            .status(RetroStatus.CLOSED)
+            .build());
 
     when(retroRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -140,10 +140,10 @@ public class RetroValidationServiceTest {
   @Test
   public void isRetroOpen_shouldReturnTrue_whenStatusIsOpen() {
     Optional<Retro> retroOptional = Optional.of(Retro
-        .builder()
-        .id(retroId)
-        .status(RetroStatus.CREATED)
-        .build());
+            .builder()
+            .id(retroId)
+            .status(RetroStatus.CREATED)
+            .build());
 
     when(retroRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -163,10 +163,10 @@ public class RetroValidationServiceTest {
   @Test
   public void canBeUpdated_shouldReturnBadRequest_whenRetroStatusIsOpen() {
     Optional<RetroPoint> retroPointOptional = Optional.of(RetroPoint
-        .builder()
-        .id(retroId)
-        .retro(Retro.builder().status(RetroStatus.CLOSED).build())
-        .build());
+            .builder()
+            .id(retroId)
+            .retro(Retro.builder().status(RetroStatus.CLOSED).build())
+            .build());
 
     when(retroPointRepository.findById(retroId)).thenReturn(retroPointOptional);
 
@@ -178,11 +178,11 @@ public class RetroValidationServiceTest {
   public void canBeUpdated_shouldReturnBadRequest_whenRequestUserIsNotTheSameAsUpdated() {
 
     Optional<RetroPoint> retroOptional = Optional.of(RetroPoint
-        .builder()
-        .id(retroId)
-        .retro(Retro.builder().status(RetroStatus.CREATED).build())
-        .addedBy(org.thenakliman.chupe.models.User.builder().userName("fake-user").build())
-        .build());
+            .builder()
+            .id(retroId)
+            .retro(Retro.builder().status(RetroStatus.CREATED).build())
+            .addedBy(org.thenakliman.chupe.models.User.builder().userName("fake-user").build())
+            .build());
 
     when(retroPointRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -194,11 +194,11 @@ public class RetroValidationServiceTest {
   public void canBeUpdated_shouldReturnBadRequest_whenRequestUserIsTheSameAsUpdated() {
 
     Optional<RetroPoint> retroOptional = Optional.of(RetroPoint
-        .builder()
-        .id(retroId)
-        .retro(Retro.builder().status(RetroStatus.CREATED).build())
-        .addedBy(org.thenakliman.chupe.models.User.builder().userName(username).build())
-        .build());
+            .builder()
+            .id(retroId)
+            .retro(Retro.builder().status(RetroStatus.CREATED).build())
+            .addedBy(org.thenakliman.chupe.models.User.builder().userName(username).build())
+            .build());
 
     when(retroPointRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -217,10 +217,10 @@ public class RetroValidationServiceTest {
   @Test
   public void canBeVoted_shouldReturnFalse_whenStatusIsClosed() {
     Optional<RetroPoint> retroOptional = Optional.of(RetroPoint
-        .builder()
-        .id(retroId)
-        .retro(Retro.builder().status(RetroStatus.CLOSED).build())
-        .build());
+            .builder()
+            .id(retroId)
+            .retro(Retro.builder().status(RetroStatus.CLOSED).build())
+            .build());
 
     when(retroPointRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -231,10 +231,10 @@ public class RetroValidationServiceTest {
   @Test
   public void canBeVoted_shouldReturnTrue_whenStatusIsOpen() {
     Optional<RetroPoint> retroOptional = Optional.of(RetroPoint
-        .builder()
-        .id(retroId)
-        .retro(Retro.builder().status(RetroStatus.IN_PROGRESS).build())
-        .build());
+            .builder()
+            .id(retroId)
+            .retro(Retro.builder().status(RetroStatus.IN_PROGRESS).build())
+            .build());
 
     when(retroPointRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -246,10 +246,10 @@ public class RetroValidationServiceTest {
   @Test
   public void canBeVoted_shouldReturnFalse_whenStatusIsCreated() {
     Optional<RetroPoint> retroOptional = Optional.of(RetroPoint
-        .builder()
-        .id(retroId)
-        .retro(Retro.builder().status(RetroStatus.CREATED).build())
-        .build());
+            .builder()
+            .id(retroId)
+            .retro(Retro.builder().status(RetroStatus.CREATED).build())
+            .build());
 
     when(retroPointRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -260,10 +260,10 @@ public class RetroValidationServiceTest {
   @Test
   public void isRetroInProgress_shouldReturnTrue_whenStatusIsInProgress() {
     Optional<Retro> retroOptional = Optional.of(Retro
-        .builder()
-        .id(retroId)
-        .status(RetroStatus.IN_PROGRESS)
-        .build());
+            .builder()
+            .id(retroId)
+            .status(RetroStatus.IN_PROGRESS)
+            .build());
 
     when(retroRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -283,10 +283,10 @@ public class RetroValidationServiceTest {
   @Test
   public void isRetroInProgress_shouldBadRequest_whenRetroIsInCreatedState() {
     Optional<Retro> retroOptional = Optional.of(Retro
-        .builder()
-        .id(retroId)
-        .status(RetroStatus.CREATED)
-        .build());
+            .builder()
+            .id(retroId)
+            .status(RetroStatus.CREATED)
+            .build());
 
     when(retroRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -297,10 +297,10 @@ public class RetroValidationServiceTest {
   @Test
   public void isRetroInProgress_shouldBadRequest_whenRetroIsInClosedState() {
     Optional<Retro> retroOptional = Optional.of(Retro
-        .builder()
-        .id(retroId)
-        .status(RetroStatus.CLOSED)
-        .build());
+            .builder()
+            .id(retroId)
+            .status(RetroStatus.CLOSED)
+            .build());
 
     when(retroRepository.findById(retroId)).thenReturn(retroOptional);
 
@@ -319,10 +319,10 @@ public class RetroValidationServiceTest {
   @Test
   public void canActionItemBeUpdated_shouldGiveBadRequest_whenRetroIsInCloseState() {
     Optional<RetroActionItem> actionItemOptional = Optional.of(RetroActionItem
-        .builder()
-        .id(101L)
-        .retro(Retro.builder().status(RetroStatus.CLOSED).build())
-        .build());
+            .builder()
+            .id(101L)
+            .retro(Retro.builder().status(RetroStatus.CLOSED).build())
+            .build());
 
     when(retroActionItemRepository.findById(101L)).thenReturn(actionItemOptional);
 
@@ -333,11 +333,11 @@ public class RetroValidationServiceTest {
   @Test
   public void canActionItemBeUpdated_shouldReturnTrue_whenRetroIsInCreatedState() {
     Optional<RetroActionItem> actionItemOptional = Optional.of(RetroActionItem
-        .builder()
-        .id(101L)
-        .createdBy(org.thenakliman.chupe.models.User.builder().userName(username).build())
-        .retro(Retro.builder().status(RetroStatus.CREATED).build())
-        .build());
+            .builder()
+            .id(101L)
+            .createdBy(org.thenakliman.chupe.models.User.builder().userName(username).build())
+            .retro(Retro.builder().status(RetroStatus.CREATED).build())
+            .build());
 
     when(retroActionItemRepository.findById(101L)).thenReturn(actionItemOptional);
 
@@ -348,11 +348,11 @@ public class RetroValidationServiceTest {
   @Test
   public void canActionItemBeUpdated_shouldReturnTrue_whenRetroIsInProgressState() {
     Optional<RetroActionItem> actionItemOptional = Optional.of(RetroActionItem
-        .builder()
-        .id(101L)
-        .createdBy(org.thenakliman.chupe.models.User.builder().userName(username).build())
-        .retro(Retro.builder().status(RetroStatus.IN_PROGRESS).build())
-        .build());
+            .builder()
+            .id(101L)
+            .createdBy(org.thenakliman.chupe.models.User.builder().userName(username).build())
+            .retro(Retro.builder().status(RetroStatus.IN_PROGRESS).build())
+            .build());
 
     when(retroActionItemRepository.findById(101L)).thenReturn(actionItemOptional);
 
@@ -363,15 +363,60 @@ public class RetroValidationServiceTest {
   @Test
   public void canActionItemBeUpdated_shouldReturnFalse_whenRetroIsInProgressState() {
     Optional<RetroActionItem> actionItemOptional = Optional.of(RetroActionItem
-        .builder()
-        .id(101L)
-        .createdBy(org.thenakliman.chupe.models.User.builder().userName("invalid user").build())
-        .retro(Retro.builder().status(RetroStatus.IN_PROGRESS).build())
-        .build());
+            .builder()
+            .id(101L)
+            .createdBy(org.thenakliman.chupe.models.User.builder().userName("invalid user").build())
+            .retro(Retro.builder().status(RetroStatus.IN_PROGRESS).build())
+            .build());
 
     when(retroActionItemRepository.findById(101L)).thenReturn(actionItemOptional);
 
     boolean canActionItemBeUpdated = retroValidationService.canActionItemBeUpdated(101);
     assertThat(canActionItemBeUpdated, is(false));
+  }
+
+  @Test
+  public void canPracticesBeAssessed_throwException_whenRetroDoesNotExist() {
+    when(retroRepository.findById(101L)).thenReturn(Optional.empty());
+
+    expectedException.expect(NotFoundException.class);
+    retroValidationService.canPracticesBeAssessed(101);
+  }
+
+  @Test
+  public void canPracticesBeAssessed_returnTrue_whenRetroIsInCreatedState() {
+    when(retroRepository.findById(101L)).thenReturn(Optional.of(
+            Retro.builder()
+                    .maximumVote(3L)
+                    .status(RetroStatus.CREATED)
+                    .build()));
+
+    assertTrue(retroValidationService.canPracticesBeAssessed(101));
+  }
+
+  @Test
+  public void canPracticesBeAssessed_returnFalse_whenRetroIsInProgressState() {
+    when(retroRepository.findById(101L)).thenReturn(Optional.of(
+            Retro.builder()
+                    .id(101L)
+                    .maximumVote(3L)
+                    .status(RetroStatus.IN_PROGRESS)
+                    .build()));
+
+    expectedException.expect(BadRequestException.class);
+    assertFalse(retroValidationService.canPracticesBeAssessed(101));
+  }
+
+  @Test
+  public void canPracticesBeAssessed_returnFalse_whenRetroIsInClosedState() {
+    when(retroRepository.findById(101L)).thenReturn(Optional.of(
+            Retro.builder()
+                    .id(101L)
+                    .maximumVote(3L)
+                    .status(RetroStatus.CLOSED)
+                    .build()));
+
+    expectedException.expect(BadRequestException.class);
+    retroValidationService.canPracticesBeAssessed(101);
   }
 }

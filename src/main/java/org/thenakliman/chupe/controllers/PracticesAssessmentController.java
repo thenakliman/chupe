@@ -2,6 +2,7 @@ package org.thenakliman.chupe.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ public class PracticesAssessmentController extends BaseController {
   }
 
   @PostMapping("/retros/{retroId}/practices-assessment")
+  @PreAuthorize("@retroValidationService.canPracticesBeAssessed(#retroId)")
   public ResponseEntity<BestPracticeAssessmentDTO> createPractice(
           @PathVariable Long retroId,
           @RequestBody List<BestPracticeAssessmentAnswerDTO> bestPracticeAssessmentAnswerDTOs) {

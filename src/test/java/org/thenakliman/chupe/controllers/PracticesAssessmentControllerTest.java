@@ -25,6 +25,7 @@ import org.thenakliman.chupe.dto.BestPracticeAssessmentDTO;
 import org.thenakliman.chupe.dto.User;
 import org.thenakliman.chupe.services.PracticesAssessmentService;
 import org.thenakliman.chupe.services.TokenService;
+import org.thenakliman.chupe.validators.RetroValidationService;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.*;
@@ -43,6 +44,9 @@ public class PracticesAssessmentControllerTest {
 
   @MockBean
   private PracticesAssessmentService practicesAssessmentService;
+
+  @MockBean
+  private RetroValidationService retroValidationService;
 
   @Autowired
   private Jackson2ObjectMapperBuilder jacksonBuilder;
@@ -86,6 +90,7 @@ public class PracticesAssessmentControllerTest {
     long retroId = 12345L;
     when(practicesAssessmentService.saveBestPracticeAssessment(retroId, singletonList(bestPracticeAssessmentAnswerDTO), username))
             .thenReturn(bestPracticeAssessmentDTO);
+    when(retroValidationService.canPracticesBeAssessed(12345)).thenReturn(true);
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/retros/12345/practices-assessment")
             .content(objectMapper.writeValueAsBytes(singletonList(bestPracticeAssessmentAnswerDTO)))
@@ -97,6 +102,18 @@ public class PracticesAssessmentControllerTest {
     BestPracticeAssessmentDTO bestPracticeAssessmentDTOs = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BestPracticeAssessmentDTO.class);
     assertThat(bestPracticeAssessmentDTOs.getAnswers(), hasSize(1));
     assertThat(bestPracticeAssessmentDTOs.getAnswers(), hasItem(bestPracticeAssessmentAnswerDTO));
+  }
+
+  @Test
+  public void shouldSavePracticeAssessment_shouldReturn403() throws Exception {
+    SecurityContextHolder.getContext().setAuthentication(authToken);
+    when(retroValidationService.canPracticesBeAssessed(12345)).thenReturn(false);
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/retros/12345/practices-assessment")
+            .content(objectMapper.writeValueAsBytes(singletonList(new BestPracticeAssessmentAnswerDTO())))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andReturn();
   }
 
   @Test

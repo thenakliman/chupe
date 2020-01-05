@@ -100,6 +100,19 @@ public class RetroValidationService {
     return getRequestUserName().equals(retroActionItem.getCreatedBy().getUserName());
   }
 
+  public boolean canPracticesBeAssessed(long retroId) {
+    Optional<Retro> retroOptional = retroRepository.findById(retroId);
+    Retro retro = retroOptional.orElseThrow(
+            () -> new NotFoundException(String.format("Retro %s not found", retroId)));
+
+    if (RetroStatus.CREATED.equals(retro.getStatus())) {
+      return true;
+    }
+
+    throw new BadRequestException(
+            String.format("Retro %s is not in created state. current state = %s", retroId, retro.getStatus()));
+  }
+
   public boolean canBeUpdated(long retroPointId) {
     Optional<RetroPoint> retroPointOptional = retroPointRepository.findById(retroPointId);
     RetroPoint retroPoint = retroPointOptional.orElseThrow(
