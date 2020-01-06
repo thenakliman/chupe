@@ -1,12 +1,12 @@
 package org.thenakliman.chupe.dto;
 
-import javax.validation.constraints.Size;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.thenakliman.chupe.models.RetroPointType;
+
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor

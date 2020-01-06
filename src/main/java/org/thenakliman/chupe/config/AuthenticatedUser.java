@@ -1,10 +1,10 @@
 package org.thenakliman.chupe.config;
 
-import java.util.Collection;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.thenakliman.chupe.dto.User;
+
+import java.util.Collection;
 
 
 public final class AuthenticatedUser implements Authentication {

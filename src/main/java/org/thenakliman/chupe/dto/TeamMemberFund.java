@@ -3,7 +3,6 @@ package org.thenakliman.chupe.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.thenakliman.chupe.models.TransactionType;
 
 @Builder
 @AllArgsConstructor

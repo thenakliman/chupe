@@ -1,10 +1,10 @@
 package org.thenakliman.chupe.dto;
 
-import java.util.Date;
-
 import lombok.Data;
 import org.thenakliman.chupe.models.ActionItemStatus;
 import org.thenakliman.chupe.models.DiscussionItemType;
+
+import java.util.Date;
 
 @Data
 public class MeetingDiscussionItemDTO {

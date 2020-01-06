@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
@@ -10,6 +8,8 @@ import org.thenakliman.chupe.dto.UpsertBestPracticeDTO;
 import org.thenakliman.chupe.models.BestPractice;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.BestPracticeRepository;
+
+import java.util.List;
 
 @Service
 public class PracticeService {
@@ -31,8 +31,8 @@ public class PracticeService {
   public BestPracticeDTO saveBestPractice(UpsertBestPracticeDTO upsertBestPracticeDTO, String username) {
     BestPractice bestPractice = converter.convertToObject(upsertBestPracticeDTO, BestPractice.class);
     User createdBy = User.builder()
-        .userName(username)
-        .build();
+            .userName(username)
+            .build();
 
     bestPractice.setCreatedBy(createdBy);
     bestPractice.setApplicable(true);

@@ -3,9 +3,7 @@ package org.thenakliman.chupe.mappings;
 import com.github.jmnarloch.spring.boot.modelmapper.PropertyMapConfigurerSupport;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
-import org.thenakliman.chupe.dto.FundDTO;
 import org.thenakliman.chupe.dto.MeetingDTO;
-import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.Meeting;
 
 @Component

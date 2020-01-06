@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +8,8 @@ import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.UserRepository;
+
+import java.util.List;
 
 
 @Service

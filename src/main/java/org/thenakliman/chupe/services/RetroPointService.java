@@ -1,16 +1,10 @@
 package org.thenakliman.chupe.services;
 
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.toList;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
 import org.thenakliman.chupe.common.utils.DateUtil;
+import org.thenakliman.chupe.dto.BestPracticeDTO;
 import org.thenakliman.chupe.dto.RetroPointDTO;
 import org.thenakliman.chupe.dto.UpsertRetroPointDTO;
 import org.thenakliman.chupe.exceptions.BadRequestException;
@@ -21,6 +15,13 @@ import org.thenakliman.chupe.models.RetroVote;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.RetroPointRepository;
 import org.thenakliman.chupe.repositories.RetroVoteRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class RetroPointService {
@@ -129,5 +130,9 @@ public class RetroPointService {
         .createdAt(dateUtil.getTime())
         .updatedAt(dateUtil.getTime())
         .build();
+  }
+
+  public void addRetroPoints(BestPracticeDTO bestPracticeDTO) {
+
   }
 }

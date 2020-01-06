@@ -1,14 +1,14 @@
 package org.thenakliman.chupe.repositories.specifications.retroactionitem;
 
-import java.util.List;
+import org.springframework.data.jpa.domain.Specification;
+import org.thenakliman.chupe.models.ActionItemStatus;
+import org.thenakliman.chupe.models.RetroActionItem;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.springframework.data.jpa.domain.Specification;
-import org.thenakliman.chupe.models.ActionItemStatus;
-import org.thenakliman.chupe.models.RetroActionItem;
+import java.util.List;
 
 public class ActionItemStatusSpecification implements Specification<RetroActionItem> {
   private List<ActionItemStatus> statuses;

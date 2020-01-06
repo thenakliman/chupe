@@ -1,10 +1,5 @@
 package org.thenakliman.chupe.services;
 
-import static java.lang.String.format;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
@@ -19,6 +14,11 @@ import org.thenakliman.chupe.models.FundType;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.FundTypeRepository;
 import org.thenakliman.chupe.repositories.TeamFundRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+import static java.lang.String.format;
 
 
 @Service

@@ -1,14 +1,13 @@
 package org.thenakliman.chupe.repositories;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-import org.thenakliman.chupe.dto.ActionItem;
 import org.thenakliman.chupe.models.ActionItemStatus;
 import org.thenakliman.chupe.models.RetroActionItem;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @Repository

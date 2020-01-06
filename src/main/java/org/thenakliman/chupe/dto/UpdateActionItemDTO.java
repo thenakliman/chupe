@@ -1,11 +1,11 @@
 package org.thenakliman.chupe.dto;
 
-import java.util.Date;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import lombok.Data;
 import org.thenakliman.chupe.models.ActionItemStatus;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Data
 public class UpdateActionItemDTO {

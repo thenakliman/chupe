@@ -1,10 +1,5 @@
 package org.thenakliman.chupe.mappings;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.dto.TeamFund;
@@ -13,6 +8,11 @@ import org.thenakliman.chupe.dto.UserDTO;
 import org.thenakliman.chupe.models.Fund;
 import org.thenakliman.chupe.models.TransactionType;
 import org.thenakliman.chupe.services.UserService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Component

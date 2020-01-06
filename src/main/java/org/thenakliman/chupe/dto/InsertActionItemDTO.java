@@ -1,14 +1,13 @@
 package org.thenakliman.chupe.dto;
 
-import java.util.Date;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.thenakliman.chupe.models.ActionItemStatus;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Builder
 @NoArgsConstructor

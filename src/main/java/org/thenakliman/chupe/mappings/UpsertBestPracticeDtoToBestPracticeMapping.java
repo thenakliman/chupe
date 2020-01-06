@@ -6,10 +6,7 @@ import org.modelmapper.Converter;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
 import org.thenakliman.chupe.dto.UpsertBestPracticeDTO;
-import org.thenakliman.chupe.dto.UpsertTaskDTO;
 import org.thenakliman.chupe.models.BestPractice;
-import org.thenakliman.chupe.models.Task;
-import org.thenakliman.chupe.models.User;
 
 @Component
 public class UpsertBestPracticeDtoToBestPracticeMapping extends ConverterConfigurerSupport<UpsertBestPracticeDTO, BestPractice> {

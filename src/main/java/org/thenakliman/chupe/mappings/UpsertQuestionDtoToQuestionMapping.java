@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.mappings;
 
-import static java.util.Objects.isNull;
-
 import com.github.jmnarloch.spring.boot.modelmapper.ConverterConfigurerSupport;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
@@ -11,6 +9,8 @@ import org.thenakliman.chupe.dto.UpsertQuestionDTO;
 import org.thenakliman.chupe.models.Question;
 import org.thenakliman.chupe.models.QuestionStatus;
 import org.thenakliman.chupe.models.User;
+
+import static java.util.Objects.isNull;
 
 @Component
 public class UpsertQuestionDtoToQuestionMapping extends ConverterConfigurerSupport<UpsertQuestionDTO, Question> {

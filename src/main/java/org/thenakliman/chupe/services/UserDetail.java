@@ -1,11 +1,11 @@
 package org.thenakliman.chupe.services;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.thenakliman.chupe.models.User;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class UserDetail implements UserDetails {
   private final User user;

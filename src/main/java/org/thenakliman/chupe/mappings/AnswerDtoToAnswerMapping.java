@@ -5,11 +5,9 @@ import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.springframework.stereotype.Component;
 import org.thenakliman.chupe.common.utils.DateUtil;
-import org.thenakliman.chupe.dto.AnswerDTO;
 import org.thenakliman.chupe.dto.UpsertAnswerDTO;
 import org.thenakliman.chupe.models.Answer;
 import org.thenakliman.chupe.models.Question;
-import org.thenakliman.chupe.models.User;
 
 @Component
 public class AnswerDtoToAnswerMapping extends ConverterConfigurerSupport<UpsertAnswerDTO, Answer> {

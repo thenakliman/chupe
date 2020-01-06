@@ -1,12 +1,12 @@
 package org.thenakliman.chupe.dto;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.thenakliman.chupe.models.TransactionType;
+
+import java.util.Date;
 
 @Builder
 @NoArgsConstructor

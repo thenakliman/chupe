@@ -1,10 +1,5 @@
 package org.thenakliman.chupe.services;
 
-import static java.util.Arrays.asList;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.Converter;
@@ -20,6 +15,11 @@ import org.thenakliman.chupe.models.MeetingDiscussionItem;
 import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.repositories.MeetingDiscussionItemRepository;
 import org.thenakliman.chupe.repositories.MeetingRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Arrays.asList;
 
 @Service
 public class MeetingService {

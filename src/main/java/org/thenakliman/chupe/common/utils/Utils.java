@@ -1,10 +1,10 @@
 package org.thenakliman.chupe.common.utils;
 
-import static java.util.Collections.emptyList;
+import io.jsonwebtoken.lang.Collections;
 
 import java.util.List;
 
-import io.jsonwebtoken.lang.Collections;
+import static java.util.Collections.emptyList;
 
 public class Utils {
   public static <T> List<T> emptyListIfNull(List<T> list) {

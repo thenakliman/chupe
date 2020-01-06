@@ -1,7 +1,5 @@
 package org.thenakliman.chupe.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +13,8 @@ import org.thenakliman.chupe.dto.FundTypeDTO;
 import org.thenakliman.chupe.dto.TeamFund;
 import org.thenakliman.chupe.dto.UpsertFundDTO;
 import org.thenakliman.chupe.services.TeamFundService;
+
+import java.util.List;
 
 
 @Controller

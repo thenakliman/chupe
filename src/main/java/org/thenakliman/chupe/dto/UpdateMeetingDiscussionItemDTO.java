@@ -1,9 +1,9 @@
 package org.thenakliman.chupe.dto;
 
-import javax.validation.constraints.NotNull;
-
 import lombok.Data;
 import org.thenakliman.chupe.models.DiscussionItemType;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 public class UpdateMeetingDiscussionItemDTO {

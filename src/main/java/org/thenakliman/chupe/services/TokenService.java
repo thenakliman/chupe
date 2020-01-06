@@ -3,11 +3,6 @@ package org.thenakliman.chupe.services;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thenakliman.chupe.common.utils.DateUtil;
@@ -16,6 +11,11 @@ import org.thenakliman.chupe.models.User;
 import org.thenakliman.chupe.properties.TokenProperty;
 import org.thenakliman.chupe.repositories.RoleRepository;
 import org.thenakliman.chupe.repositories.UserRepository;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Service

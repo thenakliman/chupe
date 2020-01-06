@@ -1,11 +1,8 @@
 package org.thenakliman.chupe.models;
 
-import static org.thenakliman.chupe.models.TaskStateId.CREATED_ID;
-import static org.thenakliman.chupe.models.TaskStateId.DONE_ID;
-import static org.thenakliman.chupe.models.TaskStateId.IN_PROGRESS_ID;
-import static org.thenakliman.chupe.models.TaskStateId.ON_HOLD_ID;
-
 import java.util.Arrays;
+
+import static org.thenakliman.chupe.models.TaskStateId.*;
 
 public enum TaskState {
   CREATED(
