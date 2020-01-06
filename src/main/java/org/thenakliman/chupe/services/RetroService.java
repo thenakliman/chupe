@@ -44,22 +44,20 @@ public class RetroService {
   }
 
   public RetroDTO updateRetro(Long retroId, UpsertRetroDTO upsertRetroDTO) {
-    Optional<Retro> savedRetro = retroRepository.findById(retroId);
-    if (!savedRetro.isPresent()) {
-      throw new NotFoundException(format("Retro with id %d could not be found", retroId));
-    }
+    Optional<Retro> savedRetroOptional = retroRepository.findById(retroId);
+    Retro savedRetro = savedRetroOptional.orElseThrow(
+            () -> new NotFoundException(format("Retro with id %d could not be found", retroId)));
 
-    savedRetro.get().setName(upsertRetroDTO.getName());
-    savedRetro.get().setMaximumVote(upsertRetroDTO.getMaximumVote());
-
-    Retro updatedRetro = retroRepository.save(savedRetro.get());
+    savedRetro.setName(upsertRetroDTO.getName());
+    savedRetro.setMaximumVote(upsertRetroDTO.getMaximumVote());
+    Retro updatedRetro = retroRepository.save(savedRetro);
     return converter.convertToObject(updatedRetro, RetroDTO.class);
   }
 
   public void changeRetroStatus(long retroId, UpdateRetroStatusDto updateRetroStatusDto) {
     Optional<Retro> savedRetro = retroRepository.findById(retroId);
     Retro retro = savedRetro.orElseThrow(
-        () -> new NotFoundException(format("Retro %d could not be found", retroId)));
+            () -> new NotFoundException(format("Retro %d could not be found", retroId)));
 
     retro.setStatus(updateRetroStatusDto.getStatus());
     retroRepository.save(retro);
